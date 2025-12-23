@@ -89,11 +89,11 @@ export const siteConfig: SiteConfig = {
         src: {
             // 桌面壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             desktop: [
-                "/assets/desktop-banner/124691157_p0.png",
+                "/assets/desktop-banner/136849820_p0.png",
             ],
             // 移动壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             mobile: [
-                "/assets/desktop-banner/124691157_p0.png",
+                "/assets/desktop-banner/136849820_p0.png",
             ],
         },
         // 壁纸位置 ('top' | 'center' | 'bottom')
