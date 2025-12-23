@@ -348,7 +348,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 // Umami统计配置
 export const umamiConfig = {
     // 是否显示Umami统计
-    enabled: false,
+    enabled: true,
     // API密钥
     apiKey: import.meta.env.UMAMI_API_KEY,
     // UmamiCloudAPI地址
