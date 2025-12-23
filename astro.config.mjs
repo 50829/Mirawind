@@ -184,6 +184,17 @@ export default defineConfig({
         ],
     },
     vite: {
+        optimizeDeps: {
+            // Prevent esbuild from trying to prebundle a package that imports virtual modules like
+            // "astro:env/server" which causes invalid path resolution on Windows.
+            exclude: [
+                "astro-decap-cms-oauth",
+                // Exclude Astro virtual modules so esbuild doesn't try to resolve them
+                "astro:env",
+                "astro:env/server",
+                "astro:env/client",
+            ],
+        },
         build: {
             rollupOptions: {
                 onwarn(warning, warn) {
