@@ -1,9 +1,9 @@
 backend:
   name: github
-  repo: Spr-Aachen/Twilight # 请替换为您的 GitHub 仓库
+  repo: 50829/Mirawind # 请替换为您的 GitHub 仓库
   branch: main # 请替换为您的分支名称
-  site_domain: twilight.spr-aachen.com # 请替换为您的域名
-  base_url: https://twilight.spr-aachen.com  # 请替换为您的 URL
+  site_domain: mirawind.vercel.app # 请替换为您的域名
+  base_url: https://mirawind.vercel.app  # 请替换为您的 URL
   auth_endpoint: oauth # OAuth 路由由集成提供
 
 # 媒体文件配置
