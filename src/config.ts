@@ -89,11 +89,11 @@ export const siteConfig: SiteConfig = {
         src: {
             // 桌面壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             desktop: [
-                "/assets/desktop-banner/136849820_p0.png",
+                "/assets/desktop-banner/115001263_p0.jpg",
             ],
             // 移动壁纸图片 (支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播)
             mobile: [
-                "/assets/desktop-banner/136849820_p0.png",
+                "/assets/desktop-banner/115001263_p0.jpg",
             ],
         },
         // 壁纸位置 ('top' | 'center' | 'bottom')
@@ -153,7 +153,7 @@ export const siteConfig: SiteConfig = {
             // 水波纹效果配置
             waves: {
                 // 启用水波纹效果
-                enable: true,
+                enable: false,
                 // 启用性能模式 (简化波浪效果以提升性能)
                 performanceMode: false,
             },
