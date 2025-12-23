@@ -69,7 +69,7 @@ export const siteConfig: SiteConfig = {
         // 仓耳青禾字体 (适合中文，现代简约风格)
         cangerQinghe: {
             // 作为全局字体
-            enable: false,
+            enable: true,
         },
     },
     // 主题色配置
@@ -119,10 +119,10 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Mirawind",
+                title: "Mirawind's Blog",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
-                    "Illuminate Our Paths",
+                    "  ",
                 ],
                 // 副标题打字机效果
                 typewriter: {
@@ -153,9 +153,9 @@ export const siteConfig: SiteConfig = {
             // 水波纹效果配置
             waves: {
                 // 启用水波纹效果
-                enable: true,
+                enable: false,
                 // 启用性能模式 (简化波浪效果以提升性能)
-                performanceMode: false,
+                performanceMode: true,
             },
         },
         // Fullscreen 模式专属配置
@@ -201,13 +201,13 @@ export const navBarConfig: NavBarConfig = {
             children: [
                 {
                     name: "GitHub",
-                    url: "https://github.com/Example",
+                    url: "https://github.com/50829",
                     external: true,
                     icon: "fa6-brands:github",
                 },
                 {
                     name: "Bilibili",
-                    url: "https://space.bilibili.com/Example",
+                    url: "https://space.bilibili.com/397174240",
                     external: true,
                     icon: "fa6-brands:bilibili",
                 },
@@ -365,11 +365,11 @@ export const profileConfig: ProfileConfig = {
     // 信息配置
     name: "Mirawind",
     // 简介配置
-    bio: "Hi",
+    bio: "Wish to be a firefly in the night...",
     // 链接配置
     links: [
         {
-            name: "GitHub",
+            name: "",
             icon: "fa6-brands:github",
             url: "https://github.com/50829",
         },
