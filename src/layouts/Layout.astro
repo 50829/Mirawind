@@ -123,6 +123,14 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
       data-overlayscrollbars-initialize
 >
     <head>
+        <!-- Umami Analytics -->
+        <script 
+            defer 
+            src="https://cloud.umami.is/script.js" 
+            data-website-id="a23e1e9e-0eda-4afe-9ae4-e28807721370"
+            is:inline
+        ></script>   
+             
         <!-- 延迟加载优化 -->
         <script is:inline>
             // 使用 requestIdleCallback 延迟加载第三方脚本
