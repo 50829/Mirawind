@@ -619,3 +619,13 @@
         line-height: 1.2 !important;
     }
 }
+
+/* Banner credit 文本样式 - 支持日文字符 */
+#banner-credit {
+    /* 使用系统字体栈，优先使用支持日文的字体 */
+    font-family: 
+        'zenMaruGothic','Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Noto Sans JP',
+        'Yu Gothic', 'Meiryo', 'MS PGothic',
+        'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
+        'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}

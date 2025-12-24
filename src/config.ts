@@ -141,7 +141,7 @@ export const siteConfig: SiteConfig = {
                 // 显示横幅图片来源文本
                 enable: true,
                 // 要显示的来源文本
-                text: "Pixiv - void_0",
+                text: "君を照らす太陽になりたい - void_0",
                 // (可选) 原始艺术品或艺术家页面的 URL 链接
                 url: "https://www.pixiv.net/artworks/137775938",
             },
