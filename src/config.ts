@@ -75,7 +75,7 @@ export const siteConfig: SiteConfig = {
     // 主题色配置
     themeColor: {
         // 主题色的默认色相 (范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345)
-        hue: 255,
+        hue: 275,
         // 对访问者隐藏主题色选择器
         fixed: false,
     },
@@ -405,9 +405,9 @@ export const announcementConfig: AnnouncementConfig = {
 // 文章配置
 export const postConfig: PostConfig = {
     // 显示“上次编辑”卡片
-    showLastModified: true,
+    showLastModified: false,
     // 在文章内容中显示封面
-    showCoverInContent: false,
+    showCoverInContent: true,
     // 代码高亮配置
     expressiveCode: {
         // 主题
