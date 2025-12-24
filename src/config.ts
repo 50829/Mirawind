@@ -32,7 +32,7 @@ export const siteConfig: SiteConfig = {
     // 站点标题
     title: "Mirawind 的博客",
     // 站点副标题
-    subtitle: "Mirawind 的博客",
+    subtitle: "相寻梦里路，飞雨落花中",
     // 语言配置
     lang: SITE_LANG, // 自动检测的浏览器语言
     // 翻译配置
@@ -69,7 +69,7 @@ export const siteConfig: SiteConfig = {
         // 仓耳青禾字体 (适合中文，现代简约风格)
         cangerQinghe: {
             // 作为全局字体
-            enable: false,
+            enable: true,
         },
     },
     // 主题色配置
@@ -119,10 +119,10 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Mirawind",
+                title: "Mirawind's Blog",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
-                    "Illuminate Our Paths",
+                    "相寻梦里路，飞雨落花中",
                 ],
                 // 副标题打字机效果
                 typewriter: {
@@ -139,11 +139,11 @@ export const siteConfig: SiteConfig = {
             // 横幅图片来源文本
             credit: {
                 // 显示横幅图片来源文本
-                enable: false,
+                enable: true,
                 // 要显示的来源文本
-                text: "Describe",
+                text: "Pixiv - void_0",
                 // (可选) 原始艺术品或艺术家页面的 URL 链接
-                url: "",
+                url: "https://www.pixiv.net/artworks/137775938",
             },
             // 导航栏配置
             navbar: {
@@ -153,9 +153,9 @@ export const siteConfig: SiteConfig = {
             // 水波纹效果配置
             waves: {
                 // 启用水波纹效果
-                enable: true,
+                enable: false,
                 // 启用性能模式 (简化波浪效果以提升性能)
-                performanceMode: false,
+                performanceMode: true,
             },
         },
         // Fullscreen 模式专属配置
@@ -201,13 +201,13 @@ export const navBarConfig: NavBarConfig = {
             children: [
                 {
                     name: "GitHub",
-                    url: "https://github.com/Example",
+                    url: "https://github.com/50829",
                     external: true,
                     icon: "fa6-brands:github",
                 },
                 {
                     name: "Bilibili",
-                    url: "https://space.bilibili.com/Example",
+                    url: "https://space.bilibili.com/397174240",
                     external: true,
                     icon: "fa6-brands:bilibili",
                 },
@@ -244,104 +244,104 @@ export const navBarConfig: NavBarConfig = {
 
 // 侧边栏布局配置
 export const sidebarLayoutConfig: SidebarLayoutConfig = {
-    // 侧边栏组件配置列表
-    components: [
-        {
-            // 组件类型
-            type: "profile", // 用户资料组件
-            // 是否启用该组件
-            enable: true,
-            // 组件所属侧边栏
-            side: "left",
-            // 组件显示顺序 (数字越小越靠前)
-            order: 1,
-            // 组件位置
-            position: "top", // 固定在顶部
-            // CSS 类名，用于应用样式和动画
-            class: "onload-animation",
-            // 动画延迟时间 (毫秒) ，用于错开动画效果
-            animationDelay: 0,
-        },
-        {
-            // 组件类型
-            type: "announcement", // 公告组件
-            // 是否启用该组件 (现在通过统一配置控制)
-            enable: true,
-            // 组件所属侧边栏
-            side: "left",
-            // 组件显示顺序
-            order: 2,
-            // 组件位置
-            position: "top", // 固定在顶部
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 50,
-        },
-        {
-            // 组件类型
-            type: "categories", // 分类组件
-            // 是否启用该组件
-            enable: true,
-            // 组件所属侧边栏
-            side: "right",
-            // 组件显示顺序
-            order: 3,
-            // 组件位置
-            position: "sticky", // 粘性定位，可滚动
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 150,
-            // 响应式配置
-            responsive: {
-                // 折叠阈值
-                collapseThreshold: 5, // 当分类数量超过5个时自动折叠
-            },
-        },
-        {
-            // 组件类型
-            type: "tags", // 标签组件
-            // 是否启用该组件
-            enable: true,
-            // 组件所属侧边栏
-            side: "right",
-            // 组件显示顺序
-            order: 4,
-            // 组件位置
-            position: "sticky", // 粘性定位，可滚动
-            // CSS 类名
-            class: "onload-animation",
-            // 动画延迟时间
-            animationDelay: 250,
-            // 响应式配置
-            responsive: {
-                // 折叠阈值
-                collapseThreshold: 20, // 当标签数量超过20个时自动折叠
-            },
-        },
-    ],
-    // 默认动画配置
-    defaultAnimation: {
-        // 是否启用默认动画
-        enable: true,
-        // 基础延迟时间 (毫秒)
-        baseDelay: 0,
-        // 每个组件递增的延迟时间 (毫秒)
-        increment: 50,
+  // 侧边栏组件配置列表
+  components: [
+    {
+      // 组件类型
+      type: "profile", // 用户资料组件
+      // 是否启用该组件
+      enable: true,
+      // 组件所属侧边栏
+      side: "left",
+      // 组件显示顺序 (数字越小越靠前)
+      order: 1,
+      // 组件位置
+      position: "top", // 固定在顶部
+      // CSS 类名，用于应用样式和动画
+      class: "onload-animation",
+      // 动画延迟时间 (毫秒) ，用于错开动画效果
+      animationDelay: 0,
     },
-    // 响应式布局配置
-    responsive: {
-        // 不同设备的布局模式 ("hidden" 不显示侧边栏 | "drawer" 抽屉模式 | "sidebar" 显示侧边栏)
-        layout: {
-            // 移动端
-            mobile: "sidebar",
-            // 平板端
-            tablet: "sidebar",
-            // 桌面端
-            desktop: "sidebar",
-        },
+    {
+      // 组件类型
+      type: "announcement", // 公告组件
+      // 是否启用该组件 (现在通过统一配置控制)
+      enable: true,
+      // 组件所属侧边栏
+      side: "left",
+      // 组件显示顺序
+      order: 2,
+      // 组件位置
+      position: "top", // 固定在顶部
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 50,
     },
+    {
+      // 组件类型
+      type: "categories", // 分类组件
+      // 是否启用该组件
+      enable: true,
+      // 组件所属侧边栏
+      side: "right",
+      // 组件显示顺序
+      order: 3,
+      // 组件位置
+      position: "sticky", // 粘性定位，可滚动
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 150,
+      // 响应式配置
+      responsive: {
+        // 折叠阈值
+        collapseThreshold: 5, // 当分类数量超过5个时自动折叠
+      },
+    },
+    {
+      // 组件类型
+      type: "tags", // 标签组件
+      // 是否启用该组件
+      enable: true,
+      // 组件所属侧边栏
+      side: "right",
+      // 组件显示顺序
+      order: 4,
+      // 组件位置
+      position: "sticky", // 粘性定位，可滚动
+      // CSS 类名
+      class: "onload-animation",
+      // 动画延迟时间
+      animationDelay: 250,
+      // 响应式配置
+      responsive: {
+        // 折叠阈值
+        collapseThreshold: 20, // 当标签数量超过20个时自动折叠
+      },
+    },
+  ],
+  // 默认动画配置
+  defaultAnimation: {
+    // 是否启用默认动画
+    enable: true,
+    // 基础延迟时间 (毫秒)
+    baseDelay: 0,
+    // 每个组件递增的延迟时间 (毫秒)
+    increment: 50,
+  },
+  // 响应式布局配置
+  responsive: {
+    // 不同设备的布局模式 ("hidden" 不显示侧边栏 | "drawer" 抽屉模式 | "sidebar" 显示侧边栏)
+    layout: {
+      // 移动端
+      mobile: "sidebar",
+      // 平板端
+      tablet: "sidebar",
+      // 桌面端
+      desktop: "sidebar",
+    },
+  },
 };
 
 
@@ -365,11 +365,11 @@ export const profileConfig: ProfileConfig = {
     // 信息配置
     name: "Mirawind",
     // 简介配置
-    bio: "Hi",
+    bio: "Wish to be a firefly in the night...",
     // 链接配置
     links: [
         {
-            name: "GitHub",
+            name: "",
             icon: "fa6-brands:github",
             url: "https://github.com/50829",
         },
