@@ -266,7 +266,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 组件类型
       type: "announcement", // 公告组件
       // 是否启用该组件 (现在通过统一配置控制)
-      enable: true,
+      enable: false,
       // 组件所属侧边栏
       side: "left",
       // 组件显示顺序
