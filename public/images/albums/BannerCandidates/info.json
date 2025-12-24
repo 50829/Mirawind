@@ -1,0 +1,19 @@
+{
+  "mode": "external",
+  "title": "banner备选图",
+  "description": "来自 desktop-banner 的候选横幅图片",
+  "date": "2025-12-25",
+  "location": "",
+  "tags": ["blog", "banner"],
+  "layout": "masonry",
+  "columns": 3,
+  "cover": "/assets/desktop-banner/137775938_p0.jpg",
+  "photos": [
+    { "src": "/assets/desktop-banner/115001263_p0.jpg", "alt": "115001263_p0", "title": "115001263_p0" },
+    { "src": "/assets/desktop-banner/124691157_p0.png", "alt": "124691157_p0", "title": "124691157_p0" },
+    { "src": "/assets/desktop-banner/136849820_p0.png", "alt": "136849820_p0", "title": "136849820_p0" },
+    { "src": "/assets/desktop-banner/137775938_p0.jpg", "alt": "137775938_p0", "title": "137775938_p0" },
+    { "src": "/assets/desktop-banner/138613692_p0.jpg", "alt": "138613692_p0", "title": "138613692_p0" },
+    { "src": "/assets/desktop-banner/desktopBanner_1.webp", "alt": "desktopBanner_1", "title": "desktopBanner_1" }
+  ]
+}
