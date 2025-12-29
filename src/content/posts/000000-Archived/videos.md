@@ -4,7 +4,7 @@ published: 2021-12-02
 description: This post demonstrates how to embed video in a blog post.
 tags: [Markdown, Video]
 category: Examples
-draft: false
+draft: true
 ---
 
 
