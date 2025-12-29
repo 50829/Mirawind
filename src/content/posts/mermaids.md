@@ -5,7 +5,7 @@ pinned: false
 description: A simple example of a Markdown blog post with Mermaid.
 tags: [Markdown, Mermaid]
 category: Examples
-draft: false
+draft: true
 ---
 
 

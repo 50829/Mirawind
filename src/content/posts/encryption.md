@@ -8,6 +8,7 @@ password: "123456"
 routeName: "encrypted-example"
 tags: [Encryption]
 category: Examples
+draft: true
 ---
 
 

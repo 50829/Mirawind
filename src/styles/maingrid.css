@@ -76,6 +76,11 @@
         /* 内容区域快速上移 */
         transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s !important;
     }
+
+    /* 移动端隐藏已收起横幅时的图片版权描述 */
+    .mobile-main-no-banner #banner-credit {
+        display: none !important;
+    }
 }
 
 /* 移动端横屏优化 */
