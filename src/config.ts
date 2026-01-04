@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Mirawind's Blog",
+                title: "Mirawind's Homepage",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
                     "相寻梦里路，飞雨落花中",

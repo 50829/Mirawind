@@ -25,13 +25,10 @@ const latestPosts = (await getSortedPosts()).slice(0, 3);
             <!-- 快速导航 -->
             <div class="flex flex-wrap gap-4 mb-8 mt-8">
                 <a href={url('/blog/')} class="px-6 py-3 bg-[var(--primary)] text-white rounded-lg hover:opacity-80 transition">
-                    📚 查看博客
+                    📚 Blogs
                 </a>
                 <a href={url('/about/')} class="px-6 py-3 bg-[var(--btn-regular-bg)] text-black/80 dark:text-white/80 rounded-lg hover:bg-[var(--btn-regular-bg-hover)] transition">
-                    ℹ️ 关于我
-                </a>
-                <a href={url('/projects/')} class="px-6 py-3 bg-[var(--btn-regular-bg)] text-black/80 dark:text-white/80 rounded-lg hover:bg-[var(--btn-regular-bg-hover)] transition">
-                    🚀 我的项目
+                    ➡️ More about me
                 </a>
             </div>
 
