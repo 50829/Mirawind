@@ -29,7 +29,7 @@ export const siteConfig: SiteConfig = {
     // 站点 URL（以斜杠结尾）
     siteURL: "https://mirawind.vercel.app/", // 请替换为你的站点 URL 并以斜杠结尾
     // 站点标题
-    title: "Mirawind 的博客",
+    title: "Mirawind 的主页",
     // 站点副标题
     subtitle: "相寻梦里路，飞雨落花中",
     // 语言配置

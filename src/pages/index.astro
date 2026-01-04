@@ -1,35 +1,29 @@
 ---
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
+import { getEntry, render } from "astro:content";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import Markdown from "@components/common/markdown.astro";
 import { url } from "@utils/url-utils";
-
-// 获取最新的几篇博客
 import { getSortedPosts } from "@utils/content-utils";
+
+const homePost = await getEntry("spec", "home");
+if (!homePost) {
+    throw new Error("Home page content not found");
+}
+
+const { Content } = await render(homePost);
 const latestPosts = (await getSortedPosts()).slice(0, 3);
 ---
 
 <MainGridLayout title="Home">
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
-            <!-- 标题 -->
-            <h1 class="text-4xl md:text-5xl font-bold text-black/90 dark:text-white/90 mb-6">
-                👋 Hi, I'm Mirawind
-            </h1>
-
-            <!-- 自我介绍 -->
-            <p class="text-lg text-black/70 dark:text-white/70 mb-4 leading-relaxed">
-                欢迎来到我的个人博客。我是一个热爱编程和分享的开发者，
-                在这里记录我的学习历程、技术见解和生活思考。
-            </p>
-
-            <p class="text-lg text-black/70 dark:text-white/70 mb-8 leading-relaxed">
-                探索我的<a href={url('/blog/')} class="text-[var(--primary)] hover:underline font-medium">技术博客</a>，
-                或者查看我的<a href={url('/projects/')} class="text-[var(--primary)] hover:underline font-medium">项目作品</a>。
-            </p>
+            <!-- 页面内容 -->
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
 
             <!-- 快速导航 -->
-            <div class="flex flex-wrap gap-4 mb-8">
+            <div class="flex flex-wrap gap-4 mb-8 mt-8">
                 <a href={url('/blog/')} class="px-6 py-3 bg-[var(--primary)] text-white rounded-lg hover:opacity-80 transition">
                     📚 查看博客
                 </a>
