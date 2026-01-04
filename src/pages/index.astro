@@ -1,0 +1,72 @@
+---
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+
+// 获取最新的几篇博客
+import { getSortedPosts } from "@utils/content-utils";
+const latestPosts = (await getSortedPosts()).slice(0, 3);
+---
+
+<MainGridLayout title="Home">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <!-- 标题 -->
+            <h1 class="text-4xl md:text-5xl font-bold text-black/90 dark:text-white/90 mb-6">
+                👋 Hi, I'm Mirawind
+            </h1>
+
+            <!-- 自我介绍 -->
+            <p class="text-lg text-black/70 dark:text-white/70 mb-4 leading-relaxed">
+                欢迎来到我的个人博客。我是一个热爱编程和分享的开发者，
+                在这里记录我的学习历程、技术见解和生活思考。
+            </p>
+
+            <p class="text-lg text-black/70 dark:text-white/70 mb-8 leading-relaxed">
+                探索我的<a href={url('/blog/')} class="text-[var(--primary)] hover:underline font-medium">技术博客</a>，
+                或者查看我的<a href={url('/projects/')} class="text-[var(--primary)] hover:underline font-medium">项目作品</a>。
+            </p>
+
+            <!-- 快速导航 -->
+            <div class="flex flex-wrap gap-4 mb-8">
+                <a href={url('/blog/')} class="px-6 py-3 bg-[var(--primary)] text-white rounded-lg hover:opacity-80 transition">
+                    📚 查看博客
+                </a>
+                <a href={url('/about/')} class="px-6 py-3 bg-[var(--btn-regular-bg)] text-black/80 dark:text-white/80 rounded-lg hover:bg-[var(--btn-regular-bg-hover)] transition">
+                    ℹ️ 关于我
+                </a>
+                <a href={url('/projects/')} class="px-6 py-3 bg-[var(--btn-regular-bg)] text-black/80 dark:text-white/80 rounded-lg hover:bg-[var(--btn-regular-bg-hover)] transition">
+                    🚀 我的项目
+                </a>
+            </div>
+
+            <!-- 最新博客预览 -->
+            {latestPosts.length > 0 && (
+                <div class="mt-12 pt-8 border-t border-black/10 dark:border-white/10">
+                    <h2 class="text-2xl font-bold text-black/90 dark:text-white/90 mb-6">
+                        ✨ 最新文章
+                    </h2>
+                    <div class="space-y-4">
+                        {latestPosts.map(post => (
+                            <a 
+                                href={`/posts/${post.id}/`}
+                                class="block p-4 rounded-lg bg-[var(--card-bg)] hover:bg-[var(--btn-regular-bg-hover)] transition"
+                            >
+                                <h3 class="font-semibold text-black/90 dark:text-white/90 mb-2">
+                                    {post.data.title}
+                                </h3>
+                                <p class="text-sm text-black/60 dark:text-white/60 line-clamp-2">
+                                    {post.data.description}
+                                </p>
+                            </a>
+                        ))}
+                    </div>
+                    <a href={url('/blog/')} class="block mt-6 text-center text-[var(--primary)] hover:underline font-medium">
+                        查看全部文章 →
+                    </a>
+                </div>
+            )}
+        </div>
+    </div>
+</MainGridLayout>

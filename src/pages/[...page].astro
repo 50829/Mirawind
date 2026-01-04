@@ -1,29 +1,16 @@
 ---
+// 此文件已弃用，博客内容已迁移到 /blog/[...page].astro
+// 首页内容见 /index.astro
+import { redirect } from 'astro';
+
 export const prerender = true;
 
+// 重定向所有流量到新路由
+export const getStaticPaths = async () => {
+    return [
+        { params: { page: undefined }, props: {} }
+    ];
+};
 
-import type { GetStaticPaths } from "astro";
-
-import { PAGE_SIZE } from "@constants/constants";
-import { getSortedPosts } from "@utils/content-utils";
-import Pagination from "@components/pagination.astro";
-import PostPage from "@components/postPage.astro";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-
-
-export const getStaticPaths = (async ({ paginate }) => {
-    const allBlogPosts = await getSortedPosts();
-    return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
-}) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
-
-
-const { page } = Astro.props;
-
-const len = page.data.length;
+return redirect('/');
 ---
-
-<MainGridLayout>
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
-</MainGridLayout>
