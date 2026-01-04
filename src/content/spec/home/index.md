@@ -2,7 +2,7 @@
 title: "Home"
 ---
 
-# 👋 Hi, I'm Mirawind
+# 👋 Hello, there!
 
 欢迎来到我的个人博客。
 
