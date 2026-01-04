@@ -61,3 +61,10 @@ const latestPosts = (await getSortedPosts()).slice(0, 3);
         </div>
     </div>
 </MainGridLayout>
+
+<style>
+    /* 隐藏主页的目录组件 */
+    :global(widget-layout[data-id="toc-wrapper"]) {
+        display: none;
+    }
+</style>
