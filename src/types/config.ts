@@ -38,8 +38,6 @@ export type SiteConfig = {
         enable: boolean;
         // 翻译服务类型，如 'client.edge'
         service?: string;
-        // 默认语言
-        defaultLanguage?: string;
         // 显示语言选择下拉框
         showSelectTag?: boolean;
         // 自动识别用户语言
@@ -97,13 +95,8 @@ export type SiteConfig = {
             enable: boolean;
             // 轮播间隔时间 (s) 
             interval: number;
-        };
-        // PicFlow API 配置 (fullscreen 和 banner 模式共享)
-        imageApi?: {
-            // 启用图片 API
-            enable: boolean;
-            // API 地址，返回每行一个图片链接的文本 (https://github.com/matsuzaka-yuki/PicFlow-API)
-            url: string;
+            // 启用 Ken Burns 效果
+            kenBurns?: boolean;
         };
         // Banner 模式专属配置
         banner?: {
@@ -250,12 +243,8 @@ export type WidgetComponentConfig = {
     order: number;
     // 组件位置
     position: "top" | "sticky"; // 顶部固定区域或粘性区域
-    // 自定义CSS类名
-    class?: string;
     // 自定义内联样式
     style?: string;
-    // 动画延迟时间 (ms) 
-    animationDelay?: number;
     // 响应式配置
     responsive?: {
         // 在指定设备上隐藏
@@ -272,15 +261,6 @@ export type WidgetComponentConfig = {
 export type SidebarLayoutConfig = {
     // 侧边栏组件配置列表
     components: WidgetComponentConfig[];
-    // 默认动画配置
-    defaultAnimation: {
-        // 是否启用默认动画
-        enable: boolean;
-        // 基础延迟时间 (ms)
-        baseDelay: number;
-        // 每个组件递增的延迟时间 (ms)
-        increment: number;
-    };
     // 响应式布局配置
     responsive: {
         // 不同设备的布局模式
@@ -369,13 +349,6 @@ export type PostConfig = {
     expressiveCode: {
         // 主题
         theme: string;
-    };
-    // 目录配置
-    toc: {
-        // 启用目录功能
-        enable: boolean;
-        // 目录深度
-        depth: 1 | 2 | 3;
     };
     // 许可证配置
     license: {

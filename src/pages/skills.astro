@@ -12,9 +12,10 @@ import {
 } from "@data/skills";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-import IconifyLoader from "@components/misc/IconifyLoader.astro";
-import SkillCard from "@components/widget/SkillCard.astro";
+import IconifyLoader from "@components/common/iconifyLoader.astro";
+import SkillCard from "@components/data/skillCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+
 
 
 const { lang } = Astro.props;
@@ -200,7 +201,7 @@ const allIcons = skillsData.map((skill) => skill.icon).filter(Boolean);
                                         </div>
                                         <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                             <div
-                                                class={`h-2 rounded-full transition-all duration-500 ${
+                                                class={`h-2 rounded-full transition-all duration-600 ${
                                                     level === 'expert' ? 'bg-red-500' :
                                                     level === 'advanced' ? 'bg-orange-500' :
                                                     level === 'intermediate' ? 'bg-yellow-500' :

@@ -1,3 +1,10 @@
+/* 隐藏已收起横幅或非横幅模式时的图片版权描述 */
+.mobile-main-no-banner #banner-credit,
+.no-banner-layout #banner-credit {
+    display: none !important;
+}
+
+
 /* 手机端无侧边栏布局优化 */
 @media (max-width: 768px) {
     .mobile-no-sidebar {
@@ -63,18 +70,16 @@
 @media (max-width: 1023px) {
     /* 手机端非首页时主内容区域从顶部开始 - 延迟出现的动画 */
     .absolute.w-full.z-30 {
-        transition: top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+        transition: top 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
         /* 硬件加速优化 */
         will-change: top;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
     }
 
     .absolute.w-full.z-30.mobile-main-no-banner {
         top: 5.5rem !important;
         min-height: calc(100vh - 5.5rem) !important;
         /* 内容区域快速上移 */
-        transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s !important;
+        transition: top 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s !important;
     }
 
     /* 移动端隐藏已收起横幅时的图片版权描述 */

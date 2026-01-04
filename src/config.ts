@@ -10,7 +10,6 @@ import type {
     MusicPlayerConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
-import { getTranslateLanguageFromConfig, detectBrowserLanguage } from "./utils/language-utils";
 
 /**
  * 
@@ -41,8 +40,6 @@ export const siteConfig: SiteConfig = {
         enable: true,
         // 翻译服务
         service: "client.edge", // 使用 Edge 浏览器
-        // 默认翻译语言
-        defaultLanguage: getTranslateLanguageFromConfig(SITE_LANG), // 根据检测到的语言自动设置默认翻译语言
         // 显示语言选择下拉框
         showSelectTag: false, // 使用自定义按钮
         // 自动检测用户语言
@@ -103,14 +100,9 @@ export const siteConfig: SiteConfig = {
             // 为多张图片启用轮播，否则随机显示一张图片
             enable: true,
             // 轮播间隔时间 (秒)
-            interval: 3.3,
-        },
-        // PicFlow API 配置 (fullscreen 和 banner 模式共享)
-        imageApi: {
-            // 启用图片 API
-            enable: false,
-            // API 地址，返回每行一个图片链接的文本
-            url: "http://domain.com/api_v2.php?format=text&count=4",
+            interval: 3.6,
+            // 启用 Ken Burns 效果
+            kenBurns: true,
         },
         // Banner 模式专属配置
         banner: {
@@ -413,13 +405,6 @@ export const postConfig: PostConfig = {
         // 主题
         theme: "github-dark", // 深色背景
     },
-    // 目录配置
-    toc: {
-        // 启用目录功能
-        enable: true,
-        // 目录深度 (1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推)
-        depth: 3,
-    },
     // 许可证配置
     license: {
         // 启用许可证
@@ -438,7 +423,7 @@ export const postConfig: PostConfig = {
             // 环境 ID
             envId: "https://twikoo.vercel.app",
             // 语言
-            lang: "en",
+            lang: SITE_LANG, // 默认使用站点语言
         },
     },
 };
