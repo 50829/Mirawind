@@ -185,6 +185,11 @@ export const navBarConfig: NavBarConfig = {
     // 链接配置 (支持多级菜单)
     links: [
         LinkPreset.Home,
+        {
+            name: "博客",
+            url: "/blog/",
+            icon: "material-symbols:article",
+        },
         LinkPreset.Archive,
         {
             name: "Links",
