@@ -27,9 +27,9 @@ const SITE_TIMEZONE = 8; // from -12 to 12 default in UTC+8
 // 站点配置
 export const siteConfig: SiteConfig = {
     // 站点 URL（以斜杠结尾）
-    siteURL: "https://mirawind.vercel.app/", // 请替换为你的站点 URL 并以斜杠结尾
+    siteURL: "https://mirawind.top/", // 请替换为你的站点 URL 并以斜杠结尾
     // 站点标题
-    title: "Mirawind 的主页",
+    title: "Mirawind's Blog",
     // 站点副标题
     subtitle: "相寻梦里路，飞雨落花中",
     // 语言配置
@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Mirawind",
+                title: "Mirawind's Blog",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
                     "相寻梦里路，飞雨落花中",
@@ -184,7 +184,7 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
     // 链接配置 (支持多级菜单)
     links: [
-        LinkPreset.Home,
+        // LinkPreset.Home,
         {
             name: "博客",
             url: "/blog/",
