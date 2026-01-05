@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
                 // 在主页显示文本
                 enable: true,
                 // 主标题
-                title: "Mirawind's Homepage",
+                title: "Mirawind",
                 // 副标题，支持单个字符串或字符串数组
                 subtitle: [
                     "相寻梦里路，飞雨落花中",
@@ -300,13 +300,13 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 组件类型
       type: "tags", // 标签组件
       // 是否启用该组件
-      enable: true,
+      enable: false,
       // 组件所属侧边栏
-      side: "right",
+      side: "left",
       // 组件显示顺序
       order: 4,
       // 组件位置
-      position: "top", // 粘性定位，可滚动
+      position: "sticky", // 粘性定位，可滚动
       // CSS 类名
       class: "onload-animation",
       // 动画延迟时间
@@ -323,7 +323,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
       // 是否启用该组件
       enable: true,
       // 组件所属侧边栏
-      side: "right",
+      side: "left",
       // 组件显示顺序
       order: 5,
       // 组件位置
