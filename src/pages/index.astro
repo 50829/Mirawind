@@ -3,7 +3,10 @@ import { getEntry, render } from "astro:content";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import Markdown from "@components/common/markdown.astro";
 import { url } from "@utils/url-utils";
+import { PAGE_SIZE } from "@constants/constants";
 import { getSortedPosts } from "@utils/content-utils";
+import Pagination from "@components/pagination.astro";
+import PostPage from "@components/postPage.astro";
 
 const homePost = await getEntry("spec", "home");
 if (!homePost) {
@@ -11,11 +14,34 @@ if (!homePost) {
 }
 
 const { Content } = await render(homePost);
-const latestPosts = (await getSortedPosts()).slice(0, 3);
+
+// 手动获取第一页的博客文章
+const allPosts = await getSortedPosts();
+const firstPagePosts = allPosts.slice(0, PAGE_SIZE);
+const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
+
+// 创建类似分页对象的结构
+const page = {
+    data: firstPagePosts,
+    start: 0,
+    end: firstPagePosts.length - 1,
+    size: PAGE_SIZE,
+    total: allPosts.length,
+    currentPage: 1,
+    lastPage: totalPages,
+    url: {
+        current: "/",
+        prev: undefined,
+        next: totalPages > 1 ? "/blog/2/" : undefined,
+    },
+};
+
+const len = page.data.length;
 ---
 
 <MainGridLayout title="Home" headings={[]}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+    <!-- 欢迎内容区域 -->
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32 mb-4">
         <div class="card-base z-10 px-9 py-6 relative w-full">
             <!-- 页面内容 -->
             <Markdown class="mt-2">
@@ -31,40 +57,11 @@ const latestPosts = (await getSortedPosts()).slice(0, 3);
                     ➡️ More about me
                 </a>
             </div>
-
-            <!-- 最新博客预览 -->
-            {latestPosts.length > 0 && (
-                <div class="mt-12 pt-8 border-t border-black/10 dark:border-white/10">
-                    <h2 class="text-2xl font-bold text-black/90 dark:text-white/90 mb-6">
-                        ✨ 最新文章
-                    </h2>
-                    <div class="space-y-4">
-                        {latestPosts.map(post => (
-                            <a 
-                                href={`/posts/${post.id}/`}
-                                class="block p-4 rounded-lg bg-[var(--card-bg)] hover:bg-[var(--btn-regular-bg-hover)] transition"
-                            >
-                                <h3 class="font-semibold text-black/90 dark:text-white/90 mb-2">
-                                    {post.data.title}
-                                </h3>
-                                <p class="text-sm text-black/60 dark:text-white/60 line-clamp-2">
-                                    {post.data.description}
-                                </p>
-                            </a>
-                        ))}
-                    </div>
-                    <a href={url('/blog/')} class="block mt-6 text-center text-[var(--primary)] hover:underline font-medium">
-                        查看全部文章 →
-                    </a>
-                </div>
-            )}
         </div>
     </div>
-</MainGridLayout>
 
-<!-- <style>
-    /* 隐藏主页的目录组件 */
-    :global(widget-layout[data-id="toc-wrapper"]) {
-        display: none;
-    }
-</style> -->
+    <!-- 博客文章列表 -->
+    <PostPage page={page}></PostPage>
+    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
+
+</MainGridLayout>
