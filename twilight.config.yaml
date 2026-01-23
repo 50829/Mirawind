@@ -269,7 +269,7 @@ sidebar:
             # 类型
             type: "statistics"
             # 是否启用
-            enable: true
+            enable: false
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
             side: "right"
             # 显示顺序 (数字越小越靠前)

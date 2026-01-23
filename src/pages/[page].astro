@@ -1,0 +1,26 @@
+---
+export const prerender = true;
+
+import type { GetStaticPaths } from "astro";
+import { PAGE_SIZE } from "@constants/constants";
+import { getSortedPosts } from "@utils/content";
+
+export const getStaticPaths = (async () => {
+    const allBlogPosts = await getSortedPosts();
+    const totalPages = Math.ceil(allBlogPosts.length / PAGE_SIZE);
+    
+    // 为每一页（除了第一页）创建重定向路径
+    const paths = [];
+    for (let i = 2; i <= totalPages; i++) {
+        paths.push({
+            params: { page: String(i) },
+        });
+    }
+    return paths;
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.params;
+
+// 重定向到 /blog/X/
+return Astro.redirect(`/blog/${page}/`, 301);
+---

@@ -123,7 +123,7 @@ export const siteConfig: SiteConfig = {
     font: {
         // 仓耳青禾字体 (适合中文，现代简约风格)
         "cangerQinghe": {
-            src: "/assets/font/仓耳青禾体W03.ttf",
+            src: "/assets/font/仓耳青禾体W04.ttf",
             family: "Canger Qinghe",
         },
     },
