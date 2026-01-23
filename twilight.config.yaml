@@ -8,6 +8,8 @@ site:
     subtitle: "相寻梦里路，飞雨落花中"
     # 语言配置
     lang: "zh"
+    # 站点开始日期（用于计算运行天数）
+    siteStartDate: "2024-12-01"
     # 翻译配置
     translate:
         # 启用翻译功能
@@ -149,7 +151,7 @@ site:
 # Umami统计配置
 umami:
     # 是否显示Umami统计
-    enabled: true
+    enabled: false
     # UmamiCloudAPI地址
     baseUrl: "https://api.umami.is"
     # API密钥 (可用环境变量覆盖)
@@ -167,37 +169,33 @@ navbar:
             icon: "material-symbols:article"
         - # 一级导航链接 - 归档 (预设)
             "Archive"
-        - # 一级导航链接 - Links (自定义)
-            name: "Links"
-            url: "/links/"
-            icon: "material-symbols:link"
-            children:
-                - name: "GitHub"
-                  url: "https://github.com/50829"
-                  external: true
-                  icon: "fa6-brands:github"
-                - name: "Bilibili"
-                  url: "https://space.bilibili.com/397174240"
-                  external: true
-                  icon: "fa6-brands:bilibili"
-        - # 一级导航链接 - My (自定义)
-            name: "My"
-            url: "/content/"
+        - # 一级导航链接 - 展览 (自定义)
+            # 导航名称
+            name: "Exhibition"
+            # 导航链接
+            url: "/exhibition/"
+            # 导航图标
             icon: "material-symbols:person"
+            # 导航描述
+            description: "A collection of my creative works and experiences"
+            # 子链接
             children:
-                - "Projects"
-                - "Skills"
-                - "Timeline"
-                - "Diary"
-                - "Albums"
-                - "Anime"
-        - # 一级导航链接 - About (自定义)
-            name: "About"
-            url: "/content/"
-            icon: "material-symbols:info"
-            children:
-                - "About"
-                - "Friends"
+                - # 二级导航链接 - 项目 (预设)
+                    "Projects"
+                - # 二级导航链接 - 技能 (预设)
+                    "Skills"
+                - # 二级导航链接 - 历程 (预设)
+                    "Timeline"
+                - # 二级导航链接 - 日记 (预设)
+                    "Diary"
+                - # 二级导航链接 - 相册 (预设)
+                    "Albums"
+                - # 二级导航链接 - 动画 (预设)
+                    "Anime"
+        - # 一级导航链接 - 好友 (预设)
+            "Friends"
+        - # 一级导航链接 - 关于 (预设)
+            "About"
 
 # 侧边栏配置
 sidebar:
@@ -231,7 +229,7 @@ sidebar:
             # 是否启用
             enable: true
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
-            side: "right"
+            side: "left"
             # 显示顺序 (数字越小越靠前)
             order: 3
             # 位置策略 ("top" 顶部固定 | "sticky" 粘性)
@@ -239,12 +237,12 @@ sidebar:
             # 响应式配置
             responsive:
                 # 折叠阈值
-                collapseThreshold: 5
+                collapseThreshold: 10
         - # 组件 - 文章标签 (预设)
             # 类型
             type: "tags"
             # 是否启用
-            enable: false
+            enable: true
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
             side: "left"
             # 显示顺序 (数字越小越靠前)
@@ -261,20 +259,20 @@ sidebar:
             # 是否启用
             enable: true
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
-            side: "left"
+            side: "right"
             # 显示顺序 (数字越小越靠前)
-            order: 1
+            order: 2
             # 位置策略 ("top" 顶部固定 | "sticky" 粘性)
             position: "sticky"
             # 自定义属性
             customProps:
                 # 目录深度 (1-6，1 表示只显示 h1 标题，2 表示显示 h1 和 h2 标题，依此类推)
                 depth: 3
-        - # 组件 - 文章统计 (预设)
+        - # 组件 - 站点统计 (Mizuki 风格)
             # 类型
-            type: "statistics"
+            type: "site-stats"
             # 是否启用
-            enable: false
+            enable: true
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
             side: "right"
             # 显示顺序 (数字越小越靠前)
@@ -306,6 +304,10 @@ profile:
             name: ""
             icon: "fa6-brands:github"
             url: "https://github.com/50829"
+        - # Bilibili 链接
+            name: ""
+            icon: "fa6-brands:bilibili"
+            url: "https://space.bilibili.com/397174240"
 
 # 公告配置
 announcement:
