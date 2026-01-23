@@ -247,4 +247,15 @@ export const zh: Translation = {
 
     // 音乐播放器
     [Key.playlist]: "播放列表",
+
+    // 站点统计
+    [Key.siteStats]: "站点统计",
+    [Key.siteStatsPostCount]: "文章",
+    [Key.siteStatsCategoryCount]: "分类",
+    [Key.siteStatsTagCount]: "标签",
+    [Key.siteStatsTotalWords]: "总字数",
+    [Key.siteStatsRunningDays]: "运行天数",
+    [Key.siteStatsLastUpdate]: "最后活动",
+    [Key.siteStatsDaysAgo]: "{days} 天前",
+    [Key.siteStatsDays]: "{days} 天",
 };

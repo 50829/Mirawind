@@ -247,4 +247,15 @@ export const en: Translation = {
 
     // Music Player
     [Key.playlist]: "Playlist",
+
+    // Site Statistics
+    [Key.siteStats]: "Site Statistics",
+    [Key.siteStatsPostCount]: "Posts",
+    [Key.siteStatsCategoryCount]: "Categories",
+    [Key.siteStatsTagCount]: "Tags",
+    [Key.siteStatsTotalWords]: "Total Words",
+    [Key.siteStatsRunningDays]: "Running Days",
+    [Key.siteStatsLastUpdate]: "Last Activity",
+    [Key.siteStatsDaysAgo]: "{days} days ago",
+    [Key.siteStatsDays]: "{days} days",
 };

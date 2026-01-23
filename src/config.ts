@@ -16,7 +16,9 @@ import type {
 import { LinkPreset } from "./types/config";
 import rawConfig from "../twilight.config.yaml?raw";
 
-
+/**
+ * YAML 配置文件类型定义
+ */
 type ConfigFile = {
     site: SiteConfig;
     umami: {
@@ -38,8 +40,10 @@ type ConfigFile = {
     pio: PioConfig;
 };
 
+// 从 YAML 文件加载配置
 const config = yaml.load(rawConfig) as ConfigFile;
 
+// LinkPreset 名称映射
 const linkPresetNameMap: Record<string, LinkPreset> = {
     Home: LinkPreset.Home,
     Archive: LinkPreset.Archive,
@@ -53,6 +57,7 @@ const linkPresetNameMap: Record<string, LinkPreset> = {
     Friends: LinkPreset.Friends,
 };
 
+// 标准化单个导航链接
 const normalizeNavbarLink = (
     link: NavbarLink | LinkPreset | string,
 ): NavbarLink | LinkPreset => {
@@ -70,58 +75,90 @@ const normalizeNavbarLink = (
     return children ? { ...link, children } : link;
 };
 
+// 标准化导航链接数组
 const normalizeNavbarLinks = (links: Array<NavbarLink | LinkPreset | string>) =>
     links.map(normalizeNavbarLink);
 
-const resolvedPostConfig: PostConfig = {
-    ...config.post,
-    comment: config.post.comment.twikoo
-        ? {
-            ...config.post.comment,
-            twikoo: {
-                ...config.post.comment.twikoo,
-                lang: config.post.comment.twikoo.lang ?? config.site.lang,
-            },
-        }
-        : config.post.comment,
+/**
+ * 站点配置 - 从 YAML 加载
+ */
+export const siteConfig: SiteConfig = {
+    ...config.site,
+    // 转换字体配置格式
+    font: Object.values(config.site.font).map((f: any) => ({
+        src: f.src,
+        family: f.family,
+    })),
+    // 时区从 YAML 获取（如果未设置则默认 UTC+8）
+    timeZone: config.site.timeZone ?? 8,
+    // 翻译配置从 YAML 获取（如果未设置则使用默认值）
+    translate: config.site.translate ?? {
+        enable: true,
+        service: "client.edge",
+        showSelectTag: false,
+        autoDiscriminate: true,
+        ignoreClasses: ["ignore", "banner-title", "banner-subtitle"],
+        ignoreTags: ["script", "style", "code", "pre"],
+    },
 };
 
-// 站点配置
-export const siteConfig: SiteConfig = config.site;
-
-// Umami统计配置
-export const umamiConfig = {
-    enabled: config.umami.enabled,
-    apiKey: import.meta.env.UMAMI_API_KEY ?? config.umami.apiKey,
-    baseUrl: config.umami.baseUrl,
-    scripts: import.meta.env.UMAMI_TRACKING_CODE ?? config.umami.scripts,
-} as const;
-
-// 导航栏配置
+/**
+ * 导航栏配置 - 从 YAML 加载
+ */
 export const navbarConfig: NavbarConfig = {
     links: normalizeNavbarLinks(config.navbar.links),
 };
 
-// 侧边栏配置
+/**
+ * 侧边栏配置 - 从 YAML 加载
+ */
 export const sidebarConfig: SidebarConfig = config.sidebar;
 
-// 资料配置
-export const profileConfig: ProfileConfig = config.profile;
+/**
+ * Umami 统计配置 - 从 YAML 加载
+ */
+export const umamiConfig = {
+    enabled: config.umami?.enabled ?? false,
+    apiKey: import.meta.env.UMAMI_API_KEY,
+    baseUrl: config.umami?.baseUrl ?? "https://api.umami.is",
+    scripts: import.meta.env.UMAMI_TRACKING_CODE,
+} as const;
 
-// 公告配置
+/**
+ * 个人资料配置 - 从 YAML 加载
+ */
+export const profileConfig: ProfileConfig = {
+    ...config.profile,
+    // 确保头像路径以 / 开头
+    avatar: config.profile.avatar.startsWith('/') ? config.profile.avatar : `/${config.profile.avatar}`,
+};
+
+/**
+ * 公告配置 - 从 YAML 加载
+ */
 export const announcementConfig: AnnouncementConfig = config.announcement;
 
-// 文章配置
-export const postConfig: PostConfig = resolvedPostConfig;
+/**
+ * 文章配置 - 从 YAML 加载
+ */
+export const postConfig: PostConfig = config.post;
 
-// 页脚配置
+/**
+ * 页脚配置 - 从 YAML 加载
+ */
 export const footerConfig: FooterConfig = config.footer;
 
-// 粒子特效配置
+/**
+ * 粒子特效配置 - 从 YAML 加载
+ */
 export const particleConfig: ParticleConfig = config.particle;
 
-// 音乐播放器配置
+/**
+ * 音乐播放器配置 - 从 YAML 加载
+ */
 export const musicPlayerConfig: MusicPlayerConfig = config.musicPlayer;
 
-// 看板娘配置
+/**
+ * 看板娘配置 - 从 YAML 加载
+ */
 export const pioConfig: PioConfig = config.pio;

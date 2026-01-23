@@ -244,6 +244,17 @@ enum I18nKey {
 
     // 音乐播放器
     playlist = "playlist",
+
+    // 站点统计
+    siteStats = "siteStats",
+    siteStatsPostCount = "siteStatsPostCount",
+    siteStatsCategoryCount = "siteStatsCategoryCount",
+    siteStatsTagCount = "siteStatsTagCount",
+    siteStatsTotalWords = "siteStatsTotalWords",
+    siteStatsRunningDays = "siteStatsRunningDays",
+    siteStatsLastUpdate = "siteStatsLastUpdate",
+    siteStatsDaysAgo = "siteStatsDaysAgo",
+    siteStatsDays = "siteStatsDays",
 }
 
 export default I18nKey;

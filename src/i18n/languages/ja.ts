@@ -247,4 +247,15 @@ export const ja: Translation = {
 
     // 音楽プレーヤー
     [Key.playlist]: "プレイリスト",
+
+    // サイトの統計
+    [Key.siteStats]: "サイトの統計",
+    [Key.siteStatsPostCount]: "投稿",
+    [Key.siteStatsCategoryCount]: "カテゴリー",
+    [Key.siteStatsTagCount]: "タグ",
+    [Key.siteStatsTotalWords]: "文字数の合計",
+    [Key.siteStatsRunningDays]: "稼働日数",
+    [Key.siteStatsLastUpdate]: "最終更新",
+    [Key.siteStatsDaysAgo]: "{days}日前",
+    [Key.siteStatsDays]: "{days}日",
 };
