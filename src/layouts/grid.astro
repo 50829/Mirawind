@@ -12,7 +12,7 @@ import IconifyLoader from "@components/common/iconifyLoader.astro";
 import Navbar from "@components/navbar.astro";
 import FullscreenWallpaper from "@components/fullscreenWallpaper.astro";
 import Banner from "@components/banner.astro";
-import Sidebar from "@components/sidebar.astro";
+import SideBar from "@components/sidebar.astro";
 import Footer from "@components/footer.astro";
 import TocButton from "@components/tocButton.astro";
 import BackToTopButton from "@components/back2TopButton.astro";
@@ -63,7 +63,7 @@ const shouldEnableTransparency = siteConfig.wallpaper.mode === "banner" || siteC
 const transparentClass = shouldEnableTransparency ? "wallpaper-transparent" : "";
 
 /**
- * Sidebar
+ * SideBar
  */
 
 // 检查侧边栏是否启用，动态调整网格布局
@@ -151,7 +151,7 @@ const {
                             aria-label="Visit image source"
                             class:list={[
                                 "group onload-animation-up transition-all absolute flex justify-center items-center rounded-full " +
-                                    "px-3 left-4 right-4 md:left-auto md:right-4 md:w-auto -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
+                                    "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
                                 {
                                     "hover:pr-9 active:bg-black/80":
                                         hasBannerLink,
@@ -159,10 +159,10 @@ const {
                             ]}
                         >
                             <Icon
-                                class="text-white/75 text-[1.25rem] mr-1 flex-shrink-0"
+                                class="text-white/75 text-[1.25rem] mr-1"
                                 name="material-symbols:copyright-outline-rounded"
                             />
-                            <div class="text-white/75 text-xs truncate min-w-0">
+                            <div class="text-white/75 text-xs">
                                 {siteConfig.wallpaper.banner?.credit?.text}
                             </div>
                             <Icon
@@ -182,7 +182,7 @@ const {
                 <div class="contents lg:contents md:flex md:flex-col md:col-start-1 md:row-start-1 md:gap-4">
                     {
                         hasLeftSidebar ? (
-                            <Sidebar
+                            <SideBar
                                 id="left-sidebar"
                                 side="left"
                                 class={`${leftSidebarClass} ${transparentClass} onload-animation-up`}
@@ -194,7 +194,7 @@ const {
                     }
                     {
                         hasRightSidebar ? (
-                            <Sidebar
+                            <SideBar
                                 id="right-sidebar"
                                 side="right"
                                 class={`${rightSidebarClass} ${transparentClass} onload-animation-up`}
