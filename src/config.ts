@@ -14,6 +14,70 @@ import type {
     NavbarLink,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
+import rawConfig from "../twilight.config.yaml?raw";
+
+/**
+ * YAML 配置文件类型定义
+ */
+type ConfigFile = {
+    site: SiteConfig;
+    umami: {
+        enabled: boolean;
+        apiKey?: string;
+        baseUrl: string;
+        scripts?: string;
+    };
+    navbar: {
+        links: Array<NavbarLink | LinkPreset | string>;
+    };
+    sidebar: SidebarConfig;
+    profile: ProfileConfig;
+    announcement: AnnouncementConfig;
+    post: PostConfig;
+    footer: FooterConfig;
+    particle: ParticleConfig;
+    musicPlayer: MusicPlayerConfig;
+    pio: PioConfig;
+};
+
+// 从 YAML 文件加载配置
+const config = yaml.load(rawConfig) as ConfigFile;
+
+// LinkPreset 名称映射
+const linkPresetNameMap: Record<string, LinkPreset> = {
+    Home: LinkPreset.Home,
+    Archive: LinkPreset.Archive,
+    Projects: LinkPreset.Projects,
+    Skills: LinkPreset.Skills,
+    Timeline: LinkPreset.Timeline,
+    Diary: LinkPreset.Diary,
+    Albums: LinkPreset.Albums,
+    Anime: LinkPreset.Anime,
+    About: LinkPreset.About,
+    Friends: LinkPreset.Friends,
+};
+
+// 标准化单个导航链接
+const normalizeNavbarLink = (
+    link: NavbarLink | LinkPreset | string,
+): NavbarLink | LinkPreset => {
+    if (typeof link === "string") {
+        const preset = linkPresetNameMap[link];
+        if (preset === undefined) {
+            throw new Error(`Unknown LinkPreset: ${link}`);
+        }
+        return preset;
+    }
+    if (typeof link === "number") {
+        return link;
+    }
+    const children = link.children?.map(normalizeNavbarLink);
+    return children ? { ...link, children } : link;
+};
+
+// 标准化导航链接数组
+const normalizeNavbarLinks = (links: Array<NavbarLink | LinkPreset | string>) =>
+    links.map(normalizeNavbarLink);
 
 /**
  * 
@@ -57,20 +121,10 @@ export const siteConfig: SiteConfig = {
     timeZone: SITE_TIMEZONE,
     // 字体配置
     font: {
-        // zenMaruGothic 字体 (适合日语和英语，对中文适配一般)
-        zenMaruGothic: {
-            // 作为全局字体
-            enable: false,
-        },
-        // Hanalei 字体 (适合中文)
-        hanalei: {
-            // 作为全局字体
-            enable: false,
-        },
         // 仓耳青禾字体 (适合中文，现代简约风格)
-        cangerQinghe: {
-            // 作为全局字体
-            enable: true,
+        "cangerQinghe": {
+            src: "/assets/font/仓耳青禾体W03.ttf",
+            family: "Canger Qinghe",
         },
     },
     // 主题色配置

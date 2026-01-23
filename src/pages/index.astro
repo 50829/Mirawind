@@ -1,10 +1,10 @@
 ---
 import { getEntry, render } from "astro:content";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import GridLayout from "@layouts/grid.astro";
 import Markdown from "@components/common/markdown.astro";
-import { url } from "@utils/url-utils";
+import { url } from "@utils/url";
 import { PAGE_SIZE } from "@constants/constants";
-import { getSortedPosts } from "@utils/content-utils";
+import { getSortedPosts } from "@utils/content";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
 
@@ -39,7 +39,7 @@ const page = {
 const len = page.data.length;
 ---
 
-<MainGridLayout title="Home" headings={[]}>
+<GridLayout title="Home" headings={[]}>
     <!-- 欢迎内容区域 -->
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32 mb-4">
         <div class="card-base z-10 px-9 py-6 relative w-full">
@@ -64,4 +64,4 @@ const len = page.data.length;
     <PostPage page={page}></PostPage>
     <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: ${(len)*50}ms`}></Pagination>
 
-</MainGridLayout>
+</GridLayout>

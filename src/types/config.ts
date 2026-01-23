@@ -80,11 +80,6 @@ export type SiteConfig = {
             // 字体名 (font-family)
             family: string;
         };
-        // 仓耳青禾字体 (适合中文)
-        cangerQinghe: {
-            // 作为全局字体
-            enable: boolean;
-        };
     };
     // 主题色配置
     themeColor: {
