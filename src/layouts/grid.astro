@@ -151,7 +151,7 @@ const {
                             aria-label="Visit image source"
                             class:list={[
                                 "group onload-animation-up transition-all absolute flex justify-center items-center rounded-full " +
-                                    "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
+                                    "px-3 left-4 right-4 md:left-auto md:right-4 md:w-auto -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
                                 {
                                     "hover:pr-9 active:bg-black/80":
                                         hasBannerLink,
@@ -159,10 +159,10 @@ const {
                             ]}
                         >
                             <Icon
-                                class="text-white/75 text-[1.25rem] mr-1"
+                                class="text-white/75 text-[1.25rem] mr-1 flex-shrink-0"
                                 name="material-symbols:copyright-outline-rounded"
                             />
-                            <div class="text-white/75 text-xs">
+                            <div class="text-white/75 text-xs truncate min-w-0">
                                 {siteConfig.wallpaper.banner?.credit?.text}
                             </div>
                             <Icon
