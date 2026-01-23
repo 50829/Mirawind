@@ -130,11 +130,11 @@ const {
 
     <!-- Main content -->
     <div
-        class={`absolute w-full z-30 pointer-events-none transition-all duration-600 ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass}`}
+        class={`absolute w-full pointer-events-none transition-all duration-600 ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass}`}
         style={`top: ${finalMainPanelTop}`}
     >
         <div
-            class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto"
+            class="relative z-30 max-w-[var(--page-width)] mx-auto pointer-events-auto"
         >
             <div
                     id="main-grid"
@@ -151,7 +151,7 @@ const {
                             aria-label="Visit image source"
                             class:list={[
                                 "group onload-animation-up transition-all absolute flex justify-center items-center rounded-full " +
-                                    "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
+                                    "px-3 left-4 right-4 md:left-auto md:right-4 md:w-auto -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
                                 {
                                     "hover:pr-9 active:bg-black/80":
                                         hasBannerLink,
@@ -159,10 +159,10 @@ const {
                             ]}
                         >
                             <Icon
-                                class="text-white/75 text-[1.25rem] mr-1"
+                                class="text-white/75 text-[1.25rem] mr-1 flex-shrink-0"
                                 name="material-symbols:copyright-outline-rounded"
                             />
-                            <div class="text-white/75 text-xs">
+                            <div class="text-white/75 text-xs truncate min-w-0">
                                 {siteConfig.wallpaper.banner?.credit?.text}
                             </div>
                             <Icon

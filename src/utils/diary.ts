@@ -22,4 +22,10 @@ export const moments: Moment[] = Object.entries(diaryModules).map(([path, mod]: 
 // Sort moments by date in descending order
 export const sortedMoments = [...moments].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-);
+);export interface DiaryMoment {
+    id: number;
+    content: string;
+    date: string; // ISO string
+    images?: string[];
+}
+
