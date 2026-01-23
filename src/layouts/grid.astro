@@ -130,11 +130,11 @@ const {
 
     <!-- Main content -->
     <div
-        class={`absolute w-full z-30 pointer-events-none transition-all duration-600 ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass}`}
+        class={`absolute w-full pointer-events-none transition-all duration-600 ${siteConfig.wallpaper.mode !== "banner" ? "no-banner-layout" : ""} ${transparentClass}`}
         style={`top: ${finalMainPanelTop}`}
     >
         <div
-            class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto"
+            class="relative z-30 max-w-[var(--page-width)] mx-auto pointer-events-auto"
         >
             <div
                     id="main-grid"
