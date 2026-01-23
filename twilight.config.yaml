@@ -9,7 +9,7 @@ site:
     # 语言配置
     lang: "zh"
     # 站点开始日期（用于计算运行天数）
-    siteStartDate: "2025-12-22"
+    siteStartDate: "2025-12-24"
     # 翻译配置
     translate:
         # 启用翻译功能
