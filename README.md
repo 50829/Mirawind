@@ -2,13 +2,13 @@
 
 # Twilight
 
-A CMS integrated static blog template built with [Astro](https://astro.build) framework.
-
-[![Bilibili](https://img.shields.io/badge/Bilibili-v1.0%20Intro-blue?logo=Bilibili&style=for-the-badge)](https://www.bilibili.com/video/BV18VsUzNEmL)&nbsp;
-[![YouTube](https://img.shields.io/badge/YouTube-v1.0%20Intro-red?logo=YouTube&style=for-the-badge)](https://www.youtube.com/watch?v=SdpYpg_EzNg)
+A CMS integrated static blog template built with Astro framework.
 
 [**🖥️ Live Demo**](https://twilight.spr-aachen.com)
 [**📝 Documentation**](https://docs.twilight.spr-aachen.com/en)
+
+[![Bilibili](https://img.shields.io/badge/Bilibili-Intro-blue?logo=Bilibili)](https://space.bilibili.com/359461611/lists/6641229)&nbsp;
+[![YouTube](https://img.shields.io/badge/YouTube-Intro-red?logo=YouTube)](https://youtube.com/playlist?list=PLzjq8Hx1SRV7yqZQiACcCJmKPeg5D8JKe&si=Bcz2o0PF8MFvx8ec)
 
 <table style="width: 100%; table-layout: fixed;">
    <tr>
@@ -39,7 +39,7 @@ English | [**中文**](docs/README_ZH.md)
 ### Content
 - **CMS Functionality**: Easy content management with Decap CMS integration
 - **Data Visualization**: Visualized personal data like projects, skills etc.
-- **Table of Contents**: Automatic generation of post navigation
+- **Automatic Navigation**: Automatic generation of post navigation
 
 ### Components
 - **Analytics Support**: Umami analytics integration for visitor insights
@@ -48,7 +48,7 @@ English | [**中文**](docs/README_ZH.md)
 - **PIO Widget**: Interactive live2d character support
 
 ### VFX
-- **Code Highlighting**: Beautiful syntax highlighting for code blocks
+- **Smooth Transition Animations**: Polished page component transition animations
 - **Customizable Theme Colors**: Realtime customizable color schemes
 - **Dynamic Wallpaper System**: Carousel support with multiple display modes
 - **Immersive Particle Effects**: Highly customizable animated particles
@@ -68,22 +68,22 @@ English | [**中文**](docs/README_ZH.md)
 
 2. **Install dependencies:**
    ```bash
-   # Install bun if not already installed
-   npm install -g bun
+   # Install pnpm if not already installed
+   npm install -g pnpm
    
    # Install project dependencies
-   bun install
+   pnpm install
    ```
 
 3. **Configure your blog:**
-   - [Customize blog settings](https://docs.twilight.spr-aachen.com/en/config/core) inside `src/config.ts`
+   - [Customize blog settings](https://docs.twilight.spr-aachen.com/en/config/core) inside `twilight.config.yaml`
    - [Support CMS functionality](https://docs.twilight.spr-aachen.com/en/config/cms) inside `.env`
    - [Support Umami analytics](https://docs.twilight.spr-aachen.com/en/config/analytics) inside `.env`
-   - [Update site information](https://docs.twilight.spr-aachen.com/en/config/data) inside `src/data`
+   - [Manage site content](https://docs.twilight.spr-aachen.com/en/config/content) inside `src/content`
 
 4. **Start the development server:**
    ```bash
-   bun dev
+   pnpm dev
    ```
 
 
@@ -94,16 +94,16 @@ Deploy your blog to any static hosting platform
 
 ## ⚡ Commands
 
-| Command                    | Action                     |
-|:---------------------------|:---------------------------|
-| `bun lint`                 | Check and fix code issues  |
-| `bun format`               | Format code with Biome     |
-| `bun check`                | Run Astro error checking   |
-| `bun dev`                  | Start local dev server     |
-| `bun build`                | Build site to `./dist/`    |
-| `bun preview`              | Preview build locally      |
-| `bun astro ...`            | Run Astro CLI commands     |
-| `bun new-post <filename>`  | Create a new blog post     |
+| Command                     | Action                      |
+|:----------------------------|:----------------------------|
+| `pnpm lint`                 | Check and fix code issues   |
+| `pnpm format`               | Format code with Biome      |
+| `pnpm check`                | Run Astro error checking    |
+| `pnpm dev`                  | Start local dev server      |
+| `pnpm build`                | Build site to `./dist/`     |
+| `pnpm preview`              | Preview build locally       |
+| `pnpm astro ...`            | Run Astro CLI commands      |
+| `pnpm new-post <filename>`  | Create a new blog post      |
 
 
 ## 🙏 Acknowledgements
@@ -111,7 +111,7 @@ Deploy your blog to any static hosting platform
 - Prototype   - [Fuwari](https://github.com/saicaca/fuwari)
 - Inspiration - [Yukina](https://github.com/WhitePaper233/yukina) & [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
 - CMS         - [astro-decap-cms-oauth](https://github.com/dorukgezici/astro-decap-cms-oauth)
-- translation - [translate](https://gitee.com/mail_osc/translate)
+- Translation - [translate](https://gitee.com/mail_osc/translate)
 
 
 ## 🤝 Support

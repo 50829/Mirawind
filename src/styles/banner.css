@@ -20,16 +20,61 @@
     }
 }
 
-/* Banner 文本样式 */
-.banner-title {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    animation: fadeInUp 1s ease-out;
-    font-weight: bold;
+/* 初始加载中且未开始恢复时，高度归零；退出 Banner 模式时，高度归零 */
+html.is-loading:not(.banner-restoring) #banner-wrapper,
+html.banner-transitioning #banner-wrapper,
+html.banner-hiding #banner-wrapper {
+    height: 0 !important;
 }
 
+/* 退出动画时，强制子组件同步上移，避免主内容区域出现“两段式”位移 */
+html.banner-hiding #main-grid {
+    transform: translateY(0) !important;
+}
+html.banner-hiding #top-row {
+    height: 0 !important;
+}
+html.banner-hiding #sidebar-sticky {
+    top: 1rem !important;
+}
+
+/* 切换模式时隐藏标题，以便后续触发动画 */
+html.banner-transitioning .banner-title,
+html.banner-transitioning .banner-subtitle {
+    opacity: 0 !important;
+}
+
+/* 标题样式 */
+.banner-title {
+    text-shadow: 0px 3px 12px rgba(0, 0, 0, 0.36), 0 0 24px color-mix(in srgb, var(--primary), transparent 48%);
+    font-weight: bold;
+    opacity: 0;
+}
 .banner-subtitle {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.36), 0 0 12px color-mix(in srgb, var(--primary), transparent 48%);
+    opacity: 0;
+}
+/* 标题动画 */
+.show-initial-animation .banner-title,
+.show-banner-animation .banner-title {
+    animation: fadeInUp 1s ease-out forwards;
+}
+.show-initial-animation .banner-subtitle,
+.show-banner-animation .banner-subtitle {
     animation: fadeInUp 1s ease-out 0.3s both;
+}
+/* 动画结束后的状态 */
+html:not(.is-loading):not(.show-initial-animation):not(.show-banner-animation) .banner-title,
+html:not(.is-loading):not(.show-initial-animation):not(.show-banner-animation) .banner-subtitle {
+    opacity: 1;
+}
+
+/* 页面背景平滑过渡（Fullscreen 与 Banner 模式切换时） */
+body {
+    transition: background-color 0.6s ease, background-image 0.6s ease;
+}
+html.is-wallpaper-transitioning body {
+    transition: background-color 0.6s ease, background-image 0.6s ease !important;
 }
 
 /**
@@ -47,7 +92,7 @@
 }
 
 /* 桌面端 */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
     .banner-text-overlay {
         align-items: center !important; /* 垂直居中 */
         justify-content: center !important; /* 水平居中 */
@@ -94,47 +139,9 @@
     }
 }
 
-/* 移动端专用淡入动画 */
-@keyframes mobile-fade-in {
-    0% {
-        opacity: 0;
-        transform: scale(1.1);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1.1);
-    }
-}
 
-/* 移动端非首页隐藏 banner */
-@media (max-width: 1023px) {
-    #banner-wrapper {
-        transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease-out;
-        transform-origin: top center;
-        /* 硬件加速 */
-        will-change: transform, opacity;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-    }
-
-    .mobile-hide-banner {
-        transform: translateY(-100%) translateZ(0) !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        /* 快速消失 */
-        transition: transform 0.6s ease-in, opacity 0.3s ease-in !important;
-    }
-}
-
-/* 移动端图片 */
-@media (max-width: 1023px) {
-    /* banner 加载动画 */
-    .onload-animation-fade-in {
-        animation: mobile-fade-in 0.8s ease-out forwards !important;
-    }
-
+/* 移动端轮播图片 */
+@media (max-width: 1279px) {
     /* 确保轮播容器有正确的 overflow 设置 */
     #banner-carousel {
         overflow: hidden !important;
@@ -170,7 +177,7 @@
 }
 
 /* 移动端 banner 性能 */
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
     .banner-container {
         /* 启用硬件加速 */
         transform: translateZ(0);
@@ -182,7 +189,7 @@
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
     }
-    /* 移动端图片 */
+    /* 图片 */
     .banner-container img {
         /* 图片渲染 */
         image-rendering: -webkit-optimize-contrast;
@@ -225,7 +232,7 @@
         user-select: none;
     }
 
-    /* 移动端轮播指示器 */
+    /* 轮播指示器 */
     .carousel-indicators {
         position: absolute;
         bottom: 20px;
@@ -251,7 +258,7 @@
 }
 
 /* 移动端暗色模式 */
-@media (max-width: 1023px) and (prefers-color-scheme: dark) {
+@media (max-width: 1279px) and (prefers-color-scheme: dark) {
     .banner-text-overlay {
         background: linear-gradient(
             to top,
@@ -260,28 +267,10 @@
             transparent 100%
         );
     }
-
-    .banner-title {
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-    }
-
-    .banner-subtitle {
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-    }
 }
 
 /* 移动端横屏 */
-@media (max-width: 1023px) and (orientation: landscape) {
-    #banner-wrapper:not(.mobile-hide-banner) {
-        top: 0 !important; /* 横屏模式从顶部开始，避免被导航栏覆盖 */
-        height: 60vh !important;
-    }
-
-    .banner-container {
-        height: 60vh;
-        min-height: 300px;
-    }
-
+@media (max-width: 1279px) and (orientation: landscape) {
     .banner-text-overlay {
         padding: 1rem 1.5rem;
         align-items: center !important; /* 垂直居中 */
@@ -301,14 +290,7 @@
 }
 
 /* 平板 */
-@media (min-width: 769px) and (max-width: 1023px) {
-    /* Banner wrapper 高度 */
-    #banner-wrapper {
-        height: 70vh !important;
-        min-height: 500px;
-        top: 0 !important; /* 移动端从顶部开始，避免被导航栏覆盖 */
-    }
-
+@media (min-width: 768px) and (max-width: 1279px) {
     /* 横幅文本覆盖层 */
     .banner-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -328,27 +310,17 @@
         font-size: 4rem !important;
         line-height: 1.1 !important;
         margin-bottom: 1rem !important;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;
     }
 
     /* 副标题文本 */
     .banner-subtitle {
         font-size: 1.5rem !important;
         line-height: 1.4 !important;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7) !important;
     }
 }
 
 /* 中屏手机 */
 @media (min-width: 513px) and (max-width: 768px) {
-    /* Banner wrapper 高度 - 优先保持 banner 显示 */
-    #banner-wrapper {
-        height: 75vh !important;
-        min-height: 500px;
-        max-height: none; /* 移除最大高度限制 */
-        top: 0 !important; /* 移动端从顶部开始，避免被导航栏覆盖 */
-    }
-
     /* 横幅文本覆盖层 */
     .banner-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -368,27 +340,17 @@
         font-size: 3.8rem !important; /* 增大字体大小 */
         line-height: 1.1 !important;
         margin-bottom: 0.75rem !important;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;
     }
 
     /* 副标题文本 */
     .banner-subtitle {
         font-size: 1.125rem !important;
         line-height: 1.4 !important;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7) !important;
     }
 }
 
 /* 小屏手机 */
 @media (max-width: 512px) {
-    /* Banner wrapper 高度 - 优先保持 banner 显示 */
-    #banner-wrapper {
-        height: 70vh !important; /* 保持较大高度优先显示 banner */
-        min-height: 450px;
-        max-height: none; /* 移除最大高度限制 */
-        top: 0 !important; /* 移动端从顶部开始，避免被导航栏覆盖 */
-    }
-
     /* 横幅文本覆盖层 */
     .banner-text-overlay {
         align-items: center !important; /* 垂直居中 */
@@ -408,14 +370,12 @@
         font-size: 3.2rem !important; /* 增大字体大小 */
         line-height: 1.1 !important;
         margin-bottom: 0.5rem !important;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important; /* 增强阴影 */
     }
 
     /* 副标题文本 */
     .banner-subtitle {
         font-size: 1rem !important;
         line-height: 1.3 !important;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7) !important;
     }
 }
 
@@ -437,8 +397,8 @@
 #header-waves {
     /* 确保波浪容器与页面背景在同一合成层 */
     isolation: isolate;
-    /* 强制重绘，确保与body背景同步 */
-    contain: layout style paint;
+    /* 优化渲染性能 - 移除 strict containment 改用 none */
+    contain: none;
     /* 精确对齐 */
     margin-bottom: -1px;
 }
@@ -449,6 +409,9 @@
     animation-duration: 25s;
     animation-timing-function: cubic-bezier(0.5, 0.5, 0.45, 0.5);
     animation-iteration-count: infinite;
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 /* 分层动画时序（替代内联 style） */
 #header-waves .parallax use:nth-child(1) {
@@ -480,8 +443,8 @@
     transform: translateZ(0);
     will-change: transform;
     backface-visibility: hidden;
-    /* 确保与页面背景在同一合成层 */
-    contain: layout style paint;
+    /* 优化渲染性能 - 移除 strict containment 改用 none */
+    contain: none;
 }
 
 /* 波浪填充色主题切换 */
@@ -506,16 +469,6 @@
         /* 确保水波纹容器不被裁剪 */
         overflow: visible;
         z-index: 5;
-        /* 水波纹快速消失动画 */
-        transition: transform 0.3s ease-in, opacity 0.2s ease-in;
-    }
-
-    /* 当banner隐藏时，水波纹快速消失 */
-    .mobile-hide-banner #header-waves {
-        transform: translateY(-100%);
-        opacity: 0;
-        /* 水波纹比banner更快消失 */
-        transition: transform 0.25s ease-in, opacity 0.15s ease-in;
     }
 
     #header-waves .waves {

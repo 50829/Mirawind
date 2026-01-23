@@ -19,14 +19,27 @@ const LANG_STORAGE_KEY = "selected-language";
 
 // 存储语言设置
 export function setStoredLanguage(lang: string): void {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(LANG_STORAGE_KEY, lang);
+    if (typeof localStorage !== "undefined") {
+        localStorage.setItem(LANG_STORAGE_KEY, lang);
+    }
 }
 
 // 获取存储的语言设置
 export function getStoredLanguage(): string | null {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem(LANG_STORAGE_KEY);
+    if (typeof localStorage !== "undefined") {
+        return localStorage.getItem(LANG_STORAGE_KEY);
+    }
+    return null;
+}
+
+// 获取默认语言配置
+export function getDefaultLanguage(): string {
+    const fallback = siteConfig.lang;
+    if (typeof document !== "undefined") {
+        const configCarrier = document.getElementById("config-carrier");
+        return configCarrier?.dataset.lang || fallback;
+    }
+    return fallback;
 }
 
 // 将配置文件的语言代码转换为翻译服务的语言代码
@@ -36,7 +49,7 @@ export function getTranslateLanguageFromConfig(configLang: string): string {
 
 // 获取解析后的站点语言代码
 export function getResolvedSiteLang(): SupportedLanguage {
-    const configLang = siteConfig.lang as any;
+    const configLang = getDefaultLanguage() as any;
     if (SUPPORTED_LANGUAGES.includes(configLang)) {
         return configLang as SupportedLanguage;
     }
@@ -90,9 +103,10 @@ export function getSiteLanguage(configLang?: string): string {
     // 优先从缓存读取
     const storedLang = getStoredLanguage();
     if (storedLang) return storedLang;
-    // 其次使用配置语言
-    if (configLang && SUPPORTED_LANGUAGES.includes(configLang as SupportedLanguage)) {
-        return langToTranslateMap[configLang];
+    // 其次使用传入的配置语言或从 carrier 获取的默认语言
+    const defaultLang = configLang || getDefaultLanguage();
+    if (SUPPORTED_LANGUAGES.includes(defaultLang as SupportedLanguage)) {
+        return langToTranslateMap[defaultLang];
     }
     // 最后自动检测浏览器语言并转换为翻译服务代码
     const browserLang = detectBrowserLanguage();
@@ -172,33 +186,13 @@ export function initTranslateService(): void {
 // 加载并初始化翻译功能
 export async function loadAndInitTranslate(): Promise<void> {
     if (typeof window === "undefined" || !siteConfig.translate?.enable) return;
-    // 定义脚本加载逻辑
-    const loadScript = (): Promise<void> => {
-        if ((window as any).translateScriptLoaded) return Promise.resolve();
-        if ((window as any).translate || document.getElementById('translate-script')) {
-            (window as any).translateScriptLoaded = true;
-            return Promise.resolve();
-        }
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = '/translate.js';
-            script.id = 'translate-script';
-            script.async = true;
-            script.onload = () => {
-                if (typeof (window as any).translate !== 'undefined') {
-                    (window as any).translateScriptLoaded = true;
-                    resolve();
-                } else {
-                    reject(new Error('translate.js loaded but window.translate not available'));
-                }
-            };
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    };
     try {
-        // 加载脚本
-        await loadScript();
+        // 检查是否已经加载
+        if (!(window as any).translate) {
+            // 使用动态导入，Vite 会自动处理代码分割
+            await import("@/plugins/translate");
+            (window as any).translateScriptLoaded = true;
+        }
         // 初始化服务
         initTranslateService();
     } catch (error) {

@@ -11,8 +11,10 @@ export const zh: Translation = {
     [Key.tags]: "标签",
     [Key.categories]: "分类",
     [Key.series]: "系列",
+    [Key.posts]: "文章",
     [Key.recentPosts]: "最新文章",
     [Key.postList]: "文章列表",
+    [Key.statistics]: "统计",
     [Key.tableOfContents]: "目录",
 
     // 公告栏
@@ -43,6 +45,8 @@ export const zh: Translation = {
     [Key.wallpaperNone]: "纯色背景",
 
     [Key.more]: "更多",
+
+    [Key.backTo]: "返回",
 
     [Key.author]: "作者",
     [Key.publishedAt]: "发布于",

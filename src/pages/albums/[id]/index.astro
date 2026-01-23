@@ -1,15 +1,14 @@
 ---
-import type { GetStaticPaths } from "astro";
-import type { AlbumGroup } from "@data/albums";
-import { scanAlbums } from "@utils/album-scanner";
+import type { AlbumGroup } from "@utils/albums";
+import { sortedAlbums } from "@utils/albums";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import GridLayout from "@layouts/grid.astro";
+import BackwardButton from "@components/backwardButton.astro";
 
 
 export const getStaticPaths = async () => {
-	const albumsData = await scanAlbums();
-    return albumsData.map((album) => ({
+    return sortedAlbums.filter(album => album.visible).map((album) => ({
         params: { id: album.id },
         props: { album },
     }));
@@ -27,21 +26,10 @@ if (!album) {
 }
 ---
 
-<MainGridLayout title={album.title} description={album.description || album.title}>
+<GridLayout title={album.title} description={album.description || album.title}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
-            <!-- 返回按钮 -->
-            <div class="mb-6">
-                <a
-                    href="/albums/"
-                    class="inline-flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-[var(--primary)] transition-colors"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                    {i18n(I18nKey.albumsBackToList)}
-                </a>
-            </div>
+            <BackwardButton href="/albums/" text={i18n(I18nKey.albumsBackToList)} />
             <!-- 相册标题信息 -->
             <header class="mb-8">
                 <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
@@ -86,9 +74,9 @@ if (!album) {
                     <figure class="photo-item group relative overflow-hidden rounded-lg">
                         <a
                             href={photo.src}
-                            data-pswp-width={photo.width || 1200}
-                            data-pswp-height={photo.height || 800}
-                            target="_blank"
+                            data-fancybox="gallery"
+                            data-caption={photo.alt}
+                            data-no-swup
                             class="block"
                         >
                             <img
@@ -103,34 +91,7 @@ if (!album) {
             </div>
         </div>
     </div>
-</MainGridLayout>
-
-<script>
-    // 确保PhotoSwipe正确处理相册图片
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('=== 相册页面加载完成 ===');
-        // 检查页面中的图片元素
-        const albumImages = document.querySelectorAll('.moment-images img, .photo-gallery img');
-        console.log('相册图片数量:', albumImages.length);
-        // 预加载图片以确保正确显示
-        albumImages.forEach((img) => {
-            if (img instanceof HTMLImageElement) {
-                const preloadImg = new Image();
-                preloadImg.src = img.src;
-            }
-        });
-        // 修复相册图片链接，确保它们可以被PhotoSwipe正确处理
-        document.querySelectorAll('.photo-gallery a').forEach(link => {
-            if (link instanceof HTMLAnchorElement) {
-                // 阻止默认的新窗口打开行为
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // 不需要额外操作，PhotoSwipe会处理点击事件
-                });
-            }
-        });
-    });
-</script>
+</GridLayout>
 
 <style>
     .grid-layout {
@@ -161,7 +122,7 @@ if (!album) {
         }
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1280px) {
         .masonry-layout[data-columns="4"] {
             columns: 4;
         }

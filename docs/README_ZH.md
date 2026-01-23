@@ -2,13 +2,13 @@
 
 # Twilight
 
-一个基于 [Astro](https://astro.build) 框架打造的支持后台管理的静态博客模板
-
-[![Bilibili](https://img.shields.io/badge/Bilibili-v1.0%20Intro-blue?logo=Bilibili&style=for-the-badge)](https://www.bilibili.com/video/BV18VsUzNEmL)&nbsp;
-[![YouTube](https://img.shields.io/badge/YouTube-v1.0%20Intro-red?logo=YouTube&style=for-the-badge)](https://www.youtube.com/watch?v=SdpYpg_EzNg)
+一个支持后台管理的静态博客主题模板，基于 Astro 框架打造
 
 [**🖥️ 演示**](https://twilight.spr-aachen.com)
 [**📝 文档**](https://docs.twilight.spr-aachen.com)
+
+[![Bilibili](https://img.shields.io/badge/Bilibili-Intro-blue?logo=Bilibili)](https://space.bilibili.com/359461611/lists/6641229)&nbsp;
+[![YouTube](https://img.shields.io/badge/YouTube-Intro-red?logo=YouTube)](https://youtube.com/playlist?list=PLzjq8Hx1SRV7yqZQiACcCJmKPeg5D8JKe&si=Bcz2o0PF8MFvx8ec)
 
 <table style="width: 100%; table-layout: fixed;">
    <tr>
@@ -39,7 +39,7 @@
 ### 内容
 - **CMS 功能**: 基于 Decap CMS 的便捷内容管理
 - **数据可视化**: 可视化的项目、技能等个人数据
-- **文章目录**: 自动化生成的文章导航
+- **自动化导航**: 自动化生成的文章导航
 
 ### 组件
 - **站点统计**: 集成 Umami 访客统计的站点分析
@@ -48,7 +48,7 @@
 - **看板娘插件**: 可交互的 live2d 角色
 
 ### 视效
-- **代码高亮**: 美观的代码块语法高亮
+- **平滑过渡动画**: 精心设计的页面组件过渡动画
 - **自定义主题色**: 可实时调整的个性化配色方案
 - **动态壁纸系统**: 拥有多种显示模式的轮播壁纸
 - **动态粒子系统**: 可高度自定义的动画粒子特效
@@ -68,22 +68,22 @@
 
 2. **安装依赖**
    ```bash
-   # Install bun if not already installed
-   npm install -g bun
+   # Install pnpm if not already installed
+   npm install -g pnpm
    
    # Install project dependencies
-   bun install
+   pnpm install
    ```
 
 3. **配置博客**
-   - 在 `src/config.ts` 中 [自定义博客设置](https://docs.twilight.spr-aachen.com/config/core)
+   - 在 `twilight.config.yaml` 中 [自定义博客设置](https://docs.twilight.spr-aachen.com/config/core)
    - 在 `.env` 中 [配置 CMS 功能](https://docs.twilight.spr-aachen.com/config/cms)
    - 在 `.env` 中 [配置站点统计功能](https://docs.twilight.spr-aachen.com/config/analytics)
-   - 在 `src/data` 中 [更新站点信息](https://docs.twilight.spr-aachen.com/config/data)
+   - 在 `src/content` 中 [管理站点内容](https://docs.twilight.spr-aachen.com/config/content)
 
 4. **本地调试**
    ```bash
-   bun dev
+   pnpm dev
    ```
 
 
@@ -94,16 +94,16 @@
 
 ## ⚡ 命令
 
-| 指令                       | 说明                        |
-|:---------------------------|:---------------------------|
-| `bun lint`                 | 检查并修复代码问题          |
-| `bun format`               | 使用 Biome 格式化代码       |
-| `bun check`                | 运行 Astro 错误检查         |
-| `bun dev`                  | 启动本地服务器              |
-| `bun build`                | 构建站点到 `./dist/`        |
-| `bun preview`              | 预览本地构建结果            |
-| `bun astro ...`            | 运行 `Astro CLI` 命令       |
-| `bun new-post <filename>`  | 创建新博客文章              |
+| 指令                       | 说明                      |
+|:---------------------------|:-------------------------|
+| `pnpm lint`                | 检查并修复代码问题         |
+| `pnpm format`              | 使用 Biome 格式化代码      |
+| `pnpm check`               | 运行 Astro 错误检查       |
+| `pnpm dev`                 | 启动本地服务器             |
+| `pnpm build`               | 构建站点到 `./dist/`      |
+| `pnpm preview`             | 预览本地构建结果           |
+| `pnpm astro ...`           | 运行 `Astro CLI` 命令     |
+| `pnpm new-post <filename>` | 创建新博客文章             |
 
 
 ## 🙏 致谢

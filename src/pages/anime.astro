@@ -2,19 +2,32 @@
 export const prerender = true;
 
 
+import { LinkPresets } from "@constants/link-presets";
+import { LinkPreset } from "@/types/config";
 import { siteConfig } from "@/config";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import GridLayout from "@layouts/grid.astro";
+import BackwardButton from "@components/backwardButton.astro";
 
+
+const pageTitle = LinkPresets[LinkPreset.Anime].name;
+const pageDescription = LinkPresets[LinkPreset.Anime].description;
 
 // Bangumi API配置
-const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id"; // 用户ID
+const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "";
 const BANGUMI_API_BASE = "https://api.bgm.tv";
+
+// 检查是否配置了有效的 Bangumi 用户 ID
+const isBangumiConfigured = 
+    BANGUMI_USER_ID && 
+    BANGUMI_USER_ID !== "your-bangumi-id" && 
+    BANGUMI_USER_ID !== "your-user-id";
 
 // 获取单个条目相关人员信息
 async function fetchSubjectPersons(subjectId: number) {
+    if (!isBangumiConfigured) return [];
     try {
         const response = await fetch(
             `${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`,
@@ -33,6 +46,7 @@ async function fetchBangumiCollection(
     subjectType: number,
     type: number,
 ) {
+    if (!isBangumiConfigured) return null;
     try {
         let allData: any[] = [];
         let offset = 0;
@@ -189,16 +203,16 @@ const stats = {
 };
 ---
 
-<MainGridLayout title={i18n(I18nKey.anime)} description={i18n(I18nKey.animeSubtitle)}>
+<GridLayout title={pageTitle} description={pageDescription}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
+            <BackwardButton currentPath={Astro.url.pathname} />
             <!-- 页面标题 -->
             <div class="relative w-full mb-8">
                 <div class="mb-6">
                     <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2">{i18n(I18nKey.animeTitle)}</h1>
-                    <p class="text-black/75 dark:text-white/75">{i18n(I18nKey.animeSubtitle)}</p>
+                    <p class="text-black/75 dark:text-white/75">{pageDescription}</p>
                 </div>
-
                 <!-- 统计卡片 -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
@@ -239,21 +253,19 @@ const stats = {
                     </div>
                 </div>
             </div>
-
             <!-- 动漫列表 -->
             <div class="mb-8">
                 <h2 class="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">
                     {i18n(I18nKey.animeList)}
                 </h2>
-
-                {BANGUMI_USER_ID === 'your-user-id' ? (
+                {!isBangumiConfigured ? (
                     <div class="text-center py-12">
                         <div class="text-5xl mb-4">😢</div>
                         <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">
                             {i18n(I18nKey.animeEmpty)}
                         </h3>
                         <p class="text-black/60 dark:text-white/60">
-                            请在 src/config.ts 文件中设置你的 Bangumi 用户ID
+                            Please configure your Bangumi account in the config file.
                         </p>
                     </div>
                 ) : animeList.length > 0 ? (
@@ -270,6 +282,7 @@ const stats = {
                                                 src={anime.cover}
                                                 alt={anime.title}
                                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                loading="lazy"
                                             />
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                 <div class="absolute inset-0 flex items-center justify-center">
@@ -344,4 +357,4 @@ const stats = {
             </div>
         </div>
     </div>
-</MainGridLayout>
+</GridLayout>

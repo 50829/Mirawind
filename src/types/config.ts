@@ -20,6 +20,29 @@ export type Favicon = {
 };
 
 
+// 加载页配置
+export type LoadingOverlayConfig = {
+    // 是否启用加载页
+    enable: boolean;
+    // 加载标题配置
+    title: {
+        // 是否启用加载标题
+        enable: boolean;
+        // 加载标题文本
+        content: string;
+        // 动画周期 (s)
+        interval: number;
+    };
+    // 加载动画配置
+    spinner: {
+        // 是否启用加载动画
+        enable: boolean;
+        // 动画周期 (s)
+        interval: number;
+    };
+};
+
+
 // 站点配置
 export type SiteConfig = {
     // 站点 URL (以斜杠结尾) 
@@ -51,15 +74,11 @@ export type SiteConfig = {
     timeZone: -12 | -11 | -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
     // 字体配置
     font: {
-        // zenMaruGothic 字体
-        zenMaruGothic: {
-            // 作为全局字体
-            enable: boolean;
-        };
-        // Hanalei 字体
-        hanalei: {
-            // 作为全局字体
-            enable: boolean;
+        [key: string]: {
+            // 字体源 (字体 CSS 链接 | 字体文件路径)
+            src: string;
+            // 字体名 (font-family)
+            family: string;
         };
         // 仓耳青禾字体 (适合中文)
         cangerQinghe: {
@@ -71,8 +90,6 @@ export type SiteConfig = {
     themeColor: {
         // 主题色的默认色相 (0-360)
         hue: number;
-        // 对访问者隐藏主题色选择器
-        fixed: boolean;
     };
     // 默认主题
     defaultTheme: "system" | "light" | "dark";
@@ -155,8 +172,8 @@ export type SiteConfig = {
             };
         };
     };
-    // OpenGraph 配置
-    generateOgImages: boolean;
+    // 加载页配置
+    loadingOverlay?: LoadingOverlayConfig;
     // Favicon 配置
     favicon: Favicon[];
     // bangumi 配置
@@ -164,6 +181,8 @@ export type SiteConfig = {
         // 用户 ID
         userId?: string;
     };
+    // OpenGraph 配置
+    generateOgImages: boolean;
 };
 
 /**
@@ -199,24 +218,26 @@ export enum LinkPreset {
 }
 
 
-export type NavBarLink = {
-    // 菜单项名称
+export type NavbarLink = {
+    // 链接名称
     name: string;
-    // 菜单项链接
+    // 链接
     url: string;
     // 是否为外部链接
     external?: boolean;
-    // 菜单项图标
+    // 链接图标
     icon?: string;
-    // 子菜单，可以是NavBarLink或LinkPreset
-    children?: (NavBarLink | LinkPreset)[];
+    // 中转页描述
+    description?: string;
+    // 子链接，可以是NavbarLink或LinkPreset
+    children?: (NavbarLink | LinkPreset)[];
 };
 
 
 // 导航栏配置
-export type NavBarConfig = {
+export type NavbarConfig = {
     // 链接配置
-    links: (NavBarLink | LinkPreset)[]; // 支持多级菜单
+    links: (NavbarLink | LinkPreset)[]; // 支持多级菜单
 };
 
 /**
@@ -228,6 +249,7 @@ export type WidgetComponentType =
     | "announcement"
     | "categories"
     | "tags"
+    | "statistics"
     | "toc"
     | "custom";
 
@@ -257,8 +279,8 @@ export type WidgetComponentConfig = {
 };
 
 
-// 侧边栏布局配置
-export type SidebarLayoutConfig = {
+// 侧边栏配置
+export type SidebarConfig = {
     // 侧边栏组件配置列表
     components: WidgetComponentConfig[];
     // 响应式布局配置
@@ -480,6 +502,8 @@ export type MusicPlayerConfig = {
         // 播放列表
         playlist: MusicPlayerTrack[];
     };
+    // 是否自动播放
+    autoplay?: boolean;
 };
 
 /**

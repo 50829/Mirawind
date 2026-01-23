@@ -2,20 +2,25 @@
 export const prerender = true;
 
 
+import { LinkPresets } from "@constants/link-presets";
+import { LinkPreset } from "@/types/config";
 import {
     timelineData,
     getTimelineStats,
     getTimelineByType,
-    getFeaturedTimeline,
     getCurrentItems,
     getTotalWorkExperience,
-} from "@data/timeline";
+} from "@utils/timeline";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 import IconifyLoader from "@components/common/iconifyLoader.astro";
 import TimelineItem from "@components/data/timelineItem.astro";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import GridLayout from "@layouts/grid.astro";
+import BackwardButton from "@components/backwardButton.astro";
 
+
+const title = LinkPresets[LinkPreset.Timeline].name;
+const subtitle = LinkPresets[LinkPreset.Timeline].description;
 
 // 收集所有时间线图标用于预加载
 const allIcons = timelineData
@@ -24,7 +29,6 @@ const allIcons = timelineData
 
 // 获取时间线统计信息
 const stats = getTimelineStats();
-const featuredItems = getFeaturedTimeline();
 const currentItems = getCurrentItems();
 const workExperience = getTotalWorkExperience();
 
@@ -46,16 +50,14 @@ const getTypeIcon = (type: string) => {
             return "material-symbols:event";
     }
 };
-
-const title = i18n(I18nKey.timeline);
-const subtitle = i18n(I18nKey.timelineSubtitle);
 ---
 
-<MainGridLayout title={title} description={subtitle}>
+<GridLayout title={title} description={subtitle}>
     <!-- 图标加载器，预加载所有时间线图标 -->
     <IconifyLoader preloadIcons={allIcons} />
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
+            <BackwardButton currentPath={Astro.url.pathname} />
             <!-- 页面标题 -->
             <div class="flex flex-col items-start justify-center mb-8">
                 <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2">
@@ -183,7 +185,7 @@ const subtitle = i18n(I18nKey.timelineSubtitle);
             </div>
         </div>
     </div>
-</MainGridLayout>
+</GridLayout>
 
 <style>
     .line-clamp-2 {

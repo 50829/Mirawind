@@ -1,13 +1,17 @@
+import yaml from "js-yaml";
+
 import type {
     SiteConfig,
-    NavBarConfig,
-    SidebarLayoutConfig,
+    NavbarConfig,
+    SidebarConfig,
     ProfileConfig,
     AnnouncementConfig,
     PostConfig,
     FooterConfig,
     ParticleConfig,
     MusicPlayerConfig,
+    PioConfig,
+    NavbarLink,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
@@ -370,6 +374,13 @@ export const umamiConfig = {
     scripts: import.meta.env.UMAMI_TRACKING_CODE,
 } as const;
 
+// 导航栏配置
+export const navbarConfig: NavbarConfig = {
+    links: normalizeNavbarLinks(config.navbar.links),
+};
+
+// 侧边栏配置
+export const sidebarConfig: SidebarConfig = config.sidebar;
 
 // 资料配置
 export const profileConfig: ProfileConfig = {
@@ -391,29 +402,7 @@ export const profileConfig: ProfileConfig = {
 
 
 // 公告配置
-export const announcementConfig: AnnouncementConfig = {
-    // 公告标题
-    title: "Announcement",
-    // 公告内容
-    content: "Welcome to my blog!",
-    // 允许用户关闭公告
-    closable: true,
-    // 链接配置
-    link: {
-        // 启用链接
-        enable: true,
-        // 链接文本
-        text: "Learn More",
-        // 链接 URL
-        url: "/about/",
-        // 是否外部链接
-        external: false, // 内部链接
-    },
-};
-
-/**
- * 
- */
+export const announcementConfig: AnnouncementConfig = config.announcement;
 
 // 文章配置
 export const postConfig: PostConfig = {
@@ -454,139 +443,13 @@ export const postConfig: PostConfig = {
  */
 
 // 页脚配置
-export const footerConfig: FooterConfig = {
-    // 启用 Footer HTML 注入功能
-    enable: false,
-    // 自定义 HTML 内容，用于添加备案号等信息
-    customHtml: "",
-};
-
-/**
- * 
- */
+export const footerConfig: FooterConfig = config.footer;
 
 // 粒子特效配置
-export const particleConfig: ParticleConfig = {
-    // 启用粒子特效
-    enable: true,
-    // 粒子数量
-    particleNum: 12,
-    // 粒子越界限制次数，-1为无限循环
-    limitTimes: -1,
-    // 粒子尺寸配置
-    size: {
-        // 粒子最小尺寸倍数
-        min: 0.3,
-        // 粒子最大尺寸倍数
-        max: 0.9,
-    },
-    // 粒子透明度配置
-    opacity: {
-        // 粒子最小不透明度
-        min: 0.3,
-        // 粒子最大不透明度
-        max: 0.9,
-    },
-    // 粒子移动速度配置
-    speed: {
-        // 水平移动速度
-        horizontal: {
-            // 最小值
-            min: -0.9,
-            // 最大值
-            max: 0.9,
-        },
-        // 垂直移动速度
-        vertical: {
-            // 最小值
-            min: 0.15,
-            // 最大值
-            max: 0.3,
-        },
-        // 旋转速度
-        rotation: 0.12,
-        // 消失速度
-        fadeSpeed: 0.12, // 不应大于最小不透明度
-    },
-    // 粒子层级
-    zIndex: 100, // 确保粒子在合适的层级显示
-};
-
+export const particleConfig: ParticleConfig = config.particle;
 
 // 音乐播放器配置
-export const musicPlayerConfig: MusicPlayerConfig = {
-    // 启用音乐播放器功能
-    enable: true,
-    // 默认模式 ("meting" API | "local" 本地)
-    mode: "meting",
-    // meting 模式专属配置
-    meting: {
-        // Meting API 地址
-        meting_api: "https://api.i-meto.com/meting/api",
-        // 音乐平台
-        server: "netease",
-        // 类型 ("playlist" 歌单 | "song" 单曲)
-        type: "playlist",
-        // 资源 ID
-        id: "2161912966",
-    },
-    // local 模式专属配置
-    local: {
-        // 播放列表
-        playlist: [
-            {
-                // 序号
-                id: 1,
-                // 标题
-                title: "深海之息",
-                // 作者
-                artist: "Youzee Music",
-                // 封面
-                cover: "https://p1.music.126.net/PhKOqFtljgHDDpKYM2ADUA==/109951169858309716.jpg",
-                // 路径
-                url: "assets/music/url/深海之息.m4a",
-                // 时长
-                duration: 146,
-            },
-        ],
-    },
-};
-
+export const musicPlayerConfig: MusicPlayerConfig = config.musicPlayer;
 
 // 看板娘配置
-export const pioConfig: import("./types/config").PioConfig = {
-    // 启用看板娘
-    enable: false,
-    // 模型文件路径
-    models: ["/pio/models/pio/model.json"],
-    // 看板娘位置
-    position: "left",
-    // 看板娘宽度
-    width: 280,
-    // 看板娘高度
-    height: 250,
-    // 展现模式
-    mode: "draggable",
-    // 是否在移动设备上隐藏
-    hiddenOnMobile: true,
-    // 对话框配置
-    dialog: {
-        // 欢迎词
-        welcome: "Welcome!",
-        // 触摸提示
-        touch: [
-            "What are you doing?",
-            "Stop touching me!",
-            "Don't bully me like that!",
-            "(｡í _ ì｡)",
-        ],
-        // 首页提示
-        home: "Click here to go back to homepage!",
-        // 换装提示
-        skin: ["Want to see my new outfit?", "The new outfit looks great~"],
-        // 关闭提示
-        close: "See you next time~",
-        // 关于链接
-        link: "https://nav.kungal.org",
-    },
-};
+export const pioConfig: PioConfig = config.pio;

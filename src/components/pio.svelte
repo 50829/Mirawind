@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { onMount, onDestroy } from "svelte";
 
 import { pioConfig } from "@/config";
@@ -13,19 +13,20 @@ const pioOptions = {
 };
 
 // 全局Pio实例引用
-let pioInstance = null;
-let pioInitialized = false;
-let pioContainer;
-let pioCanvas;
+let pioInstance = $state<any>(null);
+let pioInitialized = $state(false);
+let pioContainer = $state<HTMLElement>();
+let pioCanvas = $state<HTMLCanvasElement>();
 
-// 样式已通过 Layout.astro 静态引入，无需动态加载
+// 样式已通过 base.astro 静态引入，无需动态加载
 
 // 等待 DOM 加载完成后再初始化 Pio
 function initPio() {
-    if (typeof window !== "undefined" && typeof Paul_Pio !== "undefined") {
+    if (typeof window !== "undefined" && typeof (window as any).Paul_Pio !== "undefined") {
         try {
             // 确保DOM元素存在
             if (pioContainer && pioCanvas && !pioInitialized) {
+                const Paul_Pio = (window as any).Paul_Pio;
                 pioInstance = new Paul_Pio(pioOptions);
                 pioInitialized = true;
                 console.log("Pio initialized successfully (Svelte)");
@@ -46,11 +47,11 @@ function initPio() {
 function loadPioAssets() {
     if (typeof window === "undefined") return;
 
-    // 样式已通过 Layout.astro 静态引入
+    // 样式已通过 base.astro 静态引入
 
     // 加载JS脚本
-    const loadScript = (src, id) => {
-        return new Promise((resolve, reject) => {
+    const loadScript = (src: string, id: string) => {
+        return new Promise<void>((resolve, reject) => {
             if (document.querySelector(`#${id}`)) {
                 resolve();
                 return;
@@ -58,7 +59,7 @@ function loadPioAssets() {
             const script = document.createElement("script");
             script.id = id;
             script.src = src;
-            script.onload = resolve;
+            script.onload = () => resolve();
             script.onerror = reject;
             document.head.appendChild(script);
         });
@@ -76,7 +77,7 @@ function loadPioAssets() {
         });
 }
 
-// 样式已通过 Layout.astro 静态引入，无需页面切换监听
+// 样式已通过 base.astro 静态引入，无需页面切换监听
 
 onMount(() => {
     if (!pioConfig.enable) return;
@@ -93,7 +94,7 @@ onDestroy(() => {
 </script>
 
 {#if pioConfig.enable}
-  <div class={`pio-container ${pioConfig.position || 'right'}`} bind:this={pioContainer}>
+  <div class={`pio-container ${pioConfig.position || 'right'} onload-animation-up`} bind:this={pioContainer}>
     <div class="pio-action"></div>
     <canvas 
         id="pio" 

@@ -11,8 +11,10 @@ export const en: Translation = {
     [Key.tags]: "Tags",
     [Key.categories]: "Categories",
     [Key.series]: "Series",
+    [Key.posts]: "Posts",
     [Key.recentPosts]: "Recent Posts",
     [Key.postList]: "Post List",
+    [Key.statistics]: "Statistics",
     [Key.tableOfContents]: "Table of Contents",
 
     // Announcement
@@ -43,6 +45,8 @@ export const en: Translation = {
     [Key.wallpaperNone]: "None",
 
     [Key.more]: "More",
+
+    [Key.backTo]: "Back to",
 
     [Key.author]: "Author",
     [Key.publishedAt]: "Published at",
