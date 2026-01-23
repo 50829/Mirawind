@@ -276,9 +276,9 @@ sidebar:
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
             side: "right"
             # 显示顺序 (数字越小越靠前)
-            order: 2
+            order: 1
             # 位置策略 ("top" 顶部固定 | "sticky" 粘性)
-            position: "sticky"
+            position: "top"
     # 响应式布局配置
     responsive:
         # 不同设备的布局模式 ("hidden" 不显示侧边栏 | "drawer" 抽屉模式 | "sidebar" 显示侧边栏)
