@@ -152,10 +152,8 @@ umami:
     enabled: true
     # UmamiCloudAPI地址
     baseUrl: "https://api.umami.is"
-    # API密钥 (可用环境变量覆盖)
-    apiKey: ""
-    # 要插入的Script (可用环境变量覆盖)
-    scripts: ""
+    # Website ID (用于统计显示)
+    websiteId: "a23e1e9e-0eda-4afe-9ae4-e28807721370"
 
 # 导航栏配置
 navbar:
@@ -167,37 +165,34 @@ navbar:
             icon: "material-symbols:article"
         - # 一级导航链接 - 归档 (预设)
             "Archive"
-        - # 一级导航链接 - Links (自定义)
-            name: "Links"
-            url: "/links/"
-            icon: "material-symbols:link"
-            children:
-                - name: "GitHub"
-                  url: "https://github.com/50829"
-                  external: true
-                  icon: "fa6-brands:github"
-                - name: "Bilibili"
-                  url: "https://space.bilibili.com/397174240"
-                  external: true
-                  icon: "fa6-brands:bilibili"
-        - # 一级导航链接 - My (自定义)
-            name: "My"
-            url: "/content/"
+        - # 一级导航链接 - 展览 (自定义)
+            # 导航名称
+            name: "Exhibition"
+            # 导航链接
+            url: "/exhibition/"
+            # 导航图标
             icon: "material-symbols:person"
+            # 导航描述
+            description: "A collection of my creative works and experiences"
+            # 子链接
             children:
-                - "Projects"
-                - "Skills"
-                - "Timeline"
-                - "Diary"
-                - "Albums"
-                - "Anime"
-        - # 一级导航链接 - About (自定义)
-            name: "About"
-            url: "/content/"
-            icon: "material-symbols:info"
-            children:
-                - "About"
-                - "Friends"
+                - # 二级导航链接 - 项目 (预设)
+                    "Projects"
+                - # 二级导航链接 - 技能 (预设)
+                    "Skills"
+                - # 二级导航链接 - 历程 (预设)
+                    "Timeline"
+                - # 二级导航链接 - 日记 (预设)
+                    "Diary"
+                - # 二级导航链接 - 相册 (预设)
+                    "Albums"
+                - # 二级导航链接 - 动画 (预设)
+                    "Anime"
+        - # 一级导航链接 - 好友 (预设)
+            "Friends"
+        - # 一级导航链接 - 关于 (预设)
+            "About"
+
 
 # 侧边栏配置
 sidebar:
@@ -239,7 +234,7 @@ sidebar:
             # 响应式配置
             responsive:
                 # 折叠阈值
-                collapseThreshold: 5
+                collapseThreshold: 10
         - # 组件 - 文章标签 (预设)
             # 类型
             type: "tags"
@@ -274,7 +269,7 @@ sidebar:
             # 类型
             type: "statistics"
             # 是否启用
-            enable: false
+            enable: true
             # 所属侧边栏 ("left" 左侧 | "right" 右侧)
             side: "right"
             # 显示顺序 (数字越小越靠前)
@@ -442,7 +437,7 @@ musicPlayer:
 # 看板娘配置
 pio:
     # 启用看板娘
-    enable: false
+    enable: true
     # 模型文件路径
     models:
         - "/pio/models/pio/model.json"
