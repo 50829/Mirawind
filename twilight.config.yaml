@@ -163,10 +163,12 @@ umami:
 navbar:
     # 链接配置 (链接预设位于 src/constants/link-presets.ts 的 LinkPresets)
     links:
-        - # 一级导航链接 - 博客 (自定义)
-            name: "博客"
-            url: "/blog/"
-            icon: "material-symbols:article"
+        # - # 一级导航链接 - 博客 (自定义)
+        #     name: "博客"
+        #     url: "/blog/"
+        #     icon: "material-symbols:article"
+        - # 一级导航链接 - 主页 (预设)
+            "Home"
         - # 一级导航链接 - 归档 (预设)
             "Archive"
         - # 一级导航链接 - 展览 (自定义)
