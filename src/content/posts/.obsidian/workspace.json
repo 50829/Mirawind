@@ -13,12 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "000000-Archived/mermaids.md",
+                "file": "2026/01/the-final-week.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "mermaids"
+              "title": "the-final-week"
+            }
+          },
+          {
+            "id": "e7b697bc811f926e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Archived/Template/blog.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "blog"
             }
           }
         ]
@@ -94,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "000000-Archived/mermaids.md",
+                "file": "2026/01/the-final-week.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +118,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "mermaids 的反向链接列表"
+              "title": "the-final-week 的反向链接列表"
             }
           },
           {
@@ -113,12 +127,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "000000-Archived/mermaids.md",
+                "file": "2026/01/the-final-week.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "mermaids 的出链列表"
+              "title": "the-final-week 的出链列表"
             }
           },
           {
@@ -156,16 +170,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "000000-Archived/mermaids.md",
+                "file": "2026/01/the-final-week.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "mermaids 的大纲"
+              "title": "the-final-week 的大纲"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -179,23 +194,33 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:新建数据库": false
+      "bases:新建数据库": false,
+      "templater-obsidian:Templater": false
     }
   },
   "active": "6aa4081fa0822898",
   "lastOpenFiles": [
-    "000000-Archived/guide.md",
-    "000000-Archived/features.md",
-    "000000-Archived/encryption.md",
-    "000000-Archived/draft.md",
-    "2026",
-    "2025/12/birth.md",
-    "2025/12/birth-cover.jpg",
+    "2026/01/DS-Review.md",
+    "2026/01/ICS-Review.md",
+    "2026/01/AF-Review.md",
+    "2026/01/CN-Review.md",
+    "2026/01/the-final-week.md",
+    "Archived/Template/blog.md",
     "2025/final.md",
+    "2025/12/birth.md",
+    "Archived/features.md",
+    "2025/12/cover.webp",
+    "Archived/guide.md",
+    "Archived/encryption.md",
+    "Archived/draft.md",
+    "Archived/Template",
     "2025/final-cover.png",
+    "Archived/mermaids.md",
+    "2026/01",
+    "2026",
+    "2025/12/birth-cover.jpg",
     "2025",
-    "000000-Archived/test.md",
-    "000000-Archived/videos.md",
-    "000000-Archived/mermaids.md"
+    "Archived/test.md",
+    "Archived/videos.md"
   ]
 }

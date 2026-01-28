@@ -237,7 +237,7 @@ sidebar:
             # 响应式配置
             responsive:
                 # 折叠阈值
-                collapseThreshold: 10
+                collapseThreshold: 5
         - # 组件 - 文章标签 (预设)
             # 类型
             type: "tags"

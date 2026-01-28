@@ -1,5 +1,7 @@
 [
   "obsidian-style-settings",
   "obsidian-linter",
-  "easy-typing-obsidian"
+  "easy-typing-obsidian",
+  "editing-toolbar",
+  "templater-obsidian"
 ]

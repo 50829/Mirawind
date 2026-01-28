@@ -1,7 +1,6 @@
 ---
 title: 我的第一篇博客
 published: 2025-12-24
-description: 2025 年 12 月 24 日，我的博客诞生啦！
 cover: ./birth-cover.jpg
 pinned: false
 tags: []
