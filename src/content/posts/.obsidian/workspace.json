@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "2026/01/the-final-week.md",
+                "file": "Archived/videos.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "the-final-week"
+              "title": "videos"
             }
           },
           {
@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Archived/Template/blog.md",
+                "file": "2026/01/the-final-week.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "blog"
+              "title": "the-final-week"
             }
           }
         ]
@@ -108,7 +108,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2026/01/the-final-week.md",
+                "file": "Archived/videos.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -118,7 +118,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "the-final-week 的反向链接列表"
+              "title": "videos 的反向链接列表"
             }
           },
           {
@@ -127,12 +127,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2026/01/the-final-week.md",
+                "file": "Archived/videos.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "the-final-week 的出链列表"
+              "title": "videos 的出链列表"
             }
           },
           {
@@ -170,13 +170,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2026/01/the-final-week.md",
+                "file": "Archived/videos.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "the-final-week 的大纲"
+              "title": "videos 的大纲"
             }
           }
         ],
@@ -200,27 +200,28 @@
   },
   "active": "6aa4081fa0822898",
   "lastOpenFiles": [
+    "Archived/test.md",
+    "Archived/mermaids.md",
+    "Archived/guide.md",
+    "Archived/features.md",
+    "Archived/encryption.md",
+    "Archived/draft.md",
+    "2026/01/the-final-week.md",
+    "Archived/Template/_blog.md",
     "2026/01/DS-Review.md",
     "2026/01/ICS-Review.md",
     "2026/01/AF-Review.md",
     "2026/01/CN-Review.md",
-    "2026/01/the-final-week.md",
     "Archived/Template/blog.md",
     "2025/final.md",
     "2025/12/birth.md",
-    "Archived/features.md",
     "2025/12/cover.webp",
-    "Archived/guide.md",
-    "Archived/encryption.md",
-    "Archived/draft.md",
     "Archived/Template",
     "2025/final-cover.png",
-    "Archived/mermaids.md",
     "2026/01",
     "2026",
     "2025/12/birth-cover.jpg",
     "2025",
-    "Archived/test.md",
     "Archived/videos.md"
   ]
 }
