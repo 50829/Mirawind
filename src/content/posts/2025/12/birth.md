@@ -1,8 +1,8 @@
 ---
 title: 我的第一篇博客
 published: 2025-12-24
-description: "2025 年 12 月 24 日，我的博客诞生啦！"
-cover: "./cover.webp"
+description: 2025 年 12 月 24 日，我的博客诞生啦！
+cover: ./birth-cover.jpg
 pinned: false
 tags: []
 category: Daily Life
@@ -55,22 +55,22 @@ draft: false
 
 下面是详细的元数据表：
 
-| Attribute     | Description |
-|---------------|-------------|
-| `title`       | The title of the post. |
-| `published`   | The date the post was published. |
-| `pinned`      | Whether this post is pinned to the top of the post list. |
-| `description` | A short description of the post. Displayed on index page. |
+| Attribute     | Description                                                                                                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | The title of the post.                                                                                                                                                                                         |
+| `published`   | The date the post was published.                                                                                                                                                                               |
+| `pinned`      | Whether this post is pinned to the top of the post list.                                                                                                                                                       |
+| `description` | A short description of the post. Displayed on index page.                                                                                                                                                      |
 | `image`       | The cover image path of the post. <br/>1. Start with `http://` or `https://`: Use web image <br/>2. Start with `/`: For image in `public` dir <br/>3. With none of the prefixes: Relative to the markdown file |
-| `tags`        | The tags of the post. |
-| `category`    | The category of the post. |
-| `routeName`   | Route name for the post. The post will be accessible at `/posts/{routeName}/` |
-| `licenseName` | The license name for the post content. |
-| `encrypted` | Set true to encrypt this post. |
-| `password` | "123456"|
-| `author`      | The author of the post. |
-| `sourceLink`  | The source link or reference for the post content. |
-| `draft`       | If this post is still a draft, which won't be displayed. |
+| `tags`        | The tags of the post.                                                                                                                                                                                          |
+| `category`    | The category of the post.                                                                                                                                                                                      |
+| `routeName`   | Route name for the post. The post will be accessible at `/posts/{routeName}/`                                                                                                                                  |
+| `licenseName` | The license name for the post content.                                                                                                                                                                         |
+| `encrypted`   | Set true to encrypt this post.                                                                                                                                                                                 |
+| `password`    | "123456"                                                                                                                                                                                                       |
+| `author`      | The author of the post.                                                                                                                                                                                        |
+| `sourceLink`  | The source link or reference for the post content.                                                                                                                                                             |
+| `draft`       | If this post is still a draft, which won't be displayed.                                                                                                                                                       |
 
 ### 博客的存放
 博客放在 `src/content/posts/` 目录下。可以新建文件夹来存放复杂博客（比如本篇）

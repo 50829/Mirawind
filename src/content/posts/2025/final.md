@@ -1,8 +1,8 @@
 ---
 title: 2025年终总结
 published: 2026-01-05
-description: "2026 又是崭新的开始诶，期待着，飞向远方"
-cover: "./cover.png"
+description: 2026 又是崭新的开始诶，期待着，飞向远方
+cover: ./final-cover.png
 pinned: false
 tags: []
 category: Journal

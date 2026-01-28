@@ -1,9 +1,9 @@
 ---
 title: Guide for Blog Template
 published: 2001-10-02
-description: "How to use this blog template."
+description: How to use this blog template.
 cover: ""
-pinned: true
+pinned: false
 tags: []
 category: Guides
 draft: true
