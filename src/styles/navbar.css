@@ -192,9 +192,25 @@
 
     /* home button */
     #navbar > div > a:first-child {
-        width: 7.2rem !important;
+        max-width: 10rem !important;
+        min-width: 7.2rem !important;
         height: 2.4rem !important;
-        padding: 0 !important;
+        padding: 0 0.5rem !important;
+    }
+    
+    /* 确保home button内的flex容器能正确收缩 */
+    #navbar > div > a:first-child > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* 确保home button内的文字能正确截断 */
+    #navbar > div > a:first-child .home-title {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        min-width: 0 !important;
+        flex-shrink: 1 !important;
     }
 }
 
@@ -212,9 +228,25 @@
 
     /* home button */
     #navbar > div > a:first-child {
-        width: 6.3rem !important;
+        max-width: 8rem !important;
+        min-width: 6.3rem !important;
         height: 2.1rem !important;
-        padding: 0 !important;
+        padding: 0 0.4rem !important;
+    }
+    
+    /* 确保home button内的flex容器能正确收缩 */
+    #navbar > div > a:first-child > div {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* 确保home button内的文字能正确截断 */
+    #navbar > div > a:first-child .home-title {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        min-width: 0 !important;
+        flex-shrink: 1 !important;
     }
 }
 
