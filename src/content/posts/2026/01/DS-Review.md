@@ -100,7 +100,7 @@ struct TreeNode {
 
 构造哈夫曼树：
 1. 若有 n 个节点，这是节点链表 `tree[2n]`，在 1-n 号位中填充节点。每一个节点有权值、父、左右孩子属性。初始父母左右孩子都是 0
-2. 选取父节点不为 0，权值最小的两个节点（[[堆与优先队列]]实现），与新节点构建父子关联
+2. 选取父节点不为 0，权值最小的两个节点（堆与优先队列实现），与新节点构建父子关联
 3. 重复直到只剩一个节点
 
 哈夫曼编码：前缀编码
@@ -194,7 +194,7 @@ BinaryTreeNode* BinaryTreeNode::buildTreeFromInorderPostorderHelper(
 }
 ```
 
-1. **后序末尾找根** - [postorder[postEnd]](vscode-file://vscode-app/d:/Program%20Files%20\(x86\)/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench. Html) 就是根
+1. **后序末尾找根** - [postorder[postEnd(vscode-file://vscode-app/d:/Program%20Files%20\(x86\)/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench. Html) 就是根
 2. **中序定左右** - 根在中序中的位置把序列分成左右两部分
 3. **计算左子树大小** - [numsLeft = inRoot - inStart](vscode-file://vscode-app/d:/Program%20Files%20\(x86\)/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-browser/workbench/workbench.html)，这个数字用来划分后序序列
 4. **递归处理** - 对左右子树分别递归，缩小范围
@@ -251,7 +251,7 @@ Bellman-ford 算法：源到目标点最短路径：$O(EV)$
 2. 循环 V-1 次。每次循环中都遍历 E 条边，每条边有权值 w (u, v)：如果 `dist[u] + w(u,v) < dist[v]`，则更新 `dist[v] = dist[u] + w(u,v) `。
 3. 负环检测：在第 V 次循环时，若发现还有节点被更新，则存在负环，将所有距离设为-1.
 
-上述算法在[[计网U5-控制平面]]中用于选路。
+上述算法在计网U5-控制平面中用于选路。
 A*
 
 ## 所有节点对最短路径

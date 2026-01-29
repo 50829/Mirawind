@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Archived/videos.md",
+                "file": "2026/01/final.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "videos"
+              "title": "final"
             }
           },
           {
@@ -170,13 +170,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Archived/videos.md",
+                "file": "2026/01/final.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "videos 的大纲"
+              "title": "final 的大纲"
             }
           }
         ],
@@ -200,20 +200,23 @@
   },
   "active": "6aa4081fa0822898",
   "lastOpenFiles": [
+    "2025/final.md",
+    "2026/01/final.md",
+    "2026/01/ICS-Review.md",
+    "2026/01/DS-Review.md",
+    "2026/01/CN-Review.md",
+    "2026/01/AF-Review.md",
+    "2026/01/131657586.jpg",
+    "2026/01/01final.png",
+    "Archived/videos.md",
     "Archived/test.md",
     "Archived/mermaids.md",
     "Archived/guide.md",
     "Archived/features.md",
     "Archived/encryption.md",
     "Archived/draft.md",
-    "2026/01/the-final-week.md",
     "Archived/Template/_blog.md",
-    "2026/01/DS-Review.md",
-    "2026/01/ICS-Review.md",
-    "2026/01/AF-Review.md",
-    "2026/01/CN-Review.md",
     "Archived/Template/blog.md",
-    "2025/final.md",
     "2025/12/birth.md",
     "2025/12/cover.webp",
     "Archived/Template",
@@ -221,7 +224,6 @@
     "2026/01",
     "2026",
     "2025/12/birth-cover.jpg",
-    "2025",
-    "Archived/videos.md"
+    "2025"
   ]
 }

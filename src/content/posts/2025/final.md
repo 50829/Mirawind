@@ -3,7 +3,8 @@ title: 2025年终总结
 published: 2026-01-05
 cover: ./final-cover.png
 pinned: false
-tags: []
+tags:
+  - 年度回顾
 category: 回顾
 draft: false
 ---
