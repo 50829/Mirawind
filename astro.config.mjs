@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import svelte, { vitePreprocess } from "@astrojs/svelte";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
@@ -43,11 +43,8 @@ export default defineConfig({
     adapter: adapter,
     integrations: [
         decapCmsOauth({
-            decapCMSVersion: "3.3.3",
+            decapCMSVersion: "3.9.0",
             oauthDisabled: false, // Enable OAuth as configured in config.yml
-        }),
-        tailwind({
-            nesting: true,
         }),
         swup({
             theme: false,
@@ -190,6 +187,7 @@ export default defineConfig({
         ],
     },
     vite: {
+        plugins: [tailwindcss()],
         optimizeDeps: {
             // Prevent esbuild from trying to prebundle a package that imports virtual modules like
             // "astro:env/server" which causes invalid path resolution on Windows.

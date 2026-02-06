@@ -1,12 +1,14 @@
 ---
 import { siteConfig } from "@/config";
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
 
 
 const config = siteConfig.loadingOverlay;
 const showOverlay = config?.enable ?? true;
 const showSpinner = config?.spinner?.enable ?? true;
 const showTitle = config?.title?.enable ?? true;
-const titleContent = config?.title?.content ?? "LOADING";
+const titleContent = config?.title?.content ?? i18n(I18nKey.loading);
 const spinnerInterval = config?.spinner?.interval ?? 1.5;
 const titleInterval = config?.title?.interval ?? 1.5;
 ---
@@ -14,7 +16,7 @@ const titleInterval = config?.title?.interval ?? 1.5;
 {showOverlay && (
 <div
     id="loading-overlay"
-    class="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--page-bg)] transition-opacity duration-600"
+    class="fixed inset-0 z-100 flex items-center justify-center bg-(--page-bg) transition-opacity duration-600"
 >
     <div class="flex flex-col items-center">
         <!-- loading icon -->
@@ -22,7 +24,7 @@ const titleInterval = config?.title?.interval ?? 1.5;
         <!-- loading title -->
         {showTitle && (
         <div
-            class="loading-title text-[var(--primary)] font-medium tracking-widest"
+            class="loading-title text-(--primary) font-medium tracking-widest"
         >
             {titleContent}
         </div>
@@ -34,10 +36,10 @@ const titleInterval = config?.title?.interval ?? 1.5;
 <style define:vars={{ spinnerInterval: `${spinnerInterval}s`, titleInterval: `${titleInterval}s` }}>
     @keyframes spin {
         0% {
-            transform: rotate(0deg);
+            rotate: 0deg;
         }
         100% {
-            transform: rotate(360deg);
+            rotate: 360deg;
         }
     }
     @keyframes spinner-glow {

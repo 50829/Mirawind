@@ -3,11 +3,16 @@ import type { Translation } from "@i18n/translation";
 
 
 export const en: Translation = {
+    // Loading Overlay
+    [Key.loading]: "LOADING",
+
+    // Navigations
     [Key.home]: "Home",
     [Key.archive]: "Archive",
     [Key.about]: "About",
     [Key.search]: "Search",
 
+    // Posts
     [Key.tags]: "Tags",
     [Key.categories]: "Categories",
     [Key.series]: "Series",
@@ -16,6 +21,12 @@ export const en: Translation = {
     [Key.postList]: "Post List",
     [Key.statistics]: "Statistics",
     [Key.tableOfContents]: "Table of Contents",
+
+    // Page Stats
+    [Key.pageViews]: "Views",
+    [Key.visitors]: "Visitors",
+    [Key.statsLoading]: "Loading stats...",
+    [Key.statsError]: "Stats unavailable",
 
     // Announcement
     [Key.announcement]: "Announcement",
@@ -247,15 +258,17 @@ export const en: Translation = {
 
     // Music Player
     [Key.playlist]: "Playlist",
-
-    // Site Statistics
-    [Key.siteStats]: "Site Statistics",
-    [Key.siteStatsPostCount]: "Posts",
-    [Key.siteStatsCategoryCount]: "Categories",
-    [Key.siteStatsTagCount]: "Tags",
-    [Key.siteStatsTotalWords]: "Total Words",
-    [Key.siteStatsRunningDays]: "Running Days",
-    [Key.siteStatsLastUpdate]: "Last Activity",
-    [Key.siteStatsDaysAgo]: "{days} days ago",
-    [Key.siteStatsDays]: "{days} days",
+    [Key.musicEmptyPlaylist]: "Local playlist is empty",
+    [Key.musicNoSongsAvailable]: "No songs available in playlist",
+    [Key.musicPlayFailed]: "Failed to play \"{0}\", trying next...",
+    [Key.musicAutoplayBlocked]: "Autoplay blocked",
+    [Key.musicMetingFailed]: "Failed to fetch Meting playlist",
+    [Key.musicUnknownArtist]: "Unknown Artist",
+    [Key.musicUnknownTrack]: "Unknown Track",
+    [Key.musicSwitchToLocal]: "Switch to Local mode",
+    [Key.musicSwitchToMeting]: "Switch to Meting mode",
+    [Key.musicProgress]: "Progress",
+    [Key.musicCollapse]: "Collapse player",
+    [Key.musicVolume]: "Volume",
+    [Key.musicExpand]: "Expand music player",
 };

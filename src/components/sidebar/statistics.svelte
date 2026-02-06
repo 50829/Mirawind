@@ -13,13 +13,15 @@
         categories = [],
         tags = [],
         class: className = "",
-        style = ""
+        style = "",
+        side = "default",
     }: {
         posts?: any[],
         categories?: any[],
         tags?: any[],
         class?: string,
-        style?: string
+        style?: string,
+        side?: string,
     } = $props();
 
     const labels = {
@@ -43,6 +45,7 @@
     let tagsChart: any = $state();
 
     let timeScale: 'year' | 'month' | 'day' = $state('year');
+    let lastScale = $state<'year' | 'month' | 'day'>('year');
     let isDark = $state(false);
     let isDesktop = $state(true);
 
@@ -61,6 +64,14 @@
             areaStart: isDarkNow ? 'rgba(96, 165, 250, 0.5)' : 'rgba(59, 130, 246, 0.5)',
             areaEnd: isDarkNow ? 'rgba(96, 165, 250, 0)' : 'rgba(59, 130, 246, 0)',
         };
+    };
+
+    const getChartsFontFamily = () => {
+        const fallback = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
+        if (typeof window === 'undefined') return fallback;
+        const target = container ?? document.body ?? document.documentElement;
+        const fontFamily = window.getComputedStyle(target).fontFamily;
+        return fontFamily && fontFamily !== 'inherit' ? fontFamily : fallback;
     };
 
     const loadECharts = async () => {
@@ -114,6 +125,7 @@
         }
 
         const colors = getThemeColors();
+        const fontFamily = getChartsFontFamily();
 
         const now = dayjs();
         let data: any[] = [];
@@ -155,13 +167,14 @@
 
         const option = {
             backgroundColor: 'transparent',
+            textStyle: { fontFamily },
             animation: isNew || isUpdate,
             animationDuration: isNew ? 2000 : 500,
             animationEasing: 'cubicOut',
             title: {
                 text: labels.activities,
                 left: 'left',
-                textStyle: { fontSize: 14, color: colors.text, fontWeight: 'bold' }
+                textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
             },
             tooltip: {
                 trigger: 'axis',
@@ -173,13 +186,13 @@
                 type: 'category',
                 data: xAxisData,
                 axisLine: { lineStyle: { color: colors.grid } },
-                axisLabel: { color: colors.text, fontSize: 10 }
+                axisLabel: { fontFamily, color: colors.text, fontSize: 10 }
             },
             yAxis: {
                 type: 'value',
                 minInterval: 1,
                 axisLine: { show: false },
-                axisLabel: { color: colors.text, fontSize: 10 },
+                axisLabel: { fontFamily, color: colors.text, fontSize: 10 },
                 splitLine: { lineStyle: { color: colors.grid, type: 'dashed' } }
             },
             series: [{
@@ -205,6 +218,7 @@
     const initRadarCharts = () => {
         if (!echarts) return;
         const colors = getThemeColors();
+        const fontFamily = getChartsFontFamily();
 
         // Categories Radar
         if (categoriesContainer) {
@@ -220,6 +234,7 @@
 
             categoriesChart.setOption({
                 backgroundColor: 'transparent',
+                textStyle: { fontFamily },
                 animation: true,
                 animationDuration: 2000,
                 animationEasing: 'exponentialOut',
@@ -231,13 +246,13 @@
                 title: {
                     text: labels.categories,
                     left: 'left',
-                    textStyle: { fontSize: 14, color: colors.text, fontWeight: 'bold' }
+                    textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
                 },
                 radar: {
                     indicator: indicator,
                     radius: '60%',
                     center: ['50%', '60%'],
-                    axisName: { color: colors.text, fontSize: 10 },
+                    axisName: { fontFamily, color: colors.text, fontSize: 10 },
                     splitLine: { lineStyle: { color: colors.grid } },
                     splitArea: { show: false }
                 },
@@ -269,6 +284,7 @@
 
             tagsChart.setOption({
                 backgroundColor: 'transparent',
+                textStyle: { fontFamily },
                 animation: true,
                 animationDuration: 2000,
                 animationEasing: 'exponentialOut',
@@ -280,13 +296,13 @@
                 title: {
                     text: labels.tags,
                     left: 'left',
-                    textStyle: { fontSize: 14, color: colors.text, fontWeight: 'bold' }
+                    textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
                 },
                 radar: {
                     indicator: indicator,
                     radius: '60%',
                     center: ['50%', '60%'],
-                    axisName: { color: colors.text, fontSize: 10 },
+                    axisName: { fontFamily, color: colors.text, fontSize: 10 },
                     splitLine: { lineStyle: { color: colors.grid } },
                     splitArea: { show: false }
                 },
@@ -304,53 +320,67 @@
         }
     };
 
-    onMount(async () => {
+    onMount(() => {
         updateIsDesktop();
 
-        await loadECharts();
+        let visibilityObserver: IntersectionObserver;
 
-        // 检查是否处于初始加载动画阶段
-        const hasInitialAnimation = document.documentElement.classList.contains('show-initial-animation') ||
-                                   document.documentElement.classList.contains('is-loading');
+        const runInit = async () => {
+            await loadECharts();
 
-        if (hasInitialAnimation) {
-            // 查找带有动画类的侧边栏容器
-            const sidebar = container?.closest('.onload-animation-up');
+            // 检查是否处于初始加载动画阶段
+            const hasInitialAnimation = document.documentElement.classList.contains('show-initial-animation') ||
+                                       document.documentElement.classList.contains('is-loading');
 
-            const startInit = () => {
-                if (!isInitialized) initCharts();
-            };
+            if (hasInitialAnimation) {
+                // 查找带有动画类的侧边栏容器
+                const sidebar = container?.closest('.onload-animation-up');
 
-            if (sidebar) {
-                // 监听侧边栏淡入动画开始
-                sidebar.addEventListener('animationstart', (e) => {
-                    if ((e as AnimationEvent).animationName === 'fade-in-up') {
+                const startInit = () => {
+                    if (!isInitialized) initCharts();
+                };
+
+                if (sidebar) {
+                    // 监听侧边栏淡入动画开始
+                    sidebar.addEventListener('animationstart', (e) => {
+                        if ((e as AnimationEvent).animationName === 'fade-in-up') {
+                            startInit();
+                        }
+                    }, { once: true });
+                }
+
+                // 使用 MutationObserver 监听 html 的 class 变化，作为更可靠的保底机制
+                const htmlObserver = new MutationObserver(() => {
+                    const isStillLoading = document.documentElement.classList.contains('is-loading');
+
+                    // 一旦 loading 结束（进入动画播放阶段），就开始绘制图表
+                    if (!isStillLoading) {
                         startInit();
+                        htmlObserver.disconnect();
                     }
-                }, { once: true });
-            }
+                });
+                htmlObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-            // 使用 MutationObserver 监听 html 的 class 变化，作为更可靠的保底机制
-            const htmlObserver = new MutationObserver(() => {
-                const isStillLoading = document.documentElement.classList.contains('is-loading');
-
-                // 一旦 loading 结束（进入动画播放阶段），就开始绘制图表
-                if (!isStillLoading) {
+                // 较长的保底时间（3秒），防止所有监听机制意外失效
+                setTimeout(() => {
                     startInit();
                     htmlObserver.disconnect();
+                }, 3000);
+
+            } else {
+                // 无动画状态，直接加载
+                initCharts();
+            }
+        };
+
+        if (container) {
+            visibilityObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    visibilityObserver.disconnect();
+                    runInit();
                 }
             });
-            htmlObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-            // 较长的保底时间（3秒），防止所有监听机制意外失效
-            setTimeout(() => {
-                startInit();
-                htmlObserver.disconnect();
-            }, 3000);
-
-        } else {
-            // 无动画状态，直接加载
-            initCharts();
+            visibilityObserver.observe(container);
         }
 
         const handleResize = () => {
@@ -388,19 +418,23 @@
         return () => {
             window.removeEventListener('resize', handleResize);
             observer.disconnect();
+            if (visibilityObserver) visibilityObserver.disconnect();
         };
     });
 
     $effect(() => {
         if (timeScale && echarts && isInitialized) {
-            initActivityChart(true);
+            if (timeScale !== lastScale) {
+                lastScale = timeScale;
+                initActivityChart(true);
+            }
         }
     });
 </script>
 
-<div id="statistics" bind:this={container} data-swup-persist="statistics" class={"pb-4 card-base " + className} {style}>
+<div id={`statistics-${side}`} data-swup-persist={`statistics-${side}`} bind:this={container} class={"pb-4 card-base " + className} {style}>
     <div class="font-bold transition text-lg text-neutral-900 dark:text-neutral-100 relative ml-8 mt-4 mb-2
-        before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
+        before:w-1 before:h-4 before:rounded-md before:bg-(--primary)
         before:absolute before:left-[-16px] before:top-[5.5px]">{labels.statistics}</div>
     <div class="collapse-wrapper px-4 overflow-hidden">
         <div class="stats-charts">
@@ -481,7 +515,7 @@
     .dropdown-wrapper:hover .dropdown-menu-custom {
         opacity: 1;
         visibility: visible;
-        transform: translateY(0);
+        translate: 0 0;
     }
     .dropdown-menu-custom {
         position: absolute;
@@ -494,7 +528,7 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         opacity: 0;
         visibility: hidden;
-        transform: translateY(-10px);
+        translate: 0 -10px;
         transition: all 0.2s;
         z-index: 50;
         min-width: 80px;
@@ -522,10 +556,10 @@
     }
     .dropdown-icon {
         font-size: 0.9rem;
-        transition: transform 0.2s;
+        transition: rotate 0.2s;
     }
     .dropdown-wrapper:hover .dropdown-icon {
-        transform: rotate(180deg);
+        rotate: 180deg;
     }
     .heatmap-container {
         height: 180px;

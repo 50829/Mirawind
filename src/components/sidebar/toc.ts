@@ -15,6 +15,20 @@ export class TableOfContents extends HTMLElement {
     _retryCount = 0;
     _backToTopObserver: MutationObserver | null = null;
 
+    _handleBtnClick = (e: Event) => {
+        e.stopPropagation();
+        const panel = this.querySelector('.toc-floating-panel');
+        const isHidden = panel?.classList.contains('hidden') || panel?.classList.contains('opacity-0');
+        this.toggleFloatingPanel(!!isHidden);
+    };
+
+    _handleDocClick = (e: Event) => {
+        const panel = this.querySelector('.toc-floating-panel');
+        if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target as Node)) {
+            this.toggleFloatingPanel(false);
+        }
+    };
+
     constructor() {
         super();
         this.observer = new IntersectionObserver(this.markVisibleSection);
@@ -184,7 +198,7 @@ export class TableOfContents extends HTMLElement {
         const isFloating = this.dataset.isFloating === "true";
         const tocWrapper = isFloating
             ? this.querySelector('.toc-floating-container') as HTMLElement
-            : document.querySelector('widget-layout[data-id="toc-wrapper"]') as HTMLElement;
+            : this.closest('widget-layout') as HTMLElement;
 
         if (!tocWrapper) return false;
 
@@ -236,10 +250,10 @@ export class TableOfContents extends HTMLElement {
                 const depthClass = heading.depth === minDepth ? '' :
                     heading.depth === minDepth + 1 ? 'ml-4' : 'ml-8';
                 const badgeContent = heading.depth === minDepth ? (heading1Count++) :
-                    heading.depth === minDepth + 1 ? '<div class="transition w-2 h-2 rounded-[0.1875rem] bg-[var(--toc-badge-bg)]"></div>' :
-                    '<div class="transition w-1.5 h-1.5 rounded-sm bg-black/5 dark:bg-white/10"></div>';
-                return `<a href="#${heading.slug}" class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] py-2">
-                    <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${depthClass} ${heading.depth === minDepth ? 'bg-[var(--toc-badge-bg)] text-[var(--btn-content)]' : ''}">
+                    heading.depth === minDepth + 1 ? '<div class="transition w-2 h-2 rounded-[0.1875rem] bg-(--toc-badge-bg)"></div>' :
+                    '<div class="transition w-1.5 h-1.5 rounded-xs bg-black/5 dark:bg-white/10"></div>';
+                return `<a href="#${heading.slug}" class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl hover:bg-(--toc-btn-hover) active:bg-(--toc-btn-active) py-2">
+                    <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${depthClass} ${heading.depth === minDepth ? 'bg-(--toc-badge-bg) text-(--btn-content)' : ''}">
                         ${badgeContent}
                     </div>
                     <div class="transition text-sm ${heading.depth <= minDepth + 1 ? 'text-50' : 'text-30'}">${heading.text}</div>
@@ -248,7 +262,7 @@ export class TableOfContents extends HTMLElement {
 
         const innerContent = this.querySelector('.toc-inner-content');
         if (innerContent) {
-            innerContent.innerHTML = tocHTML + '<div class="active-indicator -z-10 absolute left-0 right-0 rounded-xl transition-all pointer-events-none bg-[var(--toc-btn-hover)]" style="opacity: 0"></div>';
+            innerContent.innerHTML = tocHTML + '<div class="active-indicator -z-10 absolute left-0 right-0 rounded-xl transition-all pointer-events-none bg-(--toc-btn-hover)" style="opacity: 0"></div>';
         }
         return true;
     }
@@ -268,19 +282,11 @@ export class TableOfContents extends HTMLElement {
 
         if (this.dataset.isFloating === "true") {
             const btn = this.querySelector('.toc-floating-btn');
-            btn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const panel = this.querySelector('.toc-floating-panel');
-                const isHidden = panel?.classList.contains('hidden') || panel?.classList.contains('opacity-0');
-                this.toggleFloatingPanel(!!isHidden);
-            });
+            btn?.removeEventListener('click', this._handleBtnClick);
+            btn?.addEventListener('click', this._handleBtnClick);
 
-            document.addEventListener('click', (e) => {
-                const panel = this.querySelector('.toc-floating-panel');
-                if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target as Node)) {
-                    this.toggleFloatingPanel(false);
-                }
-            });
+            document.removeEventListener('click', this._handleDocClick);
+            document.addEventListener('click', this._handleDocClick);
 
             // 监听 backToTop 按钮的状态
             const backToTopBtn = document.getElementById('back-to-top-btn');
@@ -349,7 +355,7 @@ export class TableOfContents extends HTMLElement {
                         const isFloating = this.dataset.isFloating === "true";
                         const tocWrapper = isFloating
                             ? this.querySelector('.toc-floating-container') as HTMLElement
-                            : document.querySelector('widget-layout[data-id="toc-wrapper"]') as HTMLElement;
+                            : this.closest('widget-layout') as HTMLElement;
                         if (tocWrapper && !tocWrapper.classList.contains('toc-hide')) {
                             if (!isFloating) {
                                 tocWrapper.style.maxHeight = tocWrapper.offsetHeight + 'px';
@@ -366,7 +372,7 @@ export class TableOfContents extends HTMLElement {
                     const isFloating = this.dataset.isFloating === "true";
                     const tocWrapper = isFloating
                         ? this.querySelector('.toc-floating-container') as HTMLElement
-                        : document.querySelector('widget-layout[data-id="toc-wrapper"]') as HTMLElement;
+                        : this.closest('widget-layout') as HTMLElement;
                     if (tocWrapper && !this.isPostPage()) {
                         tocWrapper.classList.add('toc-hide');
                         if (!isFloating) tocWrapper.style.maxHeight = '';
@@ -387,6 +393,10 @@ export class TableOfContents extends HTMLElement {
         this.observer.disconnect();
         this._backToTopObserver?.disconnect();
         this.tocEl?.removeEventListener("click", this.handleAnchorClick);
+        
+        const btn = this.querySelector('.toc-floating-btn');
+        btn?.removeEventListener('click', this._handleBtnClick);
+        document.removeEventListener('click', this._handleDocClick);
     };
 }
 

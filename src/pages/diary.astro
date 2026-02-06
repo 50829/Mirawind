@@ -7,6 +7,7 @@ import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
+import ImageWrapper from "@components/common/imageWrapper.astro";
 
 
 const pageTitle = LinkPresets[LinkPreset.Diary].name;
@@ -36,7 +37,7 @@ function formatTime(dateString: string): string {
 ---
 
 <GridLayout title={pageTitle} description={pageDescription}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+    <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-4 py-4 md:px-6 md:py-5 relative w-full">
             <BackwardButton currentPath={Astro.url.pathname} />
             <div class="relative max-w-4xl">
@@ -49,7 +50,7 @@ function formatTime(dateString: string): string {
                         </div>
                         <div class="header-stats">
                             <div class="stat-item text-center">
-                                <span class="stat-number text-lg md:text-xl lg:text-2xl font-bold text-[var(--primary)]">{sortedMoments.length}</span>
+                                <span class="stat-number text-lg md:text-xl lg:text-2xl font-bold text-(--primary)">{sortedMoments.length}</span>
                                 <span class="stat-label text-xs md:text-sm lg:text-base text-75">{i18n(I18nKey.diaryCount)}</span>
                             </div>
                         </div>
@@ -61,23 +62,26 @@ function formatTime(dateString: string): string {
                     {sortedMoments.map(moment => (
                         <div class="moment-item card-base p-4 md:p-6 lg:p-8 hover:shadow-lg transition-all">
                                 <div class="moment-content">
+                                    {moment.title && (
+                                        <h2 class="moment-title text-base md:text-lg lg:text-xl font-bold text-90 mb-2">{moment.title}</h2>
+                                    )}
                                     <p class="moment-text text-sm md:text-base lg:text-lg text-90 leading-relaxed mb-3 md:mb-4">{moment.content}</p>
                                     {moment.images && moment.images.length > 0 && (
-                                        <div class="moment-images grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-4 mb-3 md:mb-4">
+                                        <div class="moment-images flex flex-wrap gap-2 md:gap-3 lg:gap-4 mb-3 md:mb-4">
                                             {moment.images.map((image, index) => (
-                                                <div class="image-item relative rounded-md overflow-hidden aspect-square cursor-pointer hover:scale-105 transition-transform">
-                                                    <img
+                                                <div class="image-item relative rounded-md overflow-hidden cursor-pointer hover:scale-105 transition max-w-full">
+                                                    <ImageWrapper
                                                         src={image}
+                                                        basePath={moment.basePath}
                                                         alt={i18n(I18nKey.diaryImage)}
-                                                        class="w-full h-full object-cover"
-                                                        loading="lazy"
+                                                        class="w-auto h-auto max-h-[300px] md:max-h-[400px] object-contain rounded-md"
                                                     />
                                                 </div>
                                             ))}
                                         </div>
                                     )}
                                 </div>
-                                <hr class="moment-divider border-t border-[var(--line-divider)] my-3 md:my-4" />
+                                <hr class="moment-divider border-t border-(--line-divider) my-3 md:my-4" />
                                 <div class="moment-footer flex justify-between items-center">
                                     <div class="moment-time flex items-center gap-1.5 text-75 text-xs md:text-sm lg:text-base">
                                         <i class="time-icon text-xs md:text-sm">🕐</i>
@@ -141,11 +145,11 @@ function formatTime(dateString: string): string {
     }
 
     .image-item img {
-        transition: transform 0.3s ease;
+        transition: scale 0.3s ease;
     }
 
     .image-item:hover img {
-        transform: scale(1.05);
+        scale: 1.05;
     }
 
     .action-btn {
