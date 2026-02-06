@@ -245,6 +245,7 @@ export type WidgetComponentType =
     | "categories"
     | "tags"
     | "statistics"
+    | "site-stats"
     | "toc"
     | "custom";
 
@@ -253,7 +254,7 @@ export type WidgetComponentConfig = {
     // 组件类型
     type: WidgetComponentType;
     // 启用该组件
-    enable: boolean;
+    enable?: boolean;
     // 组件位置
     position: "top" | "sticky"; // 顶部固定区域或粘性区域
     // 自定义内联样式
