@@ -253,6 +253,17 @@ enum I18nKey {
     minute = "minute",
     second = "second",
 
+    // 站点统计
+    siteStats = "siteStats",
+    siteStatsPostCount = "siteStatsPostCount",
+    siteStatsCategoryCount = "siteStatsCategoryCount",
+    siteStatsTagCount = "siteStatsTagCount",
+    siteStatsTotalWords = "siteStatsTotalWords",
+    siteStatsRunningDays = "siteStatsRunningDays",
+    siteStatsDays = "siteStatsDays",
+    siteStatsLastUpdate = "siteStatsLastUpdate",
+    siteStatsDaysAgo = "siteStatsDaysAgo",
+
     // 音乐播放器
     playlist = "playlist",
     musicEmptyPlaylist = "musicEmptyPlaylist",

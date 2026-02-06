@@ -14,8 +14,8 @@ interface Props {
 
 const { class: className, style } = Astro.props;
 
-// 从配置中获取站点开始日期（使用类型断言）
-const siteStartDate = (siteConfig as any).siteStartDate || "2025-01-01";
+// 从配置中获取站点开始日期
+const siteStartDate = siteConfig.siteStartDate || "2025-12-24";
 
 // 获取所有文章
 const posts = await getSortedPosts();
@@ -85,7 +85,7 @@ const stats = [
         icon: "material-symbols:calendar-clock-outline",
         label: i18n(I18nKey.siteStatsRunningDays),
         value: 0, // 将由客户端更新
-        suffix: i18n(I18nKey.siteStatsDays).replace("{days}", ""),
+        suffix: i18n(I18nKey.siteStatsDays)?.replace("{days}", "") || "",
         dynamic: true,
         id: "running-days",
     },
@@ -93,7 +93,7 @@ const stats = [
         icon: "material-symbols:ecg-heart-outline",
         label: i18n(I18nKey.siteStatsLastUpdate),
         value: 0, // 将由客户端更新
-        suffix: i18n(I18nKey.siteStatsDaysAgo).replace("{days}", ""),
+        suffix: i18n(I18nKey.siteStatsDaysAgo)?.replace("{days}", "") || "",
         dynamic: true,
         id: "last-update",
     },

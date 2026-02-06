@@ -256,6 +256,17 @@ export const en: Translation = {
     [Key.minute]: "minute",
     [Key.second]: "second",
 
+    // Site Stats
+    [Key.siteStats]: "Site Stats",
+    [Key.siteStatsPostCount]: "Posts",
+    [Key.siteStatsCategoryCount]: "Categories",
+    [Key.siteStatsTagCount]: "Tags",
+    [Key.siteStatsTotalWords]: "Total Words",
+    [Key.siteStatsRunningDays]: "Running Days",
+    [Key.siteStatsDays]: "{days} days",
+    [Key.siteStatsLastUpdate]: "Last Update",
+    [Key.siteStatsDaysAgo]: "{days} days ago",
+
     // Music Player
     [Key.playlist]: "Playlist",
     [Key.musicEmptyPlaylist]: "Local playlist is empty",

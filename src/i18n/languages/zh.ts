@@ -256,6 +256,17 @@ export const zh: Translation = {
     [Key.minute]: "分",
     [Key.second]: "秒",
 
+    // 站点统计
+    [Key.siteStats]: "站点统计",
+    [Key.siteStatsPostCount]: "文章数量",
+    [Key.siteStatsCategoryCount]: "分类数量",
+    [Key.siteStatsTagCount]: "标签数量",
+    [Key.siteStatsTotalWords]: "总字数",
+    [Key.siteStatsRunningDays]: "运行天数",
+    [Key.siteStatsDays]: "{days} 天",
+    [Key.siteStatsLastUpdate]: "最后更新",
+    [Key.siteStatsDaysAgo]: "{days} 天前",
+
     // 音乐播放器
     [Key.playlist]: "播放列表",
     [Key.musicEmptyPlaylist]: "本地播放列表为空",

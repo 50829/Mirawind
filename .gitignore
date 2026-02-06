@@ -1,5 +1,6 @@
 # editor config
 **/.vscode/
+**/.obsidian/
 
 # dependencies
 node_modules/
@@ -19,3 +20,6 @@ pnpm-debug.log*
 
 # private config
 .env
+
+bun.lock
+package-lock.json

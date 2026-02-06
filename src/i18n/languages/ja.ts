@@ -256,6 +256,17 @@ export const ja: Translation = {
     [Key.minute]: "分",
     [Key.second]: "秒",
 
+    // サイト統計
+    [Key.siteStats]: "サイト統計",
+    [Key.siteStatsPostCount]: "記事数",
+    [Key.siteStatsCategoryCount]: "カテゴリー数",
+    [Key.siteStatsTagCount]: "タグ数",
+    [Key.siteStatsTotalWords]: "総単語数",
+    [Key.siteStatsRunningDays]: "運営日数",
+    [Key.siteStatsDays]: "{days} 日",
+    [Key.siteStatsLastUpdate]: "最終更新",
+    [Key.siteStatsDaysAgo]: "{days} 日前",
+
     // 音楽プレイヤー
     [Key.playlist]: "プレイリスト",
     [Key.musicEmptyPlaylist]: "ローカルプレイリストが空です",

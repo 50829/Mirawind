@@ -60,7 +60,7 @@ const getElements = () => {
         bannerWrapper: document.getElementById('banner-wrapper'),
         banner: document.getElementById('banner'),
         fullscreenContainer: document.querySelector('[data-fullscreen-wallpaper]') as HTMLElement,
-        mainContent: document.querySelector('.absolute.w-full.z-30') as HTMLElement,
+        mainContent: document.getElementById('main-content-wrapper') as HTMLElement,
     };
 };
 
