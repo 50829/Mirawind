@@ -49,16 +49,30 @@ function formatNumber(num: number): string {
     return num.toLocaleString();
 }
 
-// 获取最新文章日期
-const latestPost = posts.reduce((latest, post) => {
-    if (!latest) return post;
-    return post.data.published > latest.data.published ? post : latest;
-}, posts[0]);
+// 获取最新文章日期 - 考虑所有帖子的 updated 和 published 日期
+const lastPostDate = posts.reduce((latestDate, post) => {
+    // 对于每个帖子，取 updated 或 published 中较新的一个
+    const postLatestDate = post.data.updated || post.data.published;
+    
+    // 如果还没有最新日期，或者当前帖子的日期更新
+    if (!latestDate || postLatestDate > latestDate) {
+        return postLatestDate;
+    }
+    return latestDate;
+}, null as Date | null);
 
-const lastPostDate = latestPost
-    ? latestPost.data.published.toISOString()
-    : null;
+// 计算网站运行天数
+const today = new Date();
+const startDate = new Date(siteStartDate);
+const diffTime = Math.abs(today.getTime() - startDate.getTime());
+const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+// 计算网站最后更新距今的天数
+const daysSinceLastUpdate = lastPostDate 
+    ? Math.floor(Math.abs(today.getTime() - lastPostDate.getTime()) / (1000 * 60 * 60 * 24)) 
+    : 0;
+
+// 统计数据配置
 const stats = [
     {
         icon: "material-symbols:article-outline",
@@ -84,7 +98,7 @@ const stats = [
     {
         icon: "material-symbols:calendar-clock-outline",
         label: i18n(I18nKey.siteStatsRunningDays),
-        value: 0, // 将由客户端更新
+        value: diffDays,
         suffix: i18n(I18nKey.siteStatsDays)?.replace("{days}", "") || "",
         dynamic: true,
         id: "running-days",
@@ -92,7 +106,7 @@ const stats = [
     {
         icon: "material-symbols:ecg-heart-outline",
         label: i18n(I18nKey.siteStatsLastUpdate),
-        value: 0, // 将由客户端更新
+        value: daysSinceLastUpdate,
         suffix: i18n(I18nKey.siteStatsDaysAgo)?.replace("{days}", "") || "",
         dynamic: true,
         id: "last-update",
@@ -111,7 +125,7 @@ const stats = [
             stats.map((stat) => (
                 <div class="flex items-center justify-between px-2 py-2">
                     <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                        <div class="text-[var(--primary)] text-xl shrink-0">
+                        <div class="text-(--primary) text-xl shrink-0">
                             <Icon name={stat.icon} />
                         </div>
                         <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm break-words leading-tight">
@@ -139,44 +153,3 @@ const stats = [
     </div>
 </WidgetLayout>
 
-<script is:inline define:vars={{ siteStartDate, lastPostDate }}>
-    function updateDynamicStats() {
-        const today = new Date();
-
-        // 更新运行天数
-        const startDate = new Date(siteStartDate);
-        const diffTime = Math.abs(today.getTime() - startDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        const runningDaysElement = document.querySelector(
-            '[data-stat-id="running-days"]',
-        );
-        if (runningDaysElement) {
-            runningDaysElement.textContent = diffDays.toString();
-        }
-
-        // 更新最后活动时间
-        if (lastPostDate) {
-            const lastPost = new Date(lastPostDate);
-            const timeSinceLastPost = Math.abs(
-                today.getTime() - lastPost.getTime(),
-            );
-            const daysSinceLastUpdate = Math.floor(
-                timeSinceLastPost / (1000 * 60 * 60 * 24),
-            );
-
-            const lastUpdateElement = document.querySelector(
-                '[data-stat-id="last-update"]',
-            );
-            if (lastUpdateElement) {
-                lastUpdateElement.textContent = daysSinceLastUpdate.toString();
-            }
-        }
-    }
-
-    // 页面加载时更新
-    updateDynamicStats();
-
-    // 每小时更新一次（可选，因为天数变化较慢）
-    setInterval(updateDynamicStats, 60 * 60 * 1000);
-</script>
