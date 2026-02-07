@@ -1,11 +1,12 @@
 ---
 title: Encryption Example
-published: 2020-02-02
-description: 'Password: 123456'
+published: 2025-12-02
+description: "Password: 123456"
 encrypted: true
 pinned: false
 password: "123456"
-tags: [Encryption]
+tags:
+  - Encryption
 category: Examples
 draft: true
 ---

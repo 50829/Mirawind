@@ -1,6 +1,6 @@
 ---
 title: Video Example
-published: 2021-12-02
+published: 2025-12-02
 description: This post demonstrates how to embed video in a blog post.
 tags:
   - Markdown

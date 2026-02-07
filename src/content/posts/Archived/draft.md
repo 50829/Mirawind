@@ -1,7 +1,8 @@
 ---
 title: Draft Example
-published: 2021-12-02
-tags: [Markdown]
+published: 2025-12-22
+tags:
+  - Markdown
 category: Examples
 draft: true
 ---

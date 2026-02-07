@@ -1,11 +1,12 @@
 ---
 title: Extended Features
-published: 2010-01-02
+published: 2025-12-02
 updated: 2020-02-02
-description: 'Read more about Markdown features in Twilight'
-image: ''
-tags: [Markdown]
-category: 
+description: Read more about Markdown features in Twilight
+image: ""
+tags:
+  - Markdown
+category:
 draft: true
 ---
 

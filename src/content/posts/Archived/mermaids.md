@@ -1,9 +1,11 @@
 ---
 title: Mermaid Example
-published: 2011-11-02
+published: 2025-12-02
 pinned: false
 description: A simple example of a Markdown blog post with Mermaid.
-tags: [Markdown, Mermaid]
+tags:
+  - Markdown
+  - Mermaid
 category: Examples
 draft: true
 ---
