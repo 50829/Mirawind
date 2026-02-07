@@ -73,3 +73,6 @@ draft: false
 初创实习真的超级累人。看不懂代码只能让 AI 干，修一个 bug 还有新的 bug，还不知道从哪学他们的规范。后面两天微信、飞书一有消息就会紧张，怕又是来了新任务。半天干不完就会催你，每天任务完成就算解脱，但上面还是会不断压力你，横向比较别的实习生干了多少多少活。心情很糟糕，自己也没精力学些别的，感觉实习最大收获是在 push 下学会了 git 的操作。
 
 被辞后面试了两家，他们提的问题有一半是扯过去的，深感积累不足。但每天都好劳累。美赛最后一天熬了个通宵，后面几天看看 B 站摆烂，处理掉一月遗留下来的破事。现在差不多结束了。自己把自己扔到外面一圈后灰溜溜的回来了，目前大概处于信心受挫重建的阶段，加油
+
+然后一切尽归于白......
+<iframe width="100%" height="468" src="//player.bilibili.com/player.html?bvid=BV1UH4y1k7nB&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" &autoplay=0> </iframe>
