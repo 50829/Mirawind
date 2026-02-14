@@ -3,8 +3,8 @@ title: 我的第一篇博客
 published: 2025-12-24
 cover: ./birth-cover.jpg
 pinned: false
-tags: []
-category: Daily Life
+tags: ["博客"]
+category: 生活碎片
 draft: false
 ---
 

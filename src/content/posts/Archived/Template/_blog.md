@@ -7,6 +7,7 @@ encrypted: false
 pinned: false
 password:
 tags: 
+ - 
 category: 
 draft: false
 ---
