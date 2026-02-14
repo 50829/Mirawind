@@ -14,15 +14,14 @@ interface Props {
 
 const { class: className, style } = Astro.props;
 
-// 从配置中获取站点开始日期
 const siteStartDate = siteConfig.siteStartDate || "2025-12-24";
 
-// 获取所有文章
+// 获取所有文章、分类和标签
 const posts = await getSortedPosts();
 const categories = await getCategoryList();
 const tags = await getTagList();
 
-// 计算总字数 - 使用 render 获取 remarkPluginFrontmatter
+// 计算总字数
 let totalWords = 0;
 for (const post of posts) {
     try {
@@ -31,7 +30,7 @@ for (const post of posts) {
             totalWords += remarkPluginFrontmatter.words;
         }
     } catch {
-        // 如果 render 失败，使用备用方法估算
+        // 备用方法：手动估算字数
         if (post.body) {
             const text = post.body.replace(/```[\s\S]*?```/g, "").replace(/`[^`]+`/g, "");
             const cjkPattern = /[\u4e00-\u9fa5\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g;
@@ -49,30 +48,26 @@ function formatNumber(num: number): string {
     return num.toLocaleString();
 }
 
-// 获取最新文章日期 - 考虑所有帖子的 updated 和 published 日期
+// 计算天数差（毫秒转天数）
+function calculateDaysDiff(from: Date, to: Date): number {
+    return Math.floor(Math.abs(to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+// 获取最新文章日期
 const lastPostDate = posts.reduce((latestDate, post) => {
-    // 对于每个帖子，取 updated 或 published 中较新的一个
     const postLatestDate = post.data.updated || post.data.published;
-    
-    // 如果还没有最新日期，或者当前帖子的日期更新
     if (!latestDate || postLatestDate > latestDate) {
         return postLatestDate;
     }
     return latestDate;
 }, null as Date | null);
 
-// 计算网站运行天数
+// 初始值（SSR渲染用，客户端会重新计算）
 const today = new Date();
-const startDate = new Date(siteStartDate);
-const diffTime = Math.abs(today.getTime() - startDate.getTime());
-const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+const diffDays = Math.ceil(calculateDaysDiff(new Date(siteStartDate), today));
+const daysSinceLastUpdate = lastPostDate ? calculateDaysDiff(lastPostDate, today) : 0;
 
-// 计算网站最后更新距今的天数
-const daysSinceLastUpdate = lastPostDate 
-    ? Math.floor(Math.abs(today.getTime() - lastPostDate.getTime()) / (1000 * 60 * 60 * 24)) 
-    : 0;
-
-// 统计数据配置
+// 统计数据
 const stats = [
     {
         icon: "material-symbols:article-outline",
@@ -119,6 +114,8 @@ const stats = [
     id="site-stats"
     class={className}
     style={style}
+    data-site-start-date={siteStartDate}
+    data-last-post-date={lastPostDate?.toISOString()}
 >
     <div class="flex flex-col gap-1">
         {
@@ -152,4 +149,53 @@ const stats = [
         }
     </div>
 </WidgetLayout>
+
+<script is:inline>
+    (function () {
+        // 计算天数差
+        function calculateDaysDiff(from, to) {
+            return Math.floor(Math.abs(to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+        }
+
+        // 更新动态统计数据
+        function updateSiteStats() {
+            const statsWidget = document.getElementById("site-stats");
+            if (!statsWidget) return;
+
+            const siteStartDate = statsWidget.getAttribute("data-site-start-date");
+            const lastPostDateStr = statsWidget.getAttribute("data-last-post-date");
+            const today = new Date();
+
+            // 更新网站运行天数
+            if (siteStartDate) {
+                const startDate = new Date(siteStartDate);
+                const runningDays = Math.ceil(calculateDaysDiff(startDate, today));
+                const runningDaysElement = document.querySelector('[data-stat-id="running-days"]');
+                if (runningDaysElement) {
+                    runningDaysElement.textContent = runningDays.toString();
+                }
+            }
+
+            // 更新最后更新天数
+            if (lastPostDateStr) {
+                const lastPostDate = new Date(lastPostDateStr);
+                const daysSinceLastUpdate = calculateDaysDiff(lastPostDate, today);
+                const lastUpdateElement = document.querySelector('[data-stat-id="last-update"]');
+                if (lastUpdateElement) {
+                    lastUpdateElement.textContent = daysSinceLastUpdate.toString();
+                }
+            }
+        }
+
+        // 初始化：页面加载时执行
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", updateSiteStats);
+        } else {
+            updateSiteStats();
+        }
+
+        // 支持 Astro 页面导航（View Transitions）
+        document.addEventListener("astro:page-load", updateSiteStats);
+    })();
+</script>
 
