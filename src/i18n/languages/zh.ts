@@ -24,6 +24,7 @@ export const zh: Translation = {
 
     // 统计
     [Key.pageViews]: "浏览量",
+    [Key.visits]: "访问次数",
     [Key.visitors]: "访客",
     [Key.statsLoading]: "统计加载中...",
     [Key.statsError]: "统计不可用",

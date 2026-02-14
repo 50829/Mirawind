@@ -24,6 +24,7 @@ export const en: Translation = {
 
     // Page Stats
     [Key.pageViews]: "Views",
+    [Key.visits]: "Visits",
     [Key.visitors]: "Visitors",
     [Key.statsLoading]: "Loading stats...",
     [Key.statsError]: "Stats unavailable",

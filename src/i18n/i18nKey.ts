@@ -20,6 +20,7 @@ enum I18nKey {
 
     // 统计
     pageViews = "pageViews",
+    visits = "visits",
     visitors = "visitors",
     statsLoading = "statsLoading",
     statsError = "statsError",

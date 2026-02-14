@@ -24,6 +24,7 @@ export const ja: Translation = {
 
     // 統計
     [Key.pageViews]: "閲覧数",
+    [Key.visits]: "訪問数",
     [Key.visitors]: "訪問者",
     [Key.statsLoading]: "統計を読み込み中...",
     [Key.statsError]: "統計を利用できません",

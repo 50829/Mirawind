@@ -58,10 +58,12 @@ const id = `profile-${side}`;
                  data-umami-base-url={umamiBaseUrl}
                  data-umami-api-key={umamiApiKey}
                  data-umami-website-id={umamiWebsiteId}
+                 data-i18n-visits={i18n(I18nKey.visits)}
+                 data-i18n-visitors={i18n(I18nKey.visitors)}
                  data-i18n-error={i18n(I18nKey.statsError)}
             >
                 <Icon name="fa6-solid:eye" class="inline-block mr-1 text-gray-400 text-sm align-middle" />
-                <span id="site-stats-display">统计加载中...</span>
+                <span id="site-stats-display">{i18n(I18nKey.statsLoading)}</span>
             </div>
         )}
     </div>
@@ -72,8 +74,8 @@ const id = `profile-${side}`;
         import "@/plugins/umami-share";
 
         // 客户端统计文案生成函数
-        function generateStatsText(visits: number, visitors: number) {
-            return `访问次数 ${visits} · 访客 ${visitors}`;
+        function generateStatsText(visits: number, visitors: number, i18nVisits: string | undefined, i18nVisitors: string | undefined) {
+            return `${i18nVisits || "Visits"} ${visits} · ${i18nVisitors || "Visitors"} ${visitors}`;
         }
         // 获取访问量统计
         async function fetchSiteStats() {
@@ -83,6 +85,8 @@ const id = `profile-${side}`;
             const umamiBaseUrl = container.dataset.umamiBaseUrl;
             const umamiApiKey = container.dataset.umamiApiKey;
             const umamiWebsiteId = container.dataset.umamiWebsiteId;
+            const i18nVisits = container.dataset.i18nVisits;
+            const i18nVisitors = container.dataset.i18nVisitors;
             const i18nError = container.dataset.i18nError;
 
             try {
@@ -95,7 +99,7 @@ const id = `profile-${side}`;
                 // 更新页面上的显示内容
                 const displayElement = document.getElementById('site-stats-display');
                 if (displayElement) {
-                    displayElement.textContent = generateStatsText(visits, visitors);
+                    displayElement.textContent = generateStatsText(visits, visitors, i18nVisits, i18nVisitors);
                 }
             } catch (error) {
                 console.error('Error fetching site stats:', error);
