@@ -1,18 +1,28 @@
 ---
 
-## How to Apply
+## 🍀本站信息
 
-Please send your website information to: xxx@xxx.com
+欢迎互换友链喵！请使用以下信息添加本网站友链：
 
-Email Subject:
 ```
-Request to Add Friend
+站点名称: Mirawind's Blog
+站点描述: 相寻梦里路，飞雨落花中
+站点链接: https://mirawind.top/
+头像链接: https://avatars.githubusercontent.com/u/53815918?v=4
 ```
 
-Email Content (Template):
+## ✉️申请友链
+
+请将您的网站信息发送邮件至：hydronmezo@gmail.com
+
+邮件标题：友链申请 - [您的站点名称]
+
+邮件内容模板：
+
 ```
-Site Name: [Your Site Name]
-Site Desc: [Your Site Description]
-Site Link: [Your Site Link]
-Avatar Link: [Your Avatar Link]
+站点信息：
+站点名称：[您的站点名称]
+站点描述：[您的站点描述]
+站点链接：[您的站点链接]
+头像链接：[您的头像链接]
 ```
