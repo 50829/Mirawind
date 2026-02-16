@@ -53,8 +53,7 @@ const id = `profile-${side}`;
         </div>
         {umamiEnabled && (
             <hr class="my-2 border-t border-dashed border-gray-300 dark:border-gray-700" />
-            <div class="text-sm text-gray-500 mt-2 text-center"
-                 id="site-stats-container"
+            <div class="text-sm text-gray-500 mt-2 text-center site-stats-container"
                  data-umami-base-url={umamiBaseUrl}
                  data-umami-api-key={umamiApiKey}
                  data-umami-website-id={umamiWebsiteId}
@@ -63,7 +62,7 @@ const id = `profile-${side}`;
                  data-i18n-error={i18n(I18nKey.statsError)}
             >
                 <Icon name="fa6-solid:eye" class="inline-block mr-1 text-gray-400 text-sm align-middle" />
-                <span id="site-stats-display">{i18n(I18nKey.statsLoading)}</span>
+                <span class="site-stats-display">{i18n(I18nKey.statsLoading)}</span>
             </div>
         )}
     </div>
@@ -79,9 +78,11 @@ const id = `profile-${side}`;
         }
         // 获取访问量统计
         async function fetchSiteStats() {
-            const container = document.getElementById('site-stats-container');
-            if (!container) return;
+            const containers = document.querySelectorAll('.site-stats-container');
+            if (containers.length === 0) return;
 
+            // 从第一个容器读取数据属性
+            const container = containers[0] as HTMLElement;
             const umamiBaseUrl = container.dataset.umamiBaseUrl;
             const umamiApiKey = container.dataset.umamiApiKey;
             const umamiWebsiteId = container.dataset.umamiWebsiteId;
@@ -96,17 +97,17 @@ const id = `profile-${side}`;
                 // 从返回的数据中提取访问次数和访客数
                 const visits = stats.visits || 0;
                 const visitors = stats.visitors || 0;
-                // 更新页面上的显示内容
-                const displayElement = document.getElementById('site-stats-display');
-                if (displayElement) {
-                    displayElement.textContent = generateStatsText(visits, visitors, i18nVisits, i18nVisitors);
-                }
+                // 更新所有实例的显示内容
+                const displayElements = document.querySelectorAll('.site-stats-display');
+                displayElements.forEach(el => {
+                    el.textContent = generateStatsText(visits, visitors, i18nVisits, i18nVisitors);
+                });
             } catch (error) {
                 console.error('Error fetching site stats:', error);
-                const displayElement = document.getElementById('site-stats-display');
-                if (displayElement) {
-                    displayElement.textContent = i18nError || null;
-                }
+                const displayElements = document.querySelectorAll('.site-stats-display');
+                displayElements.forEach(el => {
+                    el.textContent = i18nError || null;
+                });
             }
         }
         // 页面加载完成后获取统计数据
