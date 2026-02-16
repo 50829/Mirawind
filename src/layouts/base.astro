@@ -279,8 +279,11 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
     .enable-banner.is-home #main-grid {
         translate: 0 var(--banner-height-extend);
     }
-    .enable-banner #top-row {
+    .enable-banner.is-home #top-row {
         height: calc(var(--banner-height-home) - 5.5rem);
+    }
+    .enable-banner:not(.is-home) #top-row {
+        height: calc(var(--banner-height) - 5.5rem);
     }
     .enable-banner.is-home #sidebar-sticky {
         top: calc(1rem - var(--banner-height-extend)) !important;

@@ -38,6 +38,13 @@ html.banner-hiding #sidebar-sticky {
     top: 1rem !important;
 }
 
+/* 导航栏隐藏状态 - 当滚动超过banner区域时隐藏导航栏 */
+#navbar-wrapper.navbar-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* 切换模式时隐藏标题，以便后续触发动画 */
 html.banner-transitioning .banner-title,
 html.banner-transitioning .banner-subtitle {
