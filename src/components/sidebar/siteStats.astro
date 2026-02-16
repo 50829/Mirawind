@@ -50,7 +50,10 @@ function formatNumber(num: number): string {
 
 // 计算天数差（毫秒转天数）
 function calculateDaysDiff(from: Date, to: Date): number {
-    return Math.floor(Math.abs(to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+    const fromDate = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    const toDate = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+    const diff = Math.floor((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, diff);
 }
 
 // 获取最新文章日期
@@ -66,6 +69,7 @@ const lastPostDate = posts.reduce((latestDate, post) => {
 const today = new Date();
 const diffDays = Math.ceil(calculateDaysDiff(new Date(siteStartDate), today));
 const daysSinceLastUpdate = lastPostDate ? calculateDaysDiff(lastPostDate, today) : 0;
+const lastPostDateIso = lastPostDate?.toISOString() ?? "";
 
 // 统计数据
 const stats = [
@@ -150,41 +154,50 @@ const stats = [
     </div>
 </WidgetLayout>
 
-<script is:inline>
+<script is:inline define:vars={{ siteStartDate, lastPostDateIso }}>
     (function () {
         // 计算天数差
         function calculateDaysDiff(from, to) {
-            return Math.floor(Math.abs(to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+            const fromDate = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+            const toDate = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+            const diff = Math.floor((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+            return Math.max(0, diff);
         }
 
         // 更新动态统计数据
         function updateSiteStats() {
-            const statsWidget = document.getElementById("site-stats");
-            if (!statsWidget) return;
-
-            const siteStartDate = statsWidget.getAttribute("data-site-start-date");
-            const lastPostDateStr = statsWidget.getAttribute("data-last-post-date");
             const today = new Date();
+            const statsWidgets = document.querySelectorAll('#site-stats');
+            if (!statsWidgets.length) return;
 
-            // 更新网站运行天数
-            if (siteStartDate) {
-                const startDate = new Date(siteStartDate);
-                const runningDays = Math.ceil(calculateDaysDiff(startDate, today));
-                const runningDaysElement = document.querySelector('[data-stat-id="running-days"]');
-                if (runningDaysElement) {
-                    runningDaysElement.textContent = runningDays.toString();
-                }
-            }
+            statsWidgets.forEach((statsWidget) => {
+                const siteStartDateAttr = statsWidget.getAttribute("data-site-start-date") || siteStartDate;
+                const lastPostDateStr = statsWidget.getAttribute("data-last-post-date") || lastPostDateIso;
 
-            // 更新最后更新天数
-            if (lastPostDateStr) {
-                const lastPostDate = new Date(lastPostDateStr);
-                const daysSinceLastUpdate = calculateDaysDiff(lastPostDate, today);
-                const lastUpdateElement = document.querySelector('[data-stat-id="last-update"]');
-                if (lastUpdateElement) {
-                    lastUpdateElement.textContent = daysSinceLastUpdate.toString();
+                // 更新网站运行天数
+                if (siteStartDateAttr) {
+                    const startDate = new Date(siteStartDateAttr);
+                    if (!Number.isNaN(startDate.getTime())) {
+                        const runningDays = Math.ceil(calculateDaysDiff(startDate, today));
+                        const runningDaysElement = statsWidget.querySelector('[data-stat-id="running-days"]');
+                        if (runningDaysElement) {
+                            runningDaysElement.textContent = runningDays.toString();
+                        }
+                    }
                 }
-            }
+
+                // 更新最后更新天数
+                if (lastPostDateStr) {
+                    const lastPostDate = new Date(lastPostDateStr);
+                    if (!Number.isNaN(lastPostDate.getTime())) {
+                        const daysSinceLastUpdate = calculateDaysDiff(lastPostDate, today);
+                        const lastUpdateElement = statsWidget.querySelector('[data-stat-id="last-update"]');
+                        if (lastUpdateElement) {
+                            lastUpdateElement.textContent = daysSinceLastUpdate.toString();
+                        }
+                    }
+                }
+            });
         }
 
         // 初始化：页面加载时执行
