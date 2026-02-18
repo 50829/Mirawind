@@ -55,6 +55,7 @@ const linkPresetNameMap: Record<string, LinkPreset> = {
     Anime: LinkPreset.Anime,
     About: LinkPreset.About,
     Friends: LinkPreset.Friends,
+    Resources: LinkPreset.Resources,
 };
 
 // 标准化单个导航链接

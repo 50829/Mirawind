@@ -7,6 +7,8 @@ enum I18nKey {
     archive = "archive",
     about = "about",
     search = "search",
+    resources = "resources",
+    resourcesSubtitle = "resourcesSubtitle",
 
     // 文章
     tags = "tags",

@@ -11,6 +11,8 @@ export const zh: Translation = {
     [Key.archive]: "归档",
     [Key.about]: "关于",
     [Key.search]: "搜索",
+    [Key.resources]: "资源",
+    [Key.resourcesSubtitle]: "实验报告、复习资料等资源分享",
 
     // 文章
     [Key.tags]: "标签",

@@ -171,29 +171,31 @@ navbar:
             "Home"
         - # 一级导航链接 - 归档 (预设)
             "Archive"
-        - # 一级导航链接 - 展览 (自定义)
-            # 导航名称
-            name: "Exhibition"
-            # 导航链接
-            url: "/exhibition/"
-            # 导航图标
-            icon: "material-symbols:person"
-            # 导航描述
-            description: "A collection of my creative works and experiences"
-            # 子链接
-            children:
-                - # 二级导航链接 - 项目 (预设)
-                    "Projects"
-                - # 二级导航链接 - 技能 (预设)
-                    "Skills"
-                - # 二级导航链接 - 历程 (预设)
-                    "Timeline"
-                - # 二级导航链接 - 日记 (预设)
-                    "Diary"
-                - # 二级导航链接 - 相册 (预设)
-                    "Albums"
-                - # 二级导航链接 - 动画 (预设)
-                    "Anime"
+        # - # 一级导航链接 - 展览 (自定义)
+        #     # 导航名称
+        #     name: "Exhibition"
+        #     # 导航链接
+        #     url: "/exhibition/"
+        #     # 导航图标
+        #     icon: "material-symbols:person"
+        #     # 导航描述
+        #     description: "A collection of my creative works and experiences"
+        #     # 子链接
+        #     children:
+        #         - # 二级导航链接 - 项目 (预设)
+        #             "Projects"
+        #         - # 二级导航链接 - 技能 (预设)
+        #             "Skills"
+        #         - # 二级导航链接 - 历程 (预设)
+        #             "Timeline"
+        #         - # 二级导航链接 - 日记 (预设)
+        #             "Diary"
+        #         - # 二级导航链接 - 相册 (预设)
+        #             "Albums"
+        #         - # 二级导航链接 - 动画 (预设)
+        #             "Anime"
+        - # 一级导航链接 - 资源 (预设)
+            "Resources"
         - # 一级导航链接 - 好友 (预设)
             "Friends"
         - # 一级导航链接 - 关于 (预设)

@@ -1,0 +1,35 @@
+---
+export const prerender = true;
+
+
+import { getEntry, render } from "astro:content";
+
+import { LinkPresets } from "@constants/link-presets";
+import { LinkPreset } from "@/types/config";
+import Markdown from "@components/common/markdown.astro";
+import GridLayout from "@layouts/grid.astro";
+import BackwardButton from "@components/backwardButton.astro";
+
+
+const pageTitle = LinkPresets[LinkPreset.Resources].name;
+const pageDescription = LinkPresets[LinkPreset.Resources].description;
+
+const resourcesPost = await getEntry("spec", "resources");
+
+if (!resourcesPost) {
+    throw new Error("Resources page content not found");
+}
+
+const { Content } = await render(resourcesPost);
+---
+
+<GridLayout title={pageTitle} description={pageDescription}>
+    <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full ">
+            <BackwardButton currentPath={Astro.url.pathname} />
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
+        </div>
+    </div>
+</GridLayout>

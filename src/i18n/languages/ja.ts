@@ -11,6 +11,8 @@ export const ja: Translation = {
     [Key.archive]: "アーカイブ",
     [Key.about]: "について",
     [Key.search]: "検索",
+    [Key.resources]: "リソース",
+    [Key.resourcesSubtitle]: "実験レポート、復習資料など",
 
     // 投稿
     [Key.tags]: "タグ",

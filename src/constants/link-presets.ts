@@ -64,4 +64,10 @@ export const LinkPresets: { [key in LinkPreset]: NavbarLink } = {
         icon: "material-symbols:info",
         description: i18n(I18nKey.about),
     },
+    [LinkPreset.Resources]: {
+        name: i18n(I18nKey.resources),
+        url: "/resources/",
+        icon: "material-symbols:folder-open",
+        description: i18n(I18nKey.resourcesSubtitle),
+    },
 };
