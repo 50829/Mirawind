@@ -15,11 +15,20 @@ const { config, isHomePage, class: className } = Astro.props;
 
 // 获取当前设备类型的图片源
 const getImageSources = () => {
-    const toArray = (src: any) => [src || []].flat();
+    const toArray = (input: string | string[] | undefined): string[] =>
+        [input ?? []]
+            .flat()
+            .filter((item): item is string => typeof item === "string" && item.length > 0);
+
     const { src } = config;
     const isObj = src && typeof src === "object" && !Array.isArray(src);
-    const desktop = toArray(isObj ? (src as any).desktop : src);
-    const mobile = toArray(isObj ? (src as any).mobile : src);
+    const srcByDevice = isObj
+        ? (src as { desktop?: string | string[]; mobile?: string | string[] })
+        : undefined;
+
+    const desktop = toArray(isObj ? srcByDevice?.desktop : src);
+    const mobile = toArray(isObj ? srcByDevice?.mobile : src);
+
     return {
         desktop: desktop.length > 0 ? desktop : mobile,
         mobile: mobile.length > 0 ? mobile : desktop,
@@ -63,6 +72,7 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                             src={src}
                             position={config.position}
                             loading={index === 0 ? "eager" : "lazy"}
+                            fetchpriority={index === 0 ? "high" : "low"}
                         />
                     </li>
                 ))}
@@ -78,6 +88,7 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                             src={src}
                             position={config.position}
                             loading={index === 0 ? "eager" : "lazy"}
+                            fetchpriority={index === 0 ? "high" : "low"}
                         />
                     </li>
                 ))}
@@ -91,6 +102,7 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                 src={imageSources.mobile[0] || imageSources.desktop[0] || ''}
                 position={config.position}
                 loading="eager"
+                fetchpriority="high"
             />
             <ImageWrapper
                 id="banner"
@@ -99,6 +111,7 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
                 src={imageSources.desktop[0] || imageSources.mobile[0] || ''}
                 position={config.position}
                 loading="eager"
+                fetchpriority="high"
             />
         </div>
     )}

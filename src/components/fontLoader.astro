@@ -54,10 +54,36 @@ const getFontFormat = (src: string) => {
     return "";
 };
 
-const fontEntries = Object.entries(resolvedFontSystem.fonts).map(([id, font]) => ({
-    id,
-    ...font,
-}));
+const firstScreenRoles = [
+    "body",
+    "context",
+    "heading",
+    "title",
+    "subtitle",
+    "ui",
+    "caption",
+] as const;
+
+type FirstScreenRole = (typeof firstScreenRoles)[number];
+
+const currentLangRoles = resolvedFontSystem.languageRoles[siteConfig.lang];
+
+const firstScreenFontIds = new Set(
+    firstScreenRoles.flatMap((role: FirstScreenRole) => {
+        const langAssigned = currentLangRoles?.[role];
+        if (langAssigned && langAssigned.length > 0) {
+            return langAssigned;
+        }
+        return resolvedFontSystem.roles[role];
+    }),
+);
+
+const fontEntries = Object.entries(resolvedFontSystem.fonts)
+    .filter(([id]) => firstScreenFontIds.has(id))
+    .map(([id, font]) => ({
+        id,
+        ...font,
+    }));
 
 const buildRoleStack = (fontIds: string[], bucket: keyof typeof resolvedFontSystem.fallback) => {
     const families = fontIds
