@@ -88,7 +88,7 @@ onDestroy(() => {
 </script>
 
 {#if siteConfig.translate?.enable}
-<div class="relative z-50" onmouseleave={closePanel}>
+<div class="relative z-50" role="group" aria-label="Translation controls" onmouseleave={closePanel}>
     <!-- 翻译按钮 -->
     <button
         aria-label="Language Translation"

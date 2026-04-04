@@ -2,10 +2,16 @@ import { getCollection } from "astro:content";
 import type { APIContext, GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
 import * as fs from "node:fs";
+import path from "node:path";
 import satori from "satori";
 import sharp from "sharp";
 
 import { profileConfig, siteConfig } from "@/config";
+import {
+    ensureGoogleDisplaySwap,
+    extractHttpFontUrl,
+    isCssFontSource,
+} from "@/utils/fontSource";
 import { defaultFavicons } from "@constants/icon";
 
 
@@ -34,18 +40,84 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }));
 };
 
-let fontCache: { regular: Buffer | null; bold: Buffer | null } | null = null;
+let fontCache: { key: string; family: string; regular: Buffer | null; bold: Buffer | null } | null = null;
 
-async function fetchNotoSansSCFonts() {
-    if (fontCache) {
+function resolvePublicAssetPath(src: string): string {
+    return path.resolve(process.cwd(), "public", src.replace(/^\/+/, ""));
+}
+
+function readPublicAssetBuffer(src: string | undefined): Buffer | null {
+    if (!src) {
+        return null;
+    }
+
+    const assetPath = resolvePublicAssetPath(src);
+
+    try {
+        return fs.readFileSync(assetPath);
+    } catch (err) {
+        console.warn(`Failed to read public asset: ${src}`, err);
+        return null;
+    }
+}
+
+function pickOgFontConfig() {
+    const resolved = siteConfig.resolvedFontSystem;
+    if (!resolved) {
+        return null;
+    }
+
+    const candidateIds = [
+        ...resolved.roles.heading,
+        ...resolved.roles.body,
+        ...Object.keys(resolved.fonts),
+    ];
+
+    for (const fontId of candidateIds) {
+        const font = resolved.fonts[fontId];
+        if (font?.src && font.family) {
+            return {
+                key: fontId,
+                family: font.family,
+                src: font.src,
+            };
+        }
+    }
+
+    return null;
+}
+
+async function loadOgFontsFromConfig() {
+    const fontConfig = pickOgFontConfig();
+    if (!fontConfig) {
+        return { family: "sans-serif", regular: null, bold: null };
+    }
+
+    const cacheKey = `${fontConfig.key}:${fontConfig.family}:${fontConfig.src}`;
+
+    if (fontCache?.key === cacheKey) {
         return fontCache;
     }
 
     try {
-        const cssResp = await fetch(
-            "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap",
-        );
-        if (!cssResp.ok) throw new Error("Failed to fetch Google Fonts CSS");
+        if (!isCssFontSource(fontConfig.src)) {
+            const localFontPath = resolvePublicAssetPath(fontConfig.src);
+            const buffer = fs.readFileSync(localFontPath);
+            fontCache = {
+                key: cacheKey,
+                family: fontConfig.family,
+                regular: buffer,
+                bold: buffer,
+            };
+            return fontCache;
+        }
+
+        const cssUrl = ensureGoogleDisplaySwap(fontConfig.src);
+
+        const cssResp = await fetch(cssUrl);
+        if (!cssResp.ok) {
+            throw new Error("Failed to fetch font css");
+        }
         const cssText = await cssResp.text();
 
         const getUrlForWeight = (weight: number) => {
@@ -54,42 +126,39 @@ async function fetchNotoSansSCFonts() {
                 "g",
             );
             const match = cssText.match(blockRe);
-            if (!match || match.length === 0) return null;
-            const urlMatch = match[0].match(/url\((https:[^)]+)\)/);
-            return urlMatch ? urlMatch[1] : null;
+            if (!match || match.length === 0) {
+                return null;
+            }
+            return extractHttpFontUrl(match[0]);
         };
 
-        const regularUrl = getUrlForWeight(400);
-        const boldUrl = getUrlForWeight(700);
+        const regularUrl = getUrlForWeight(400) ?? getUrlForWeight(500);
+        const boldUrl = getUrlForWeight(700) ?? getUrlForWeight(600) ?? regularUrl;
 
         if (!regularUrl || !boldUrl) {
-            console.warn(
-                "Could not find font urls in Google Fonts CSS; falling back to no fonts.",
-            );
-            fontCache = { regular: null, bold: null };
-            return fontCache;
+            throw new Error("No downloadable font URL found in css");
         }
 
-        const [rResp, bResp] = await Promise.all([
-            fetch(regularUrl),
-            fetch(boldUrl),
-        ]);
+        const [rResp, bResp] = await Promise.all([fetch(regularUrl), fetch(boldUrl)]);
         if (!rResp.ok || !bResp.ok) {
-            console.warn(
-                "Failed to download font files from Google; falling back to no fonts.",
-            );
-            fontCache = { regular: null, bold: null };
-            return fontCache;
+            throw new Error("Failed to download font files");
         }
 
-        const rBuf = Buffer.from(await rResp.arrayBuffer());
-        const bBuf = Buffer.from(await bResp.arrayBuffer());
-
-        fontCache = { regular: rBuf, bold: bBuf };
+        fontCache = {
+            key: cacheKey,
+            family: fontConfig.family,
+            regular: Buffer.from(await rResp.arrayBuffer()),
+            bold: Buffer.from(await bResp.arrayBuffer()),
+        };
         return fontCache;
     } catch (err) {
-        console.warn("Error fetching fonts:", err);
-        fontCache = { regular: null, bold: null };
+        console.warn("Error loading OG fonts from fontSystem:", err);
+        fontCache = {
+            key: cacheKey,
+            family: fontConfig.family,
+            regular: null,
+            bold: null,
+        };
         return fontCache;
     }
 }
@@ -99,20 +168,18 @@ export async function GET({
 }: APIContext<{ post: CollectionEntry<"posts"> }>) {
     const { post } = props;
 
-    // Try to fetch fonts from Google Fonts (woff2) at runtime.
-    const { regular: fontRegular, bold: fontBold } = await fetchNotoSansSCFonts();
+    const { family: ogFontFamily, regular: fontRegular, bold: fontBold } = await loadOgFontsFromConfig();
 
-    // Avatar + icon: still read from disk (small assets)
-    let avatarPath = `./public${profileConfig.avatar}`;
-    const avatarBuffer = fs.readFileSync(avatarPath);
-    const avatarBase64 = `data:image/png;base64,${avatarBuffer.toString("base64")}`;
-
-    let iconPath = `./public${defaultFavicons[0].src}`;
-    if (siteConfig.favicon.length > 0) {
-        iconPath = `./public${siteConfig.favicon[0].src}`;
+    const iconSrc = siteConfig.favicon[0]?.src ?? defaultFavicons[0].src;
+    const iconBuffer = readPublicAssetBuffer(iconSrc);
+    if (!iconBuffer) {
+        throw new Error(`OG icon asset not found: ${iconSrc}`);
     }
-    const iconBuffer = fs.readFileSync(iconPath);
     const iconBase64 = `data:image/png;base64,${iconBuffer.toString("base64")}`;
+
+    // Avatar falls back to icon when not configured or unreadable.
+    const avatarBuffer = readPublicAssetBuffer(profileConfig.avatar) ?? iconBuffer;
+    const avatarBase64 = `data:image/png;base64,${avatarBuffer.toString("base64")}`;
 
     const hue = siteConfig.themeColor.hue;
     const primaryColor = `hsl(${hue}, 90%, 65%)`;
@@ -139,7 +206,7 @@ export async function GET({
                 flexDirection: "column",
                 backgroundColor: backgroundColor,
                 fontFamily:
-                    '"Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    `"${ogFontFamily}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`,
                 padding: "60px",
             },
             children: [
@@ -310,7 +377,7 @@ export async function GET({
     const fonts: FontOptions[] = [];
     if (fontRegular) {
         fonts.push({
-            name: "Noto Sans SC",
+            name: ogFontFamily,
             data: fontRegular,
             weight: 400,
             style: "normal",
@@ -318,7 +385,7 @@ export async function GET({
     }
     if (fontBold) {
         fonts.push({
-            name: "Noto Sans SC",
+            name: ogFontFamily,
             data: fontBold,
             weight: 700,
             style: "normal",

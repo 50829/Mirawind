@@ -1,11 +1,15 @@
 @reference "tailwindcss";
 
 .custom-md {
+    font-family: var(--font-context);
+
     h1 {
         @apply text-3xl;
     }
 
     h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+
         .anchor {
             @apply transition! -m-0.5! ml-[0.2ch]! p-0.5! select-none! opacity-0! no-underline!;
 
@@ -37,7 +41,7 @@
     code {
         @apply bg-(--inline-code-bg) text-(--inline-code-color) px-1 py-0.5 rounded-md overflow-hidden;
 
-        font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+        font-family: var(--font-code);
         &:before {
             content:none;
         }
@@ -124,6 +128,7 @@
     blockquote {
         @apply not-italic border-transparent relative;
         font-weight: inherit;
+        font-family: var(--font-blockquote);
 
         &:before {
             @apply content-[''] absolute -left-1 block transition bg-(--btn-regular-bg) h-full w-1 rounded-full;

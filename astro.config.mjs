@@ -66,7 +66,7 @@ export default defineConfig({
             animateHistoryBrowsing: false,
             skipPopStateHandling: (event) => {
                 // Skip anchor link handling, let the browser handle it natively
-                return event.state && event.state.url && event.state.url.includes("#");
+                return event.state?.url?.includes("#");
             },
         }),
         icon({
@@ -100,8 +100,7 @@ export default defineConfig({
                 borderRadius: "0.75rem",
                 borderColor: "none",
                 codeFontSize: "0.875rem",
-                codeFontFamily:
-                    "'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+                codeFontFamily: "var(--font-code)",
                 codeLineHeight: "1.5rem",
                 frames: {
                     editorBackground: "var(--codeblock-bg)",
@@ -197,6 +196,15 @@ export default defineConfig({
                 "astro:env",
                 "astro:env/server",
                 "astro:env/client",
+                // Swup client modules can be unstable with optimize deps cache on some setups
+                "@swup/astro",
+                "@swup/astro/serialise",
+                "@swup/astro/idle",
+                "@swup/astro/client/Swup",
+                "@swup/astro/client/SwupA11yPlugin",
+                "@swup/astro/client/SwupPreloadPlugin",
+                "@swup/astro/client/SwupHeadPlugin",
+                "@swup/astro/client/SwupScriptsPlugin",
             ],
         },
         build: {

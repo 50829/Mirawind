@@ -16,6 +16,11 @@
     --breakpoint-lg: 1280px;
     --breakpoint-xl: 1920px;
 
+    /* Bind Tailwind default font tokens to the runtime semantic font system */
+    --font-sans: var(--font-body, var(--font-family-fallback-sans));
+    --font-serif: var(--font-blockquote, var(--font-family-fallback-serif));
+    --font-mono: var(--font-code, var(--font-family-fallback-mono));
+
     --transition-duration-300: 300ms;
     --transition-duration-600: 600ms;
 }

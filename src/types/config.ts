@@ -43,6 +43,71 @@ export type LoadingOverlayConfig = {
 };
 
 
+export type FontRole =
+    | "body"
+    | "context"
+    | "heading"
+    | "title"
+    | "subtitle"
+    | "ui"
+    | "code"
+    | "caption"
+    | "blockquote";
+
+
+export type FontDefinition = {
+    // 字体源 (字体 CSS 链接 | 字体文件路径)
+    src: string;
+    // 字体名 (font-family)
+    family: string;
+    // 预加载字体
+    preload?: boolean;
+    // @font-face 的 font-display
+    display?: "auto" | "block" | "swap" | "fallback" | "optional";
+    // @font-face 的 font-weight
+    weight?: string | number;
+    // @font-face 的 font-style
+    style?: "normal" | "italic" | "oblique";
+};
+
+
+export type FontRoleAssignment = string | string[];
+
+
+export type FontRoleMap = Partial<Record<FontRole, FontRoleAssignment>>;
+
+
+export type FontSystemConfig = {
+    // 字体注册表，键为字体 id
+    fonts: Record<string, FontDefinition>;
+    // 全局角色映射
+    roles?: FontRoleMap;
+    // 按语言覆盖角色映射，如 zh/en/ja
+    languageRoles?: Record<string, FontRoleMap>;
+    // 全局回退链
+    fallback?: {
+        sans?: string[];
+        serif?: string[];
+        mono?: string[];
+    };
+};
+
+
+export type ResolvedFontRoleMap = Record<FontRole, string[]>;
+
+
+export type ResolvedFontSystem = {
+    fonts: Record<string, FontDefinition>;
+    roles: ResolvedFontRoleMap;
+    languageRoles: Record<string, ResolvedFontRoleMap>;
+    fallback: {
+        sans: string[];
+        serif: string[];
+        mono: string[];
+    };
+};
+
+
 // 站点配置
 export type SiteConfig = {
     // 站点 URL (以斜杠结尾) 
@@ -74,15 +139,10 @@ export type SiteConfig = {
     timeZone: -12 | -11 | -10 | -9 | -8 | -7 | -6 | -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
     // 站点开始日期（用于计算运行天数）
     siteStartDate?: string;
-    // 字体配置
-    font: {
-        [key: string]: {
-            // 字体源 (字体 CSS 链接 | 字体文件路径)
-            src: string;
-            // 字体名 (font-family)
-            family: string;
-        };
-    };
+    // 新版字体系统配置
+    fontSystem: FontSystemConfig;
+    // 运行时归一化后的字体系统
+    resolvedFontSystem?: ResolvedFontSystem;
     // 主题色配置
     themeColor: {
         // 主题色的默认色相 (0-360)
@@ -95,19 +155,19 @@ export type SiteConfig = {
         // 模式
         mode: "fullscreen" | "banner" | "none";
         src: // 图片源配置 (fullscreen 和 banner 模式共享) 
-        | string
-        | string[]
-        | {
-            desktop?: string | string[];
-            mobile?: string | string[];
-        };
+            | string
+            | string[]
+            | {
+                desktop?: string | string[];
+                mobile?: string | string[];
+            };
         // 壁纸位置，等同于 object-position
         position?: "top" | "center" | "bottom";
         // 轮播配置 (fullscreen 和 banner 模式共享)
         carousel?: {
             // 为多张图片启用轮播，否则随机显示一张图片
             enable: boolean;
-            // 轮播间隔时间 (s) 
+            // 轮播间隔时间 (s)
             interval: number;
             // 启用 Ken Burns 效果
             kenBurns?: boolean;
@@ -270,7 +330,7 @@ export type WidgetComponentConfig = {
         collapseThreshold?: number;
     };
     // 自定义属性
-    customProps?: Record<string, any>;
+    customProps?: Record<string, unknown>;
 };
 
 

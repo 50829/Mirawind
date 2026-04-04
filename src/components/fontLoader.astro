@@ -1,36 +1,131 @@
 ---
 import { siteConfig } from "@/config";
+import { ensureGoogleDisplaySwap, isCssFontSource } from "@/utils/fontSource";
 
 
-// Get all fonts from config
-const fontConfig = siteConfig.font || {};
-const fonts = Object.entries(fontConfig).map(([id, font]) => (
-    {id, ...font}
-));
+const resolvedFontSystem = siteConfig.resolvedFontSystem;
 
-// Generate font-family strings
-const selectedFontFamilies = fonts
-  .filter(font => font && font.family)
-  .map(font => `"${font.family}"`);
+if (!resolvedFontSystem) {
+    throw new Error("resolvedFontSystem is required but missing.");
+}
 
-const fallbacks = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
-const customFontFamily = selectedFontFamilies.join(", ");
-const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` : fallbacks;
+const roleFallbackBucket = {
+    body: "sans",
+    context: "sans",
+    heading: "sans",
+    title: "sans",
+    subtitle: "sans",
+    ui: "sans",
+    code: "mono",
+    caption: "sans",
+    blockquote: "serif",
+} as const;
+
+const quoteFamily = (family: string) => `"${family.replace(/"/g, '\\"')}"`;
+
+const normalizeFallbackToken = (token: string) => {
+    const trimmed = token.trim();
+    const alreadyQuoted =
+        (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+        (trimmed.startsWith("'") && trimmed.endsWith("'"));
+    if (alreadyQuoted || trimmed.includes("(") || trimmed.includes("var(")) {
+        return trimmed;
+    }
+    if (trimmed.includes(" ")) {
+        return quoteFamily(trimmed);
+    }
+    return trimmed;
+};
+
+const encodeFontUrl = (src: string) => {
+    try {
+        return encodeURI(src);
+    } catch {
+        return src;
+    }
+};
+
+const getFontFormat = (src: string) => {
+    const lowerSrc = src.toLowerCase();
+    if (lowerSrc.endsWith(".woff2")) return "woff2";
+    if (lowerSrc.endsWith(".woff")) return "woff";
+    if (lowerSrc.endsWith(".ttf")) return "truetype";
+    if (lowerSrc.endsWith(".otf")) return "opentype";
+    return "";
+};
+
+const fontEntries = Object.entries(resolvedFontSystem.fonts).map(([id, font]) => ({
+    id,
+    ...font,
+}));
+
+const buildRoleStack = (fontIds: string[], bucket: keyof typeof resolvedFontSystem.fallback) => {
+    const families = fontIds
+        .map((fontId) => resolvedFontSystem.fonts[fontId]?.family)
+        .filter(Boolean)
+        .map((family) => quoteFamily(family as string));
+
+    const fallback = resolvedFontSystem.fallback[bucket].map(normalizeFallbackToken);
+    return [...families, ...fallback].join(", ");
+};
+
+const buildRoleVariables = (roles: typeof resolvedFontSystem.roles) => {
+    return {
+        body: buildRoleStack(roles.body, roleFallbackBucket.body),
+        context: buildRoleStack(roles.context, roleFallbackBucket.context),
+        heading: buildRoleStack(roles.heading, roleFallbackBucket.heading),
+        title: buildRoleStack(roles.title, roleFallbackBucket.title),
+        subtitle: buildRoleStack(roles.subtitle, roleFallbackBucket.subtitle),
+        ui: buildRoleStack(roles.ui, roleFallbackBucket.ui),
+        code: buildRoleStack(roles.code, roleFallbackBucket.code),
+        caption: buildRoleStack(roles.caption, roleFallbackBucket.caption),
+        blockquote: buildRoleStack(roles.blockquote, roleFallbackBucket.blockquote),
+    };
+};
+
+const rootRoleVariables = buildRoleVariables(resolvedFontSystem.roles);
+const languageRoleVariables = Object.entries(resolvedFontSystem.languageRoles).map(
+    ([lang, roles]) => ({
+        lang,
+        vars: buildRoleVariables(roles),
+    }),
+);
+
+const fontFaceRules = fontEntries
+    .filter((font) => font.src && !isCssFontSource(font.src))
+    .map((font) => {
+        const encodedSrc = encodeFontUrl(font.src);
+        const format = getFontFormat(font.src);
+        const formatSuffix = format ? ` format("${format}")` : "";
+        const weightLine = font.weight ? `font-weight: ${font.weight};` : "";
+        const styleLine = font.style ? `font-style: ${font.style};` : "";
+        const displayValue = font.display ?? "swap";
+        return `
+            @font-face {
+                font-family: ${quoteFamily(font.family)};
+                src: url("${encodedSrc}")${formatSuffix};
+                font-display: ${displayValue};
+                ${weightLine}
+                ${styleLine}
+            }
+        `;
+    })
+    .join("\n");
+
+const defaultFallbackSans = resolvedFontSystem.fallback.sans.map(normalizeFallbackToken).join(", ");
+const defaultFallbackSerif = resolvedFontSystem.fallback.serif.map(normalizeFallbackToken).join(", ");
+const defaultFallbackMono = resolvedFontSystem.fallback.mono.map(normalizeFallbackToken).join(", ");
 ---
 
 <!-- Font Loading -->
 {
-  fonts.map((font) => {
-    const isCss = font.src.endsWith('.css') || font.src.includes('fonts.googleapis.com') || font.src.includes('unpkg.com');
+  fontEntries.map((font) => {
+    const isCss = isCssFontSource(font.src);
     if (isCss) {
-        // If it's a Google Font, we can append &display=swap if it's not already there
-        let fontSrc = font.src;
-        if (fontSrc.includes('fonts.googleapis.com') && !fontSrc.includes('display=')) {
-            fontSrc += (fontSrc.includes('?') ? '&' : '?') + 'display=swap';
-        }
+        const fontSrc = ensureGoogleDisplaySwap(font.src);
         return (
             <>
-                <link rel="preload" href={fontSrc} as="style" />
+                {font.preload && <link rel="preload" href={fontSrc} as="style" />}
                 <link rel="stylesheet" href={fontSrc} />
             </>
         );
@@ -38,14 +133,7 @@ const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` :
         // Assume it's a font file (ttf, woff, woff2, etc.)
         return (
             <>
-                <link rel="preload" href={font.src} as="font" crossorigin="anonymous" />
-                <style set:html={`
-                    @font-face {
-                        font-family: "${font.family}";
-                        src: url("${font.src}");
-                        font-display: swap;
-                    }
-                `} />
+                {font.preload && <link rel="preload" href={encodeFontUrl(font.src)} as="font" crossorigin="anonymous" />}
             </>
         );
     }
@@ -53,23 +141,78 @@ const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` :
   })
 }
 
-<!-- Apply Global Font Family -->
+<!-- Apply Font-Face Rules -->
+{fontFaceRules && <style is:global set:html={fontFaceRules} />}
+
+<!-- Apply Semantic Font Variables -->
 <style is:global set:html={`
-    :root {
-        --font-family-fallback: ${fallbacks};
-        --global-font-family: ${finalFontFamily};
+    html:root {
+        --font-family-fallback-sans: ${defaultFallbackSans};
+        --font-family-fallback-serif: ${defaultFallbackSerif};
+        --font-family-fallback-mono: ${defaultFallbackMono};
+
+        --font-body: ${rootRoleVariables.body};
+        --font-context: ${rootRoleVariables.context};
+        --font-heading: ${rootRoleVariables.heading};
+        --font-title: ${rootRoleVariables.title};
+        --font-subtitle: ${rootRoleVariables.subtitle};
+        --font-ui: ${rootRoleVariables.ui};
+        --font-code: ${rootRoleVariables.code};
+        --font-caption: ${rootRoleVariables.caption};
+        --font-blockquote: ${rootRoleVariables.blockquote};
+        --global-font-family: var(--font-body);
     }
+
+    ${languageRoleVariables.map(({ lang, vars }) => `
+        html:lang(${lang}) {
+            --font-body: ${vars.body};
+            --font-context: ${vars.context};
+            --font-heading: ${vars.heading};
+            --font-title: ${vars.title};
+            --font-subtitle: ${vars.subtitle};
+            --font-ui: ${vars.ui};
+            --font-code: ${vars.code};
+            --font-caption: ${vars.caption};
+            --font-blockquote: ${vars.blockquote};
+        }
+    `).join("\n")}
 
     /* Apply to body as default */
     body {
-        font-family: var(--global-font-family);
+        font-family: var(--font-body);
+    }
+
+    html {
+        font-family: var(--font-body);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font-family: var(--font-ui);
+    }
+
+    code,
+    pre,
+    kbd,
+    samp {
+        font-family: var(--font-code);
+    }
+
+    blockquote {
+        font-family: var(--font-blockquote);
     }
 
     /* Generate specific classes for each font*/
-    ${fonts.map(font => `
+    ${fontEntries.map(font => `
         .font-${font.id},
         .font-${font.id} * {
-            font-family: "${font.family}", var(--font-family-fallback) !important;
+            font-family: ${quoteFamily(font.family)}, var(--font-family-fallback-sans) !important;
         }
     `).join('\n')}
 `} />

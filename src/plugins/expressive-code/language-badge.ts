@@ -15,7 +15,7 @@ export function pluginLanguageBadge() {
                 }
             },
         },
-        baseStyles: ({}) => `
+        baseStyles: () => `
             .frame[data-language]:not(.has-title):not(.is-terminal) {
                 position: relative;
                 
@@ -26,7 +26,7 @@ export function pluginLanguageBadge() {
                     right: 0.5rem;
                     top: 0.5rem;
                     content: attr(data-language);
-                    font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                    font-family: var(--font-code);
                     font-size: 0.75rem;
                     font-weight: bold;
                     text-transform: uppercase;
