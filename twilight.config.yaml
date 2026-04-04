@@ -44,7 +44,7 @@ site:
                 # 字体名 (font-family)
                 family: "Canger Qinghe"
                 # 首屏预加载
-                preload: true
+                preload: false
                 # @font-face 的 display 策略
                 display: "swap"
 
@@ -58,6 +58,11 @@ site:
                 src: "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
                 family: "Noto Sans SC"
 
+            # CJK 衬线标题字体
+            notoSerifSC:
+                src: "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap"
+                family: "Noto Serif SC"
+
             # 日文字体
             zenMaruGothic:
                 src: "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap"
@@ -69,23 +74,24 @@ site:
                 family: "JetBrains Mono"
 
         # 全局角色映射
+        # 角色值可写字体 id（推荐），也可写已注册的 family 名称
         roles:
-            body: ["cangerQinghe", "notoSansSC"] # 所有其他的字体
-            context: ["cangerQinghe", "notoSansSC"] # md正文内容字体
-            heading: ["cangerQinghe", "notoSansSC"] # md文档二级标题字体
-            title: ["cangerQinghe", "notoSansSC"] # 网站主标题字体
-            subtitle: ["cangerQinghe", "notoSansSC"] # 网站副标题字体
-            ui: ["cangerQinghe", "notoSansSC"] # “分类”下的字体
-            code: ["jetbrainsMono"] # md文档代码字体
-            caption: ["zenMaruGothic", "notoSansSC", "cangerQinghe"] # 主页图片caption字体
-            blockquote: ["cangerQinghe", "notoSansSC"] # md文档 blockquote 字体
+            body: ["Canger Qinghe", "Noto Sans SC"] # 所有其他的字体
+            context: ["Noto Sans SC"] # md正文内容字体
+            heading: ["Canger Qinghe", "Noto Sans SC"] # md文档二级标题字体
+            title: ["Canger Qinghe", "Noto Sans SC"] # 网站主标题字体
+            subtitle: ["Canger Qinghe", "Noto Sans SC"] # 网站副标题字体
+            ui: ["Canger Qinghe", "Noto Sans SC"] # “分类”下的字体
+            code: ["JetBrains Mono"] # md文档代码字体
+            caption: ["Zen Maru Gothic", "Noto Sans SC", "Canger Qinghe"] # 主页图片caption字体
+            blockquote: ["Canger Qinghe", "Noto Sans SC"] # md文档 blockquote 字体
 
         # 语言级覆盖（按 html lang 自动生效）
         languageRoles:
             en:
-                body: ["notoSans", "notoSansSC"]
+                body: ["Noto Sans", "Noto Sans SC"]
             ja:
-                body: ["zenMaruGothic", "notoSansSC"]
+                body: ["Zen Maru Gothic", "Noto Sans SC"]
     # 主题色配置
     themeColor:
         # 主题色的默认色相 (范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345)

@@ -65,6 +65,7 @@ const DEFAULT_FONT_FALLBACK = {
         "-apple-system",
         "BlinkMacSystemFont",
         "Segoe UI",
+        "PingFang SC",
         "Roboto",
         "Oxygen",
         "Ubuntu",
@@ -103,14 +104,24 @@ function normalizeRoleAssignment(value: string | string[] | undefined): string[]
 function resolveRoleMap(
     map: FontRoleMap | undefined,
     availableFontIds: Set<string>,
+    familyToFontId: Map<string, string>,
     primaryFontId: string,
 ): ResolvedFontRoleMap {
     const resolved = {} as ResolvedFontRoleMap;
 
+    const resolveTokenToFontId = (token: string): string | null => {
+        if (availableFontIds.has(token)) {
+            return token;
+        }
+
+        const familyMatch = familyToFontId.get(token.trim().toLowerCase());
+        return familyMatch ?? null;
+    };
+
     for (const role of FONT_ROLES) {
-        const normalized = normalizeRoleAssignment(map?.[role]).filter((fontId) =>
-            availableFontIds.has(fontId),
-        );
+        const normalized = normalizeRoleAssignment(map?.[role])
+            .map((token) => resolveTokenToFontId(token))
+            .filter((fontId): fontId is string => Boolean(fontId));
 
         if (normalized.length > 0) {
             resolved[role] = normalized;
@@ -139,6 +150,14 @@ function resolveFontSystem(site: SiteConfig): ResolvedFontSystem {
 
     const availableFontIds = new Set(fontIds);
     const primaryFontId = fontIds[0];
+    const familyToFontId = new Map<string, string>();
+
+    for (const [fontId, fontDef] of Object.entries(fonts)) {
+        const familyKey = fontDef.family.trim().toLowerCase();
+        if (familyKey && !familyToFontId.has(familyKey)) {
+            familyToFontId.set(familyKey, fontId);
+        }
+    }
 
     const fallback = {
         sans: site.fontSystem.fallback?.sans?.length
@@ -152,7 +171,7 @@ function resolveFontSystem(site: SiteConfig): ResolvedFontSystem {
             : DEFAULT_FONT_FALLBACK.mono,
     };
 
-    const roles = resolveRoleMap(site.fontSystem.roles, availableFontIds, primaryFontId);
+    const roles = resolveRoleMap(site.fontSystem.roles, availableFontIds, familyToFontId, primaryFontId);
     const languageRoles = Object.fromEntries(
         Object.entries(site.fontSystem.languageRoles ?? {}).map(([lang, roleMap]) => [
             lang,
@@ -162,6 +181,7 @@ function resolveFontSystem(site: SiteConfig): ResolvedFontSystem {
                     ...roleMap,
                 },
                 availableFontIds,
+                familyToFontId,
                 primaryFontId,
             ),
         ]),
