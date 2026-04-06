@@ -1,16 +1,14 @@
 ---
 export const prerender = true;
 
-
+import BackwardButton from "@components/backwardButton.astro";
+import ImageWrapper from "@components/common/imageWrapper.astro";
 import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { siteConfig } from "@/config";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import ImageWrapper from "@components/common/imageWrapper.astro";
 import GridLayout from "@layouts/grid.astro";
-import BackwardButton from "@components/backwardButton.astro";
-
+import { siteConfig } from "@/config";
+import { LinkPreset } from "@/types/config";
 
 const pageTitle = LinkPresets[LinkPreset.Anime].name;
 const pageDescription = LinkPresets[LinkPreset.Anime].description;
@@ -20,125 +18,125 @@ const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "";
 const BANGUMI_API_BASE = "https://api.bgm.tv";
 
 // 检查是否配置了有效的 Bangumi 用户 ID
-const isBangumiConfigured = 
-    BANGUMI_USER_ID && 
-    BANGUMI_USER_ID !== "your-bangumi-id" && 
-    BANGUMI_USER_ID !== "your-user-id";
+const isBangumiConfigured =
+	BANGUMI_USER_ID &&
+	BANGUMI_USER_ID !== "your-bangumi-id" &&
+	BANGUMI_USER_ID !== "your-user-id";
 
 // 获取单个条目相关人员信息
 async function fetchSubjectPersons(subjectId: number) {
-    if (!isBangumiConfigured) return [];
-    try {
-        const response = await fetch(
-            `${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`,
-        );
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error(`Error fetching subject ${subjectId} persons:`, error);
-        return [];
-    }
+	if (!isBangumiConfigured) return [];
+	try {
+		const response = await fetch(
+			`${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`,
+		);
+		const data = await response.json();
+		return Array.isArray(data) ? data : [];
+	} catch (error) {
+		console.error(`Error fetching subject ${subjectId} persons:`, error);
+		return [];
+	}
 }
 
 // 获取Bangumi收藏列表
 async function fetchBangumiCollection(
-    userId: string,
-    subjectType: number,
-    type: number,
+	userId: string,
+	subjectType: number,
+	type: number,
 ) {
-    if (!isBangumiConfigured) return null;
-    try {
-        let allData: any[] = [];
-        let offset = 0;
-        const limit = 50; // 每页获取的数量
-        let hasMore = true;
+	if (!isBangumiConfigured) return null;
+	try {
+		let allData: any[] = [];
+		let offset = 0;
+		const limit = 50; // 每页获取的数量
+		let hasMore = true;
 
-        // 循环获取所有数据
-        while (hasMore) {
-            const response = await fetch(
-                `${BANGUMI_API_BASE}/v0/users/${userId}/collections?subject_type=${subjectType}&type=${type}&limit=${limit}&offset=${offset}`,
-            );
-            if (!response.ok) {
-                throw new Error(`Bangumi API error: ${response.status}`);
-            }
-            const data = await response.json();
+		// 循环获取所有数据
+		while (hasMore) {
+			const response = await fetch(
+				`${BANGUMI_API_BASE}/v0/users/${userId}/collections?subject_type=${subjectType}&type=${type}&limit=${limit}&offset=${offset}`,
+			);
+			if (!response.ok) {
+				throw new Error(`Bangumi API error: ${response.status}`);
+			}
+			const data = await response.json();
 
-            // 添加当前页数据到总数据中
-            if (data.data && data.data.length > 0) {
-                allData = [...allData, ...data.data];
-            }
-            if (!data.data || data.data.length < limit) {
-                hasMore = false;
-            } else {
-                offset += limit;
-            }
-            // 防止请求过于频繁
-            await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-        return { data: allData };
-    } catch (error) {
-        console.error("Error fetching Bangumi data:", error);
-        return null;
-    }
+			// 添加当前页数据到总数据中
+			if (data.data && data.data.length > 0) {
+				allData = [...allData, ...data.data];
+			}
+			if (!data.data || data.data.length < limit) {
+				hasMore = false;
+			} else {
+				offset += limit;
+			}
+			// 防止请求过于频繁
+			await new Promise((resolve) => setTimeout(resolve, 100));
+		}
+		return { data: allData };
+	} catch (error) {
+		console.error("Error fetching Bangumi data:", error);
+		return null;
+	}
 }
 
 // 获取Bangumi数据转换为页面所需格式
 async function processBangumiData(data: any, status: string) {
-    if (!data || !data.data) return [];
+	if (!data || !data.data) return [];
 
-    // 为每个条目获取详细信息
-    const detailedItems = await Promise.all(
-        data.data.map(async (item: any) => {
-            // 获取相关人员信息
-            const subjectPersons = await fetchSubjectPersons(item.subject_id);
-            // 获取年份信息
-            const year = item.subject?.date || "Unknown";
-            // 获取评分
-            const rating = item.rate ? Number.parseFloat(item.rate.toFixed(1)) : 0;
-            // 获取进度信息
-            const progress = item.ep_status || 0;
-            const totalEpisodes = item.subject?.eps || progress;
-            // 从相关人员中获取制作方信息
-            let studio = "Unknown";
-            if (Array.isArray(subjectPersons)) {
-                // 定义筛选优先级顺序
-                const priorities = ["动画制作", "製作", "制作"];
-                for (const relation of priorities) {
-                    const match = subjectPersons.find(
-                        (person) => person.relation === relation,
-                    );
-                    if (match?.name) {
-                        studio = match.name;
-                        break;
-                    }
-                }
-            }
+	// 为每个条目获取详细信息
+	const detailedItems = await Promise.all(
+		data.data.map(async (item: any) => {
+			// 获取相关人员信息
+			const subjectPersons = await fetchSubjectPersons(item.subject_id);
+			// 获取年份信息
+			const year = item.subject?.date || "Unknown";
+			// 获取评分
+			const rating = item.rate ? Number.parseFloat(item.rate.toFixed(1)) : 0;
+			// 获取进度信息
+			const progress = item.ep_status || 0;
+			const totalEpisodes = item.subject?.eps || progress;
+			// 从相关人员中获取制作方信息
+			let studio = "Unknown";
+			if (Array.isArray(subjectPersons)) {
+				// 定义筛选优先级顺序
+				const priorities = ["动画制作", "製作", "制作"];
+				for (const relation of priorities) {
+					const match = subjectPersons.find(
+						(person) => person.relation === relation,
+					);
+					if (match?.name) {
+						studio = match.name;
+						break;
+					}
+				}
+			}
 
-            return {
-                title: item.subject?.name_cn || item.subject?.name || "Unknown Title",
-                status: status,
-                rating: rating,
-                cover: item.subject?.images?.medium || "/assets/anime/default.webp",
-                description: (
-                    item.subject?.short_summary ||
-                    item.subject?.name_cn ||
-                    ""
-                ).trimStart(),
-                episodes: `${totalEpisodes} episodes`,
-                year: year,
-                genre: item.subject?.tags
-                    ? item.subject.tags.slice(0, 3).map((tag: any) => tag.name)
-                    : ["Unknown"],
-                studio: studio,
-                link: `https://bgm.tv/subject/${item.subject.id}` || "#",
-                progress: progress,
-                totalEpisodes: totalEpisodes,
-                startDate: item.subject?.date || "",
-                endDate: item.subject?.date || "",
-            };
-        }),
-    );
-    return detailedItems;
+			return {
+				title: item.subject?.name_cn || item.subject?.name || "Unknown Title",
+				status: status,
+				rating: rating,
+				cover: item.subject?.images?.medium || "/assets/anime/default.webp",
+				description: (
+					item.subject?.short_summary ||
+					item.subject?.name_cn ||
+					""
+				).trimStart(),
+				episodes: `${totalEpisodes} episodes`,
+				year: year,
+				genre: item.subject?.tags
+					? item.subject.tags.slice(0, 3).map((tag: any) => tag.name)
+					: ["Unknown"],
+				studio: studio,
+				link: `https://bgm.tv/subject/${item.subject.id}` || "#",
+				progress: progress,
+				totalEpisodes: totalEpisodes,
+				startDate: item.subject?.date || "",
+				endDate: item.subject?.date || "",
+			};
+		}),
+	);
+	return detailedItems;
 }
 
 // 获取Bangumi番剧列表
@@ -146,60 +144,60 @@ const watchingData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 3);
 const completedData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 2);
 
 const watchingList = watchingData
-    ? await processBangumiData(watchingData, "watching")
-    : [];
+	? await processBangumiData(watchingData, "watching")
+	: [];
 const completedList = completedData
-    ? await processBangumiData(completedData, "completed")
-    : [];
+	? await processBangumiData(completedData, "completed")
+	: [];
 
 const animeList = [...watchingList, ...completedList];
 
 // 获取状态的翻译文本和样式
 function getStatusInfo(status: string) {
-    switch (status) {
-        case "watching":
-            return {
-                text: i18n(I18nKey.animeStatusWatching),
-                class:
-                    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-                icon: "▶",
-            };
-        case "completed":
-            return {
-                text: i18n(I18nKey.animeStatusCompleted),
-                class:
-                    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-                icon: "✓",
-            };
-        case "planned":
-            return {
-                text: i18n(I18nKey.animeStatusPlanned),
-                class:
-                    "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
-                icon: "⏰",
-            };
-        default:
-            return {
-                text: status,
-                class: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-                icon: "?",
-            };
-    }
+	switch (status) {
+		case "watching":
+			return {
+				text: i18n(I18nKey.animeStatusWatching),
+				class:
+					"bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+				icon: "▶",
+			};
+		case "completed":
+			return {
+				text: i18n(I18nKey.animeStatusCompleted),
+				class:
+					"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+				icon: "✓",
+			};
+		case "planned":
+			return {
+				text: i18n(I18nKey.animeStatusPlanned),
+				class:
+					"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+				icon: "⏰",
+			};
+		default:
+			return {
+				text: status,
+				class: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+				icon: "?",
+			};
+	}
 }
 
 // 计算统计数据
 const stats = {
-    total: animeList.length,
-    watching: animeList.filter((anime) => anime.status === "watching").length,
-    completed: animeList.filter((anime) => anime.status === "completed").length,
-    avgRating: (() => {
-        const ratedAnime = animeList.filter((anime) => anime.rating > 0);
-        if (ratedAnime.length === 0) return "0.0";
-        return (
-            ratedAnime.reduce((sum, anime) => sum + anime.rating, 0) /
-            ratedAnime.length
-        ).toFixed(1);
-    })(),
+	total: animeList.length,
+	watching: animeList.filter((anime) => anime.status === "watching").length,
+	completed: animeList.filter((anime) => anime.status === "completed").length,
+	avgRating: (() => {
+		const ratedAnime = animeList.filter((anime) => anime.rating > 0);
+		if (ratedAnime.length === 0) return "0.0";
+		return (
+			ratedAnime.reduce((sum, anime) => sum + anime.rating, 0) /
+			ratedAnime.length
+		).toFixed(1);
+	})(),
 };
 ---
 

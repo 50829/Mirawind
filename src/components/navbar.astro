@@ -1,35 +1,38 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import { navbarConfig, siteConfig } from "@/config";
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset, type NavbarLink } from "@/types/config";
-import { url } from "@utils/url";
-import { getNavbarTransparentModeForWallpaperMode, getDefaultWallpaperMode } from "@utils/wallpaper";
+import DisplaySettings from "@components/navbar/displaySettings.svelte";
+import LightDarkSwitch from "@components/navbar/lightDarkSwitch.svelte";
 import NavLinks from "@components/navbar/navLinks.astro";
 import NavMenu from "@components/navbar/navMenu.svelte";
 import Search from "@components/navbar/search.svelte";
 import Translator from "@components/navbar/translator.svelte";
-import DisplaySettings from "@components/navbar/displaySettings.svelte";
-import LightDarkSwitch from "@components/navbar/lightDarkSwitch.svelte";
 import WallpaperSwitch from "@components/navbar/wallpaperSwitch.svelte";
-
+import { LinkPresets } from "@constants/link-presets";
+import { url } from "@utils/url";
+import {
+	getDefaultWallpaperMode,
+	getNavbarTransparentModeForWallpaperMode,
+} from "@utils/wallpaper";
+import { Icon } from "astro-icon/components";
+import { navbarConfig, siteConfig } from "@/config";
+import { LinkPreset, type NavbarLink } from "@/types/config";
 
 const className = Astro.props.class;
 
 // 获取导航栏透明模式配置 - 根据当前壁纸模式读取正确的配置
-const navbarTransparentMode = getNavbarTransparentModeForWallpaperMode(getDefaultWallpaperMode());
+const navbarTransparentMode = getNavbarTransparentModeForWallpaperMode(
+	getDefaultWallpaperMode(),
+);
 
 // 检查是否为首页
 const isHomePage = Astro.url.pathname === "/" || Astro.url.pathname === "";
 
 let links: NavbarLink[] = navbarConfig.links.map(
-    (item: NavbarLink | LinkPreset): NavbarLink => {
-        if (typeof item === "number") {
-            return LinkPresets[item];
-        }
-        return item;
-    },
+	(item: NavbarLink | LinkPreset): NavbarLink => {
+		if (typeof item === "number") {
+			return LinkPresets[item];
+		}
+		return item;
+	},
 );
 ---
 

@@ -1,38 +1,38 @@
 ---
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { siteConfig } from "@/config";
-import { sortedMoments } from "@/utils/diary";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-
+import { LinkPresets } from "@constants/link-presets";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
+import { siteConfig } from "@/config";
+import { LinkPreset } from "@/types/config";
+import { sortedMoments } from "@/utils/diary";
 
 const pageTitle = LinkPresets[LinkPreset.Diary].name;
 const pageDescription = LinkPresets[LinkPreset.Diary].description;
 
 // 时间格式化函数
 function formatTime(dateString: string): string {
-    var TG = 8;
-    if (siteConfig.timeZone >= -12 && siteConfig.timeZone <= 12) TG = siteConfig.timeZone;
-    const timeGap = TG;
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInMinutes = Math.floor(
-        (now.getTime() + timeGap*60*60*1000 - date.getTime()) / (1000 * 60),
-    );
-    if (diffInMinutes < 60) {
-        return `${diffInMinutes}${i18n(I18nKey.diaryMinutesAgo)}`;
-    }
-    if (diffInMinutes < 1440) {
-        // 24小时
-        const hours = Math.floor(diffInMinutes / 60);
-        return `${hours}${i18n(I18nKey.diaryHoursAgo)}`;
-    }
-    const days = Math.floor(diffInMinutes / 1440);
-    return `${days}${i18n(I18nKey.diaryDaysAgo)}`;
+	var TG = 8;
+	if (siteConfig.timeZone >= -12 && siteConfig.timeZone <= 12)
+		TG = siteConfig.timeZone;
+	const timeGap = TG;
+	const now = new Date();
+	const date = new Date(dateString);
+	const diffInMinutes = Math.floor(
+		(now.getTime() + timeGap * 60 * 60 * 1000 - date.getTime()) / (1000 * 60),
+	);
+	if (diffInMinutes < 60) {
+		return `${diffInMinutes}${i18n(I18nKey.diaryMinutesAgo)}`;
+	}
+	if (diffInMinutes < 1440) {
+		// 24小时
+		const hours = Math.floor(diffInMinutes / 60);
+		return `${hours}${i18n(I18nKey.diaryHoursAgo)}`;
+	}
+	const days = Math.floor(diffInMinutes / 1440);
+	return `${days}${i18n(I18nKey.diaryDaysAgo)}`;
 }
 ---
 

@@ -1,13 +1,11 @@
 ---
 import { getEntry, render } from "astro:content";
-
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { friendsData } from "@utils/friends";
-import Markdown from "@components/common/markdown.astro";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
-
+import Markdown from "@components/common/markdown.astro";
+import { LinkPresets } from "@constants/link-presets";
+import GridLayout from "@layouts/grid.astro";
+import { friendsData } from "@utils/friends";
+import { LinkPreset } from "@/types/config";
 
 const pageTitle = LinkPresets[LinkPreset.Friends].name;
 const pageDescription = LinkPresets[LinkPreset.Friends].description;
@@ -15,19 +13,19 @@ const pageDescription = LinkPresets[LinkPreset.Friends].description;
 const friendsPost = await getEntry("spec", "friends");
 
 if (!friendsPost) {
-    throw new Error("friends page content not found");
+	throw new Error("friends page content not found");
 }
 
 const { Content } = await render(friendsPost);
 const items = friendsData;
 
 function shuffleArray<T>(array: T[]): T[] {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
+	const newArray = [...array];
+	for (let i = newArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+	}
+	return newArray;
 }
 
 const shuffledItems = shuffleArray(items);

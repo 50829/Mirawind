@@ -1,14 +1,13 @@
 ---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 import { getParentLink } from "@utils/navigation";
 import { url } from "@utils/url";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-
 
 interface Props {
-    currentPath?: string;
-    href?: string;
-    text?: string;
+	currentPath?: string;
+	href?: string;
+	text?: string;
 }
 
 const { currentPath, href, text } = Astro.props;
@@ -17,16 +16,16 @@ let targetUrl = href;
 let targetText = text;
 
 if (currentPath && !targetUrl) {
-    const parentLink = getParentLink(currentPath);
-    if (parentLink) {
-        targetUrl = url(parentLink.url);
-        targetText = `${i18n(I18nKey.backTo)} ${parentLink.name}`;
-    }
+	const parentLink = getParentLink(currentPath);
+	if (parentLink) {
+		targetUrl = url(parentLink.url);
+		targetText = `${i18n(I18nKey.backTo)} ${parentLink.name}`;
+	}
 }
 
 // 如果既没有传入 href，也没能根据 currentPath 找到父级菜单，则不渲染
 if (!targetUrl) {
-    return null;
+	return null;
 }
 ---
 

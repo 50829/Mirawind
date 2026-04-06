@@ -1,12 +1,12 @@
-import { defineConfig } from "astro/config";
+import cloudflarePages from "@astrojs/cloudflare";
+import sitemap from "@astrojs/sitemap";
+import svelte, { vitePreprocess } from "@astrojs/svelte";
+import vercel from "@astrojs/vercel";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
-import svelte, { vitePreprocess } from "@astrojs/svelte";
-import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
-import sitemap from "@astrojs/sitemap";
-import vercel from "@astrojs/vercel";
-import cloudflarePages from "@astrojs/cloudflare";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 import decapCmsOauth from "astro-decap-cms-oauth";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
@@ -31,198 +31,195 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
-
 // https://astro.build/config
 // Choose adapter depending on deployment environment
-const adapter = process.env.CF_PAGES ? cloudflarePages() : vercel({ mode: "serverless" });
+const adapter = process.env.CF_PAGES
+	? cloudflarePages()
+	: vercel({ mode: "serverless" });
 
 export default defineConfig({
-    site: siteConfig.siteURL,
-    base: "/",
-    trailingSlash: "always",
-    adapter: adapter,
-    integrations: [
-        decapCmsOauth({
-            decapCMSVersion: "3.9.0",
-            oauthDisabled: false, // Enable OAuth as configured in config.yml
-        }),
-        swup({
-            theme: false,
-            animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-            containers: [
-                "#swup-container",
-                "#left-sidebar",
-                "#right-sidebar",
-            ],
-            cache: true,
-            preload: true,
-            accessibility: true,
-            updateHead: true,
-            updateBodyClass: false,
-            globalInstance: true,
-            // Scroll related configuration optimization
-            smoothScrolling: false, // Disable smooth scrolling to improve performance and avoid conflicts with anchor navigation
-            resolveUrl: (url) => url,
-            animateHistoryBrowsing: false,
-            skipPopStateHandling: (event) => {
-                // Skip anchor link handling, let the browser handle it natively
-                return event.state?.url?.includes("#");
-            },
-        }),
-        icon({
-            include: {
-                "fa6-brands": ["*"],
-                "fa6-regular": ["*"],
-                "fa6-solid": ["*"],
-                mdi: ["*"],
-            },
-        }),
-        expressiveCode({
-            themes: ["github-light", "github-dark"],
-            themeCSSSelector: (theme) => `[data-theme="${theme}"]`,
-            plugins: [
-                pluginCollapsibleSections(),
-                pluginLineNumbers(),
-                pluginCollapseButton(),
-                pluginCopyButton(),
-                pluginLanguageBadge(),
-            ],
-            defaultProps: {
-                wrap: true,
-                overridesByLang: {
-                    shellsession: {
-                        showLineNumbers: false,
-                    },
-                },
-            },
-            styleOverrides: {
-                codeBackground: "var(--codeblock-bg)",
-                borderRadius: "0.75rem",
-                borderColor: "none",
-                codeFontSize: "0.875rem",
-                codeFontFamily: "var(--font-code)",
-                codeLineHeight: "1.5rem",
-                frames: {
-                    editorBackground: "var(--codeblock-bg)",
-                    terminalBackground: "var(--codeblock-bg)",
-                    terminalTitlebarBackground: "var(--codeblock-bg)",
-                    editorTabBarBackground: "var(--codeblock-bg)",
-                    editorActiveTabBackground: "none",
-                    editorActiveTabIndicatorBottomColor: "var(--primary)",
-                    editorActiveTabIndicatorTopColor: "none",
-                    editorTabBarBorderBottomColor: "var(--codeblock-bg)",
-                    terminalTitlebarBorderBottomColor: "none",
-                    copyButtonBackground: "var(--btn-regular-bg)",
-                    copyButtonBackgroundHover: "var(--btn-regular-bg-hover)",
-                    copyButtonBackgroundActive: "var(--btn-regular-bg-active)",
-                    copyButtonForeground: "var(--btn-content)",
-                },
-                textMarkers: {
-                    delHue: 0,
-                    insHue: 180,
-                    markHue: 250,
-                },
-            },
-            frames: {
-                showCopyToClipboardButton: false,
-            },
-        }),
-        svelte({
-            preprocess: vitePreprocess(),
-        }),
-        sitemap(),
-    ],
-    markdown: {
-        remarkPlugins: [
-            remarkMath,
-            remarkReadingTime,
-            remarkExcerpt,
-            remarkGithubAdmonitionsToDirectives,
-            remarkDirective,
-            remarkSectionize,
-            parseDirectiveNode,
-            remarkMermaid,
-        ],
-        rehypePlugins: [
-            rehypeKatex,
-            rehypeSlug,
-            rehypeMermaid,
-            [
-                rehypeComponents,
-                {
-                    components: {
-                        github: GithubCardComponent,
-                        note: (x, y) => AdmonitionComponent(x, y, "note"),
-                        tip: (x, y) => AdmonitionComponent(x, y, "tip"),
-                        important: (x, y) => AdmonitionComponent(x, y, "important"),
-                        caution: (x, y) => AdmonitionComponent(x, y, "caution"),
-                        warning: (x, y) => AdmonitionComponent(x, y, "warning"),
-                    },
-                },
-            ],
-            [
-                rehypeAutolinkHeadings,
-                {
-                    behavior: "append",
-                    properties: {
-                        className: ["anchor"],
-                    },
-                    content: {
-                        type: "element",
-                        tagName: "span",
-                        properties: {
-                            className: ["anchor-icon"],
-                            "data-pagefind-ignore": true,
-                        },
-                        children: [
-                            {
-                                type: "text",
-                                value: "#",
-                            },
-                        ],
-                    },
-                },
-            ],
-        ],
-    },
-    vite: {
-        plugins: [tailwindcss()],
-        optimizeDeps: {
-            // Prevent esbuild from trying to prebundle a package that imports virtual modules like
-            // "astro:env/server" which causes invalid path resolution on Windows.
-            exclude: [
-                "astro-decap-cms-oauth",
-                // Exclude Astro virtual modules so esbuild doesn't try to resolve them
-                "astro:env",
-                "astro:env/server",
-                "astro:env/client",
-                // Swup client modules can be unstable with optimize deps cache on some setups
-                "@swup/astro",
-                "@swup/astro/serialise",
-                "@swup/astro/idle",
-                "@swup/astro/client/Swup",
-                "@swup/astro/client/SwupA11yPlugin",
-                "@swup/astro/client/SwupPreloadPlugin",
-                "@swup/astro/client/SwupHeadPlugin",
-                "@swup/astro/client/SwupScriptsPlugin",
-            ],
-        },
-        build: {
-            rollupOptions: {
-                onwarn(warning, warn) {
-                    // temporarily suppress this warning
-                    if (
-                        warning.message.includes("is dynamically imported by") &&
-                        warning.message.includes("but also statically imported by")
-                    ) {
-                        return;
-                    }
-                    warn(warning);
-                },
-            },
-        },
-    },
-    build: {
-        inlineStylesheets: "always",
-    },
+	site: siteConfig.siteURL,
+	base: "/",
+	trailingSlash: "always",
+	adapter: adapter,
+	integrations: [
+		decapCmsOauth({
+			decapCMSVersion: "3.9.0",
+			oauthDisabled: false, // Enable OAuth as configured in config.yml
+		}),
+		swup({
+			theme: false,
+			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
+			containers: ["#swup-container", "#left-sidebar", "#right-sidebar"],
+			cache: true,
+			preload: true,
+			accessibility: true,
+			updateHead: true,
+			updateBodyClass: false,
+			globalInstance: true,
+			// Scroll related configuration optimization
+			smoothScrolling: false, // Disable smooth scrolling to improve performance and avoid conflicts with anchor navigation
+			resolveUrl: (url) => url,
+			animateHistoryBrowsing: false,
+			skipPopStateHandling: (event) => {
+				// Skip anchor link handling, let the browser handle it natively
+				return event.state?.url?.includes("#");
+			},
+		}),
+		icon({
+			include: {
+				"fa6-brands": ["*"],
+				"fa6-regular": ["*"],
+				"fa6-solid": ["*"],
+				mdi: ["*"],
+			},
+		}),
+		expressiveCode({
+			themes: ["github-light", "github-dark"],
+			themeCSSSelector: (theme) => `[data-theme="${theme}"]`,
+			plugins: [
+				pluginCollapsibleSections(),
+				pluginLineNumbers(),
+				pluginCollapseButton(),
+				pluginCopyButton(),
+				pluginLanguageBadge(),
+			],
+			defaultProps: {
+				wrap: true,
+				overridesByLang: {
+					shellsession: {
+						showLineNumbers: false,
+					},
+				},
+			},
+			styleOverrides: {
+				codeBackground: "var(--codeblock-bg)",
+				borderRadius: "0.75rem",
+				borderColor: "none",
+				codeFontSize: "0.875rem",
+				codeFontFamily: "var(--font-code)",
+				codeLineHeight: "1.5rem",
+				frames: {
+					editorBackground: "var(--codeblock-bg)",
+					terminalBackground: "var(--codeblock-bg)",
+					terminalTitlebarBackground: "var(--codeblock-bg)",
+					editorTabBarBackground: "var(--codeblock-bg)",
+					editorActiveTabBackground: "none",
+					editorActiveTabIndicatorBottomColor: "var(--primary)",
+					editorActiveTabIndicatorTopColor: "none",
+					editorTabBarBorderBottomColor: "var(--codeblock-bg)",
+					terminalTitlebarBorderBottomColor: "none",
+					copyButtonBackground: "var(--btn-regular-bg)",
+					copyButtonBackgroundHover: "var(--btn-regular-bg-hover)",
+					copyButtonBackgroundActive: "var(--btn-regular-bg-active)",
+					copyButtonForeground: "var(--btn-content)",
+				},
+				textMarkers: {
+					delHue: 0,
+					insHue: 180,
+					markHue: 250,
+				},
+			},
+			frames: {
+				showCopyToClipboardButton: false,
+			},
+		}),
+		svelte({
+			preprocess: vitePreprocess(),
+		}),
+		sitemap(),
+	],
+	markdown: {
+		remarkPlugins: [
+			remarkMath,
+			remarkReadingTime,
+			remarkExcerpt,
+			remarkGithubAdmonitionsToDirectives,
+			remarkDirective,
+			remarkSectionize,
+			parseDirectiveNode,
+			remarkMermaid,
+		],
+		rehypePlugins: [
+			rehypeKatex,
+			rehypeSlug,
+			rehypeMermaid,
+			[
+				rehypeComponents,
+				{
+					components: {
+						github: GithubCardComponent,
+						note: (x, y) => AdmonitionComponent(x, y, "note"),
+						tip: (x, y) => AdmonitionComponent(x, y, "tip"),
+						important: (x, y) => AdmonitionComponent(x, y, "important"),
+						caution: (x, y) => AdmonitionComponent(x, y, "caution"),
+						warning: (x, y) => AdmonitionComponent(x, y, "warning"),
+					},
+				},
+			],
+			[
+				rehypeAutolinkHeadings,
+				{
+					behavior: "append",
+					properties: {
+						className: ["anchor"],
+					},
+					content: {
+						type: "element",
+						tagName: "span",
+						properties: {
+							className: ["anchor-icon"],
+							"data-pagefind-ignore": true,
+						},
+						children: [
+							{
+								type: "text",
+								value: "#",
+							},
+						],
+					},
+				},
+			],
+		],
+	},
+	vite: {
+		plugins: [tailwindcss()],
+		optimizeDeps: {
+			// Prevent esbuild from trying to prebundle a package that imports virtual modules like
+			// "astro:env/server" which causes invalid path resolution on Windows.
+			exclude: [
+				"astro-decap-cms-oauth",
+				// Exclude Astro virtual modules so esbuild doesn't try to resolve them
+				"astro:env",
+				"astro:env/server",
+				"astro:env/client",
+				// Swup client modules can be unstable with optimize deps cache on some setups
+				"@swup/astro",
+				"@swup/astro/serialise",
+				"@swup/astro/idle",
+				"@swup/astro/client/Swup",
+				"@swup/astro/client/SwupA11yPlugin",
+				"@swup/astro/client/SwupPreloadPlugin",
+				"@swup/astro/client/SwupHeadPlugin",
+				"@swup/astro/client/SwupScriptsPlugin",
+			],
+		},
+		build: {
+			rollupOptions: {
+				onwarn(warning, warn) {
+					// temporarily suppress this warning
+					if (
+						warning.message.includes("is dynamically imported by") &&
+						warning.message.includes("but also statically imported by")
+					) {
+						return;
+					}
+					warn(warning);
+				},
+			},
+		},
+	},
+	build: {
+		inlineStylesheets: "always",
+	},
 });

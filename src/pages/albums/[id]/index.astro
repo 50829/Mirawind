@@ -1,29 +1,29 @@
 ---
-import type { AlbumGroup } from "@utils/albums";
-import { sortedAlbums } from "@utils/albums";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
+import type { AlbumGroup } from "@utils/albums";
+import { sortedAlbums } from "@utils/albums";
 
 export const getStaticPaths = async () => {
-    return sortedAlbums.filter(album => album.visible).map((album) => ({
-        params: { id: album.id },
-        props: { album },
-    }));
+	return sortedAlbums
+		.filter((album) => album.visible)
+		.map((album) => ({
+			params: { id: album.id },
+			props: { album },
+		}));
 };
 
-
 interface Props {
-    album: AlbumGroup;
+	album: AlbumGroup;
 }
 
 const { album } = Astro.props;
 
 if (!album) {
-    return Astro.redirect("/404");
+	return Astro.redirect("/404");
 }
 ---
 

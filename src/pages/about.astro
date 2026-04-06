@@ -1,15 +1,12 @@
 ---
 export const prerender = true;
 
-
 import { getEntry, render } from "astro:content";
-
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import Markdown from "@components/common/markdown.astro";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
-
+import Markdown from "@components/common/markdown.astro";
+import { LinkPresets } from "@constants/link-presets";
+import GridLayout from "@layouts/grid.astro";
+import { LinkPreset } from "@/types/config";
 
 const pageTitle = LinkPresets[LinkPreset.About].name;
 const pageDescription = LinkPresets[LinkPreset.About].description;
@@ -17,7 +14,7 @@ const pageDescription = LinkPresets[LinkPreset.About].description;
 const aboutPost = await getEntry("spec", "about");
 
 if (!aboutPost) {
-    throw new Error("About page content not found");
+	throw new Error("About page content not found");
 }
 
 const { Content } = await render(aboutPost);

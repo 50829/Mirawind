@@ -1,11 +1,10 @@
 ---
-import { getCategoryList } from "@utils/content";
-import { widgetManager, getComponentConfig } from "@utils/widget";
-import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getCategoryList } from "@utils/content";
+import { getComponentConfig, widgetManager } from "@utils/widget";
 import ButtonLink from "@/components/common/buttonLink.astro";
 import WidgetLayout from "./widgetLayout.astro";
-
 
 const categories = await getCategoryList();
 
@@ -13,12 +12,14 @@ const COLLAPSED_HEIGHT = "7.5rem";
 
 // 使用统一的组件管理器检查是否应该折叠
 const categoriesComponent = getComponentConfig("categories");
-const isCollapsed = categoriesComponent ? widgetManager.isCollapsed(categoriesComponent, categories.length) : false;
+const isCollapsed = categoriesComponent
+	? widgetManager.isCollapsed(categoriesComponent, categories.length)
+	: false;
 
 interface Props {
-    class?: string;
-    style?: string;
-    side?: string;
+	class?: string;
+	style?: string;
+	side?: string;
 }
 const { class: className, style, side = "default" } = Astro.props;
 ---

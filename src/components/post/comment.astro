@@ -5,9 +5,8 @@ import { getPostUrl } from "@utils/url";
 import { postConfig } from "@/config";
 import Twikoo from "./twikoo.astro";
 
-
 interface Props {
-    post: CollectionEntry<"posts">;
+	post: CollectionEntry<"posts">;
 }
 
 const { post } = Astro.props;
@@ -16,7 +15,7 @@ const path = getPostUrl(post);
 
 let commentService = "";
 if (postConfig.comment?.enable && postConfig.comment?.twikoo) {
-    commentService = "twikoo";
+	commentService = "twikoo";
 }
 ---
 

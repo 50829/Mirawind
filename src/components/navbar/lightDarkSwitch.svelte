@@ -1,63 +1,58 @@
 <script lang="ts">
-import Icon from "@iconify/svelte";
-import { onMount } from "svelte";
-
 import { BREAKPOINT_LG } from "@constants/breakpoints";
-import { SYSTEM_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
-import {
-    getStoredTheme,
-    setTheme,
-} from "@utils/theme";
-import { onClickOutside } from "@utils/widget";
-import type { LIGHT_DARK_MODE } from "@/types/config";
-import { siteConfig } from "@/config";
-import { i18n } from "@i18n/translation";
+import { DARK_MODE, LIGHT_MODE, SYSTEM_MODE } from "@constants/constants";
 import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import Icon from "@iconify/svelte";
+import { getStoredTheme, setTheme } from "@utils/theme";
+import { onClickOutside } from "@utils/widget";
+import { onMount } from "svelte";
 import DropdownItem from "@/components/common/DropdownItem.svelte";
 import DropdownPanel from "@/components/common/DropdownPanel.svelte";
-
+import { siteConfig } from "@/config";
+import type { LIGHT_DARK_MODE } from "@/types/config";
 
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE, SYSTEM_MODE];
 let mode: LIGHT_DARK_MODE = $state(siteConfig.defaultTheme || SYSTEM_MODE);
 let isOpen = $state(false);
 
 function switchScheme(newMode: LIGHT_DARK_MODE) {
-    mode = newMode;
-    setTheme(newMode);
+	mode = newMode;
+	setTheme(newMode);
 }
 
 function toggleScheme() {
-    let i = 0;
-    for (; i < seq.length; i++) {
-        if (seq[i] === mode) {
-            break;
-        }
-    }
-    switchScheme(seq[(i + 1) % seq.length]);
+	let i = 0;
+	for (; i < seq.length; i++) {
+		if (seq[i] === mode) {
+			break;
+		}
+	}
+	switchScheme(seq[(i + 1) % seq.length]);
 }
 
 function openPanel() {
-    isOpen = true;
+	isOpen = true;
 }
 
 function closePanel() {
-    isOpen = false;
+	isOpen = false;
 }
 
 // 点击外部关闭面板
 function handleClickOutside(event: MouseEvent) {
-    if (!isOpen) return;
-    onClickOutside(event, "light-dark-panel", "scheme-switch", () => {
-        isOpen = false;
-    });
+	if (!isOpen) return;
+	onClickOutside(event, "light-dark-panel", "scheme-switch", () => {
+		isOpen = false;
+	});
 }
 
 onMount(() => {
-    mode = getStoredTheme();
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-        document.removeEventListener("click", handleClickOutside);
-    };
+	mode = getStoredTheme();
+	document.addEventListener("click", handleClickOutside);
+	return () => {
+		document.removeEventListener("click", handleClickOutside);
+	};
 });
 </script>
 

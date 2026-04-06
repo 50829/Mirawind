@@ -1,15 +1,14 @@
 ---
 import { postConfig } from "@/config";
 
-
 interface Props {
-    path: string;
+	path: string;
 }
 
 const config = {
-    ...postConfig.comment.twikoo,
-    el: "#tcomment",
-    path: Astro.props.path,
+	...postConfig.comment.twikoo,
+	el: "#tcomment",
+	path: Astro.props.path,
 };
 ---
 

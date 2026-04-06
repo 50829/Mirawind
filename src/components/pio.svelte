@@ -1,15 +1,14 @@
 <script lang="ts">
-import { onMount, onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 
 import { pioConfig } from "@/config";
 
-
 // 将配置转换为 Pio 插件需要的格式
 const pioOptions = {
-    mode: pioConfig.mode,
-    hidden: pioConfig.hiddenOnMobile,
-    content: pioConfig.dialog || {},
-    model: pioConfig.models || ["/pio/models/pio/model.json"],
+	mode: pioConfig.mode,
+	hidden: pioConfig.hiddenOnMobile,
+	content: pioConfig.dialog || {},
+	model: pioConfig.models || ["/pio/models/pio/model.json"],
 };
 
 // 全局Pio实例引用
@@ -22,74 +21,77 @@ let pioCanvas = $state<HTMLCanvasElement>();
 
 // 等待 DOM 加载完成后再初始化 Pio
 function initPio() {
-    if (typeof window !== "undefined" && typeof (window as any).Paul_Pio !== "undefined") {
-        try {
-            // 确保DOM元素存在
-            if (pioContainer && pioCanvas && !pioInitialized) {
-                const Paul_Pio = (window as any).Paul_Pio;
-                pioInstance = new Paul_Pio(pioOptions);
-                pioInitialized = true;
-                console.log("Pio initialized successfully (Svelte)");
-            } else if (!pioContainer || !pioCanvas) {
-                console.warn("Pio DOM elements not found, retrying...");
-                setTimeout(initPio, 100);
-            }
-        } catch (e) {
-            console.error("Pio initialization error:", e);
-        }
-    } else {
-        // 如果 Paul_Pio 还未定义，稍后再试
-        setTimeout(initPio, 100);
-    }
+	if (
+		typeof window !== "undefined" &&
+		typeof (window as any).Paul_Pio !== "undefined"
+	) {
+		try {
+			// 确保DOM元素存在
+			if (pioContainer && pioCanvas && !pioInitialized) {
+				const Paul_Pio = (window as any).Paul_Pio;
+				pioInstance = new Paul_Pio(pioOptions);
+				pioInitialized = true;
+				console.log("Pio initialized successfully (Svelte)");
+			} else if (!pioContainer || !pioCanvas) {
+				console.warn("Pio DOM elements not found, retrying...");
+				setTimeout(initPio, 100);
+			}
+		} catch (e) {
+			console.error("Pio initialization error:", e);
+		}
+	} else {
+		// 如果 Paul_Pio 还未定义，稍后再试
+		setTimeout(initPio, 100);
+	}
 }
 
 // 加载必要的脚本
 function loadPioAssets() {
-    if (typeof window === "undefined") return;
+	if (typeof window === "undefined") return;
 
-    // 样式已通过 base.astro 静态引入
+	// 样式已通过 base.astro 静态引入
 
-    // 加载JS脚本
-    const loadScript = (src: string, id: string) => {
-        return new Promise<void>((resolve, reject) => {
-            if (document.querySelector(`#${id}`)) {
-                resolve();
-                return;
-            }
-            const script = document.createElement("script");
-            script.id = id;
-            script.src = src;
-            script.onload = () => resolve();
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    };
+	// 加载JS脚本
+	const loadScript = (src: string, id: string) => {
+		return new Promise<void>((resolve, reject) => {
+			if (document.querySelector(`#${id}`)) {
+				resolve();
+				return;
+			}
+			const script = document.createElement("script");
+			script.id = id;
+			script.src = src;
+			script.onload = () => resolve();
+			script.onerror = reject;
+			document.head.appendChild(script);
+		});
+	};
 
-    // 按顺序加载脚本
-    loadScript("/pio/static/l2d.js", "pio-l2d-script")
-        .then(() => loadScript("/pio/static/pio.js", "pio-main-script"))
-        .then(() => {
-            // 脚本加载完成后初始化
-            setTimeout(initPio, 100);
-        })
-        .catch((error) => {
-            console.error("Failed to load Pio scripts:", error);
-        });
+	// 按顺序加载脚本
+	loadScript("/pio/static/l2d.js", "pio-l2d-script")
+		.then(() => loadScript("/pio/static/pio.js", "pio-main-script"))
+		.then(() => {
+			// 脚本加载完成后初始化
+			setTimeout(initPio, 100);
+		})
+		.catch((error) => {
+			console.error("Failed to load Pio scripts:", error);
+		});
 }
 
 // 样式已通过 base.astro 静态引入，无需页面切换监听
 
 onMount(() => {
-    if (!pioConfig.enable) return;
+	if (!pioConfig.enable) return;
 
-    // 加载资源并初始化
-    loadPioAssets();
+	// 加载资源并初始化
+	loadPioAssets();
 });
 
 onDestroy(() => {
-    // Svelte 组件销毁时不需要清理 Pio 实例
-    // 因为我们希望它在页面切换时保持状态
-    console.log("Pio Svelte component destroyed (keeping instance alive)");
+	// Svelte 组件销毁时不需要清理 Pio 实例
+	// 因为我们希望它在页面切换时保持状态
+	console.log("Pio Svelte component destroyed (keeping instance alive)");
 });
 </script>
 

@@ -1,264 +1,272 @@
 import yaml from "js-yaml";
-
+import rawConfig from "../twilight.config.yaml?raw";
 import type {
-    SiteConfig,
-    NavbarLink,
-    NavbarConfig,
-    SidebarConfig,
-    ProfileConfig,
-    AnnouncementConfig,
-    PostConfig,
-    FooterConfig,
-    ParticleConfig,
-    MusicPlayerConfig,
-    PioConfig,
-    FontRole,
-    FontRoleMap,
-    ResolvedFontRoleMap,
-    ResolvedFontSystem,
+	AnnouncementConfig,
+	FontRole,
+	FontRoleMap,
+	FooterConfig,
+	MusicPlayerConfig,
+	NavbarConfig,
+	NavbarLink,
+	ParticleConfig,
+	PioConfig,
+	PostConfig,
+	ProfileConfig,
+	ResolvedFontRoleMap,
+	ResolvedFontSystem,
+	SidebarConfig,
+	SiteConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
-import rawConfig from "../twilight.config.yaml?raw";
 
 /**
  * YAML 配置文件类型定义
  */
 type ConfigFile = {
-    site: SiteConfig;
-    umami: {
-        enabled: boolean;
-        apiKey?: string;
-        baseUrl: string;
-        scripts?: string;
-    };
-    navbar: {
-        links: Array<NavbarLink | LinkPreset | string>;
-    };
-    sidebar: SidebarConfig;
-    profile: ProfileConfig;
-    announcement: AnnouncementConfig;
-    post: PostConfig;
-    footer: FooterConfig;
-    particle: ParticleConfig;
-    musicPlayer: MusicPlayerConfig;
-    pio: PioConfig;
+	site: SiteConfig;
+	umami: {
+		enabled: boolean;
+		apiKey?: string;
+		baseUrl: string;
+		scripts?: string;
+	};
+	navbar: {
+		links: Array<NavbarLink | LinkPreset | string>;
+	};
+	sidebar: SidebarConfig;
+	profile: ProfileConfig;
+	announcement: AnnouncementConfig;
+	post: PostConfig;
+	footer: FooterConfig;
+	particle: ParticleConfig;
+	musicPlayer: MusicPlayerConfig;
+	pio: PioConfig;
 };
 
 // 从 YAML 文件加载配置
 const config = yaml.load(rawConfig) as ConfigFile;
 
 const FONT_ROLES: FontRole[] = [
-    "body",
-    "context",
-    "heading",
-    "title",
-    "subtitle",
-    "ui",
-    "code",
-    "caption",
-    "blockquote",
+	"body",
+	"context",
+	"heading",
+	"title",
+	"subtitle",
+	"ui",
+	"code",
+	"caption",
+	"blockquote",
 ];
 
 const DEFAULT_FONT_FALLBACK = {
-    sans: [
-        "system-ui",
-        "-apple-system",
-        "BlinkMacSystemFont",
-        "Segoe UI",
-        "PingFang SC",
-        "Roboto",
-        "Oxygen",
-        "Ubuntu",
-        "Cantarell",
-        "Open Sans",
-        "Helvetica Neue",
-        "sans-serif",
-    ],
-    serif: [
-        "ui-serif",
-        "Georgia",
-        "Cambria",
-        "Times New Roman",
-        "Times",
-        "serif",
-    ],
-    mono: [
-        "ui-monospace",
-        "SFMono-Regular",
-        "Menlo",
-        "Monaco",
-        "Consolas",
-        "Liberation Mono",
-        "Courier New",
-        "monospace",
-    ],
+	sans: [
+		"system-ui",
+		"-apple-system",
+		"BlinkMacSystemFont",
+		"Segoe UI",
+		"PingFang SC",
+		"Roboto",
+		"Oxygen",
+		"Ubuntu",
+		"Cantarell",
+		"Open Sans",
+		"Helvetica Neue",
+		"sans-serif",
+	],
+	serif: [
+		"ui-serif",
+		"Georgia",
+		"Cambria",
+		"Times New Roman",
+		"Times",
+		"serif",
+	],
+	mono: [
+		"ui-monospace",
+		"SFMono-Regular",
+		"Menlo",
+		"Monaco",
+		"Consolas",
+		"Liberation Mono",
+		"Courier New",
+		"monospace",
+	],
 };
 
-function normalizeRoleAssignment(value: string | string[] | undefined): string[] {
-    if (!value) {
-        return [];
-    }
-    return Array.isArray(value) ? value : [value];
+function normalizeRoleAssignment(
+	value: string | string[] | undefined,
+): string[] {
+	if (!value) {
+		return [];
+	}
+	return Array.isArray(value) ? value : [value];
 }
 
 function resolveRoleMap(
-    map: FontRoleMap | undefined,
-    availableFontIds: Set<string>,
-    familyToFontId: Map<string, string>,
-    primaryFontId: string,
+	map: FontRoleMap | undefined,
+	availableFontIds: Set<string>,
+	familyToFontId: Map<string, string>,
+	primaryFontId: string,
 ): ResolvedFontRoleMap {
-    const resolved = {} as ResolvedFontRoleMap;
+	const resolved = {} as ResolvedFontRoleMap;
 
-    const resolveTokenToFontId = (token: string): string | null => {
-        const normalizedToken = token.trim();
+	const resolveTokenToFontId = (token: string): string | null => {
+		const normalizedToken = token.trim();
 
-        if (!normalizedToken) {
-            return null;
-        }
+		if (!normalizedToken) {
+			return null;
+		}
 
-        if (availableFontIds.has(normalizedToken)) {
-            return normalizedToken;
-        }
+		if (availableFontIds.has(normalizedToken)) {
+			return normalizedToken;
+		}
 
-        const familyMatch = familyToFontId.get(normalizedToken.toLowerCase());
-        if (familyMatch) {
-            return familyMatch;
-        }
+		const familyMatch = familyToFontId.get(normalizedToken.toLowerCase());
+		if (familyMatch) {
+			return familyMatch;
+		}
 
-        // Keep generic/custom CSS font-family tokens (e.g. system-ui) so roles can opt out of registered fonts.
-        return normalizedToken;
-    };
+		// Keep generic/custom CSS font-family tokens (e.g. system-ui) so roles can opt out of registered fonts.
+		return normalizedToken;
+	};
 
-    for (const role of FONT_ROLES) {
-        const normalized = normalizeRoleAssignment(map?.[role])
-            .map((token) => resolveTokenToFontId(token))
-            .filter((fontId): fontId is string => Boolean(fontId));
+	for (const role of FONT_ROLES) {
+		const normalized = normalizeRoleAssignment(map?.[role])
+			.map((token) => resolveTokenToFontId(token))
+			.filter((fontId): fontId is string => Boolean(fontId));
 
-        if (normalized.length > 0) {
-            resolved[role] = normalized;
-            continue;
-        }
+		if (normalized.length > 0) {
+			resolved[role] = normalized;
+			continue;
+		}
 
-        // code 角色允许为空，交给 monospace fallback
-        if (role === "code") {
-            resolved[role] = [];
-            continue;
-        }
+		// code 角色允许为空，交给 monospace fallback
+		if (role === "code") {
+			resolved[role] = [];
+			continue;
+		}
 
-        resolved[role] = [primaryFontId];
-    }
+		resolved[role] = [primaryFontId];
+	}
 
-    return resolved;
+	return resolved;
 }
 
 function resolveFontSystem(site: SiteConfig): ResolvedFontSystem {
-    const fonts = site.fontSystem.fonts;
-    const fontIds = Object.keys(fonts);
+	const fonts = site.fontSystem.fonts;
+	const fontIds = Object.keys(fonts);
 
-    if (fontIds.length === 0) {
-        throw new Error("site.fontSystem.fonts must define at least one font.");
-    }
+	if (fontIds.length === 0) {
+		throw new Error("site.fontSystem.fonts must define at least one font.");
+	}
 
-    const availableFontIds = new Set(fontIds);
-    const primaryFontId = fontIds[0];
-    const familyToFontId = new Map<string, string>();
+	const availableFontIds = new Set(fontIds);
+	const primaryFontId = fontIds[0];
+	const familyToFontId = new Map<string, string>();
 
-    for (const [fontId, fontDef] of Object.entries(fonts)) {
-        const familyKey = fontDef.family.trim().toLowerCase();
-        if (familyKey && !familyToFontId.has(familyKey)) {
-            familyToFontId.set(familyKey, fontId);
-        }
-    }
+	for (const [fontId, fontDef] of Object.entries(fonts)) {
+		const familyKey = fontDef.family.trim().toLowerCase();
+		if (familyKey && !familyToFontId.has(familyKey)) {
+			familyToFontId.set(familyKey, fontId);
+		}
+	}
 
-    const fallback = {
-        sans: site.fontSystem.fallback?.sans?.length
-            ? site.fontSystem.fallback.sans
-            : DEFAULT_FONT_FALLBACK.sans,
-        serif: site.fontSystem.fallback?.serif?.length
-            ? site.fontSystem.fallback.serif
-            : DEFAULT_FONT_FALLBACK.serif,
-        mono: site.fontSystem.fallback?.mono?.length
-            ? site.fontSystem.fallback.mono
-            : DEFAULT_FONT_FALLBACK.mono,
-    };
+	const fallback = {
+		sans: site.fontSystem.fallback?.sans?.length
+			? site.fontSystem.fallback.sans
+			: DEFAULT_FONT_FALLBACK.sans,
+		serif: site.fontSystem.fallback?.serif?.length
+			? site.fontSystem.fallback.serif
+			: DEFAULT_FONT_FALLBACK.serif,
+		mono: site.fontSystem.fallback?.mono?.length
+			? site.fontSystem.fallback.mono
+			: DEFAULT_FONT_FALLBACK.mono,
+	};
 
-    const roles = resolveRoleMap(site.fontSystem.roles, availableFontIds, familyToFontId, primaryFontId);
-    const languageRoles = Object.fromEntries(
-        Object.entries(site.fontSystem.languageRoles ?? {}).map(([lang, roleMap]) => [
-            lang,
-            resolveRoleMap(
-                {
-                    ...roles,
-                    ...roleMap,
-                },
-                availableFontIds,
-                familyToFontId,
-                primaryFontId,
-            ),
-        ]),
-    );
+	const roles = resolveRoleMap(
+		site.fontSystem.roles,
+		availableFontIds,
+		familyToFontId,
+		primaryFontId,
+	);
+	const languageRoles = Object.fromEntries(
+		Object.entries(site.fontSystem.languageRoles ?? {}).map(
+			([lang, roleMap]) => [
+				lang,
+				resolveRoleMap(
+					{
+						...roles,
+						...roleMap,
+					},
+					availableFontIds,
+					familyToFontId,
+					primaryFontId,
+				),
+			],
+		),
+	);
 
-    return {
-        fonts,
-        roles,
-        languageRoles,
-        fallback,
-    };
+	return {
+		fonts,
+		roles,
+		languageRoles,
+		fallback,
+	};
 }
 
 // LinkPreset 名称映射
 const linkPresetNameMap: Record<string, LinkPreset> = {
-    Home: LinkPreset.Home,
-    Archive: LinkPreset.Archive,
-    Projects: LinkPreset.Projects,
-    Skills: LinkPreset.Skills,
-    Timeline: LinkPreset.Timeline,
-    Diary: LinkPreset.Diary,
-    Albums: LinkPreset.Albums,
-    Anime: LinkPreset.Anime,
-    About: LinkPreset.About,
-    Friends: LinkPreset.Friends,
-    Resources: LinkPreset.Resources,
+	Home: LinkPreset.Home,
+	Archive: LinkPreset.Archive,
+	Projects: LinkPreset.Projects,
+	Skills: LinkPreset.Skills,
+	Timeline: LinkPreset.Timeline,
+	Diary: LinkPreset.Diary,
+	Albums: LinkPreset.Albums,
+	Anime: LinkPreset.Anime,
+	About: LinkPreset.About,
+	Friends: LinkPreset.Friends,
+	Resources: LinkPreset.Resources,
 };
 
 // 标准化单个导航链接
 const normalizeNavbarLink = (
-    link: NavbarLink | LinkPreset | string,
+	link: NavbarLink | LinkPreset | string,
 ): NavbarLink | LinkPreset => {
-    if (typeof link === "string") {
-        const preset = linkPresetNameMap[link];
-        if (preset === undefined) {
-            throw new Error(`Unknown LinkPreset: ${link}`);
-        }
-        return preset;
-    }
-    if (typeof link === "number") {
-        return link;
-    }
-    const children = link.children?.map(normalizeNavbarLink);
-    return children ? { ...link, children } : link;
+	if (typeof link === "string") {
+		const preset = linkPresetNameMap[link];
+		if (preset === undefined) {
+			throw new Error(`Unknown LinkPreset: ${link}`);
+		}
+		return preset;
+	}
+	if (typeof link === "number") {
+		return link;
+	}
+	const children = link.children?.map(normalizeNavbarLink);
+	return children ? { ...link, children } : link;
 };
 
 // 标准化导航链接数组
 const normalizeNavbarLinks = (links: Array<NavbarLink | LinkPreset | string>) =>
-    links.map(normalizeNavbarLink);
+	links.map(normalizeNavbarLink);
 
 /**
  * 站点配置 - 从 YAML 加载
  */
 export const siteConfig: SiteConfig = {
-    ...config.site,
-    // 时区从 YAML 获取（如果未设置则默认 UTC+8）
-    timeZone: config.site.timeZone ?? 8,
-    // 翻译配置从 YAML 获取（如果未设置则使用默认值）
-    translate: config.site.translate ?? {
-        enable: true,
-        service: "client.edge",
-        showSelectTag: false,
-        autoDiscriminate: true,
-        ignoreClasses: ["ignore", "banner-title", "banner-subtitle"],
-        ignoreTags: ["script", "style", "code", "pre"],
-    },
+	...config.site,
+	// 时区从 YAML 获取（如果未设置则默认 UTC+8）
+	timeZone: config.site.timeZone ?? 8,
+	// 翻译配置从 YAML 获取（如果未设置则使用默认值）
+	translate: config.site.translate ?? {
+		enable: true,
+		service: "client.edge",
+		showSelectTag: false,
+		autoDiscriminate: true,
+		ignoreClasses: ["ignore", "banner-title", "banner-subtitle"],
+		ignoreTags: ["script", "style", "code", "pre"],
+	},
 };
 
 siteConfig.resolvedFontSystem = resolveFontSystem(siteConfig);
@@ -267,7 +275,7 @@ siteConfig.resolvedFontSystem = resolveFontSystem(siteConfig);
  * 导航栏配置 - 从 YAML 加载
  */
 export const navbarConfig: NavbarConfig = {
-    links: normalizeNavbarLinks(config.navbar.links),
+	links: normalizeNavbarLinks(config.navbar.links),
 };
 
 /**
@@ -279,21 +287,23 @@ export const sidebarConfig: SidebarConfig = config.sidebar;
  * Umami 统计配置 - 从 YAML 加载
  */
 export const umamiConfig = {
-    enabled: config.umami?.enabled ?? false,
-    apiKey: import.meta.env.UMAMI_API_KEY,
-    baseUrl: config.umami?.baseUrl ?? "https://api.umami.is",
-    scripts: import.meta.env.UMAMI_TRACKING_CODE,
+	enabled: config.umami?.enabled ?? false,
+	apiKey: import.meta.env.UMAMI_API_KEY,
+	baseUrl: config.umami?.baseUrl ?? "https://api.umami.is",
+	scripts: import.meta.env.UMAMI_TRACKING_CODE,
 } as const;
 
 /**
  * 个人资料配置 - 从 YAML 加载
  */
 export const profileConfig: ProfileConfig = {
-    ...config.profile,
-    // 确保头像路径以 / 开头
-    avatar: config.profile.avatar
-        ? (config.profile.avatar.startsWith("/") ? config.profile.avatar : `/${config.profile.avatar}`)
-        : undefined,
+	...config.profile,
+	// 确保头像路径以 / 开头
+	avatar: config.profile.avatar
+		? config.profile.avatar.startsWith("/")
+			? config.profile.avatar
+			: `/${config.profile.avatar}`
+		: undefined,
 };
 
 /**

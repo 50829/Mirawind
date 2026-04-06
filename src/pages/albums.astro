@@ -1,19 +1,18 @@
 ---
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { sortedAlbums } from "@utils/albums";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-
+import { LinkPresets } from "@constants/link-presets";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
+import { sortedAlbums } from "@utils/albums";
+import { LinkPreset } from "@/types/config";
 
 const pageTitle = LinkPresets[LinkPreset.Albums].name;
 const pageDescription = LinkPresets[LinkPreset.Albums].description;
 
 // 获取所有相册
-const albumsData = sortedAlbums.filter(album => album.visible);
+const albumsData = sortedAlbums.filter((album) => album.visible);
 ---
 
 <GridLayout title={pageTitle} description={pageDescription}>

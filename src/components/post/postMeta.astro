@@ -1,43 +1,42 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import { getCategoryUrl, getTagUrl, url } from "@utils/url";
-import { formatDateToYYYYMMDD } from "@utils/date";
-import { umamiConfig } from '@/config';
-import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-
+import { i18n } from "@i18n/translation";
+import { formatDateToYYYYMMDD } from "@utils/date";
+import { getCategoryUrl, getTagUrl, url } from "@utils/url";
+import { Icon } from "astro-icon/components";
+import { umamiConfig } from "@/config";
 
 export interface Props {
-    published: Date;
-    updated?: Date;
-    category?: string | null;
-    tags?: string[];
-    hideUpdateDate?: boolean;
-    hideTagsForMobile?: boolean;
-    isHome?: boolean;
-    className?: string;
-    slug?: string;
-    postUrl?: string;
+	published: Date;
+	updated?: Date;
+	category?: string | null;
+	tags?: string[];
+	hideUpdateDate?: boolean;
+	hideTagsForMobile?: boolean;
+	isHome?: boolean;
+	className?: string;
+	slug?: string;
+	postUrl?: string;
 }
 
 const {
-    published,
-    updated,
-    category,
-    tags,
-    hideUpdateDate,
-    hideTagsForMobile,
-    isHome,
-    className = "",
-    slug,
-    postUrl
+	published,
+	updated,
+	category,
+	tags,
+	hideUpdateDate,
+	hideTagsForMobile,
+	isHome,
+	className = "",
+	slug,
+	postUrl,
 } = Astro.props;
 const finalPostUrl = postUrl || (slug ? url(`/posts/${slug}/`) : "");
 
 // 解析 umami
 const umamiEnabled = umamiConfig.enabled || false;
-const umamiWebsiteId = umamiConfig.scripts.match(/data-website-id="([^"]+)"/)?.[1] || "";
+const umamiWebsiteId =
+	umamiConfig.scripts.match(/data-website-id="([^"]+)"/)?.[1] || "";
 const umamiApiKey = umamiConfig.apiKey || "";
 const umamiBaseUrl = umamiConfig.baseUrl || "";
 ---

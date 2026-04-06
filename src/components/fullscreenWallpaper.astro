@@ -1,33 +1,33 @@
 ---
-import type { SiteConfig } from "@/types/config";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-
+import type { SiteConfig } from "@/types/config";
 
 interface Props {
-    config: SiteConfig["wallpaper"];
-    class?: string;
+	config: SiteConfig["wallpaper"];
+	class?: string;
 }
 
-const { config, class: className  } = Astro.props;
+const { config, class: className } = Astro.props;
 
 // 获取当前设备类型的图片源
 const getImageSources = () => {
-    const toArray = (src: any) => [src || []].flat();
-    const { src } = config;
-    const isObj = src && typeof src === "object" && !Array.isArray(src);
-    const desktop = toArray(isObj ? (src as any).desktop : src);
-    const mobile = toArray(isObj ? (src as any).mobile : src);
-    return {
-        desktop: desktop.length > 0 ? desktop : mobile,
-        mobile: mobile.length > 0 ? mobile : desktop,
-    };
-}
+	const toArray = (src: any) => [src || []].flat();
+	const { src } = config;
+	const isObj = src && typeof src === "object" && !Array.isArray(src);
+	const desktop = toArray(isObj ? (src as any).desktop : src);
+	const mobile = toArray(isObj ? (src as any).mobile : src);
+	return {
+		desktop: desktop.length > 0 ? desktop : mobile,
+		mobile: mobile.length > 0 ? mobile : desktop,
+	};
+};
 
 const imageSources = getImageSources();
 
 // 轮播配置
 const carouselConfig = config.carousel;
-const isCarouselEnabled = imageSources.desktop.length > 1 || imageSources.mobile.length > 1;
+const isCarouselEnabled =
+	imageSources.desktop.length > 1 || imageSources.mobile.length > 1;
 const carouselInterval = carouselConfig?.interval || 5;
 
 // 样式配置

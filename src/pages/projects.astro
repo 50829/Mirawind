@@ -1,23 +1,21 @@
 ---
 export const prerender = true;
 
-
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import {
-    projectsData,
-    getProjectStats,
-    getProjectsByCategory,
-    getFeaturedProjects,
-    getAllTechStack,
-} from "@utils/projects";
-import { UNCATEGORIZED } from "@constants/constants";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import ProjectCard from "@components/data/projectCard.astro";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
-
+import ProjectCard from "@components/data/projectCard.astro";
+import { UNCATEGORIZED } from "@constants/constants";
+import { LinkPresets } from "@constants/link-presets";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
+import {
+	getAllTechStack,
+	getFeaturedProjects,
+	getProjectStats,
+	getProjectsByCategory,
+	projectsData,
+} from "@utils/projects";
+import { LinkPreset } from "@/types/config";
 
 const title = LinkPresets[LinkPreset.Projects].name;
 const subtitle = LinkPresets[LinkPreset.Projects].description;
@@ -29,34 +27,34 @@ const allTechStack = getAllTechStack();
 
 // 获取所有分类
 const categories = [
-    ...new Set(projectsData.map((project) => project.category)),
+	...new Set(projectsData.map((project) => project.category)),
 ];
 
 // 按分类获取项目
 const projectsByCategory = categories.reduce(
-    (acc, category) => {
-        acc[category] = getProjectsByCategory(category);
-        return acc;
-    },
-    {} as Record<string, typeof projectsData>,
+	(acc, category) => {
+		acc[category] = getProjectsByCategory(category);
+		return acc;
+	},
+	{} as Record<string, typeof projectsData>,
 );
 
 // 获取分类文本的国际化翻译
 const getCategoryText = (category: string) => {
-    switch (category) {
-        case "web":
-            return i18n(I18nKey.projectsWeb);
-        case "mobile":
-            return i18n(I18nKey.projectsMobile);
-        case "desktop":
-            return i18n(I18nKey.projectsDesktop);
-        case "other":
-            return i18n(I18nKey.projectsOther);
-        case UNCATEGORIZED:
-            return i18n(I18nKey.uncategorized);
-        default:
-            return category;
-    }
+	switch (category) {
+		case "web":
+			return i18n(I18nKey.projectsWeb);
+		case "mobile":
+			return i18n(I18nKey.projectsMobile);
+		case "desktop":
+			return i18n(I18nKey.projectsDesktop);
+		case "other":
+			return i18n(I18nKey.projectsOther);
+		case UNCATEGORIZED:
+			return i18n(I18nKey.uncategorized);
+		default:
+			return category;
+	}
 };
 ---
 

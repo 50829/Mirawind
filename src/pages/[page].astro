@@ -1,22 +1,22 @@
 ---
 export const prerender = true;
 
-import type { GetStaticPaths } from "astro";
 import { PAGE_SIZE } from "@constants/constants";
 import { getSortedPosts } from "@utils/content";
+import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async () => {
-    const allBlogPosts = await getSortedPosts();
-    const totalPages = Math.ceil(allBlogPosts.length / PAGE_SIZE);
-    
-    // 为每一页（除了第一页）创建重定向路径
-    const paths: Array<{ params: { page: string } }> = [];
-    for (let i = 2; i <= totalPages; i++) {
-        paths.push({
-            params: { page: String(i) },
-        });
-    }
-    return paths;
+	const allBlogPosts = await getSortedPosts();
+	const totalPages = Math.ceil(allBlogPosts.length / PAGE_SIZE);
+
+	// 为每一页（除了第一页）创建重定向路径
+	const paths: Array<{ params: { page: string } }> = [];
+	for (let i = 2; i <= totalPages; i++) {
+		paths.push({
+			params: { page: String(i) },
+		});
+	}
+	return paths;
 }) satisfies GetStaticPaths;
 
 // 重定向到 /blog/X/

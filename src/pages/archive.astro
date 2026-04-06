@@ -1,11 +1,10 @@
 ---
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { getSortedPostsList } from "@utils/content";
 import ArchivePanel from "@components/archivePanel.svelte";
-import GridLayout from "@layouts/grid.astro";
 import BackwardButton from "@components/backwardButton.astro";
-
+import { LinkPresets } from "@constants/link-presets";
+import GridLayout from "@layouts/grid.astro";
+import { getSortedPostsList } from "@utils/content";
+import { LinkPreset } from "@/types/config";
 
 const pageTitle = LinkPresets[LinkPreset.Archive].name;
 const pageDescription = LinkPresets[LinkPreset.Archive].description;

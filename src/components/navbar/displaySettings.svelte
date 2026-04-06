@@ -1,54 +1,52 @@
 <script lang="ts">
-import Icon from "@iconify/svelte";
-import { onMount } from "svelte";
-
 import { BREAKPOINT_LG } from "@constants/breakpoints";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import Icon from "@iconify/svelte";
 import { getDefaultHue, getHue, setHue } from "@utils/hue";
 import { onClickOutside } from "@utils/widget";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-
+import { onMount } from "svelte";
 
 let hue = $state(getDefaultHue());
 const defaultHue = getDefaultHue();
 let isOpen = $state(false);
 
 function resetHue() {
-    hue = getDefaultHue();
+	hue = getDefaultHue();
 }
 
 function togglePanel() {
-    isOpen = !isOpen;
+	isOpen = !isOpen;
 }
 
 function openPanel() {
-    isOpen = true;
+	isOpen = true;
 }
 
 function closePanel() {
-    isOpen = false;
+	isOpen = false;
 }
 
 // 点击外部关闭面板
 function handleClickOutside(event: MouseEvent) {
-    if (!isOpen) return;
-    onClickOutside(event, "display-setting", "display-settings-switch", () => {
-        isOpen = false;
-    });
+	if (!isOpen) return;
+	onClickOutside(event, "display-setting", "display-settings-switch", () => {
+		isOpen = false;
+	});
 }
 
 onMount(() => {
-    hue = getHue();
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-        document.removeEventListener("click", handleClickOutside);
-    };
+	hue = getHue();
+	document.addEventListener("click", handleClickOutside);
+	return () => {
+		document.removeEventListener("click", handleClickOutside);
+	};
 });
 
 $effect(() => {
-    if (hue || hue === 0) {
-        setHue(hue);
-    }
+	if (hue || hue === 0) {
+		setHue(hue);
+	}
 });
 </script>
 

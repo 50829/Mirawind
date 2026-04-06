@@ -2,66 +2,65 @@
 import { siteConfig } from "@/config";
 import { ensureGoogleDisplaySwap, isCssFontSource } from "@/utils/fontSource";
 
-
 const resolvedFontSystem = siteConfig.resolvedFontSystem;
 
 if (!resolvedFontSystem) {
-    throw new Error("resolvedFontSystem is required but missing.");
+	throw new Error("resolvedFontSystem is required but missing.");
 }
 
 const roleFallbackBucket = {
-    body: "sans",
-    context: "sans",
-    heading: "sans",
-    title: "sans",
-    subtitle: "sans",
-    ui: "sans",
-    code: "mono",
-    caption: "sans",
-    blockquote: "serif",
+	body: "sans",
+	context: "sans",
+	heading: "sans",
+	title: "sans",
+	subtitle: "sans",
+	ui: "sans",
+	code: "mono",
+	caption: "sans",
+	blockquote: "serif",
 } as const;
 
 const quoteFamily = (family: string) => `"${family.replace(/"/g, '\\"')}"`;
 
 const normalizeFallbackToken = (token: string) => {
-    const trimmed = token.trim();
-    const alreadyQuoted =
-        (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
-        (trimmed.startsWith("'") && trimmed.endsWith("'"));
-    if (alreadyQuoted || trimmed.includes("(") || trimmed.includes("var(")) {
-        return trimmed;
-    }
-    if (trimmed.includes(" ")) {
-        return quoteFamily(trimmed);
-    }
-    return trimmed;
+	const trimmed = token.trim();
+	const alreadyQuoted =
+		(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+		(trimmed.startsWith("'") && trimmed.endsWith("'"));
+	if (alreadyQuoted || trimmed.includes("(") || trimmed.includes("var(")) {
+		return trimmed;
+	}
+	if (trimmed.includes(" ")) {
+		return quoteFamily(trimmed);
+	}
+	return trimmed;
 };
 
 const encodeFontUrl = (src: string) => {
-    try {
-        return encodeURI(src);
-    } catch {
-        return src;
-    }
+	try {
+		return encodeURI(src);
+	} catch {
+		return src;
+	}
 };
 
 const getFontFormat = (src: string) => {
-    const lowerSrc = src.toLowerCase();
-    if (lowerSrc.endsWith(".woff2")) return "woff2";
-    if (lowerSrc.endsWith(".woff")) return "woff";
-    if (lowerSrc.endsWith(".ttf")) return "truetype";
-    if (lowerSrc.endsWith(".otf")) return "opentype";
-    return "";
+	const lowerSrc = src.toLowerCase();
+	if (lowerSrc.endsWith(".woff2")) return "woff2";
+	if (lowerSrc.endsWith(".woff")) return "woff";
+	if (lowerSrc.endsWith(".ttf")) return "truetype";
+	if (lowerSrc.endsWith(".otf")) return "opentype";
+	return "";
 };
 
 const firstScreenRoles = [
-    "body",
-    "context",
-    "heading",
-    "title",
-    "subtitle",
-    "ui",
-    "caption",
+	"body",
+	"context",
+	"heading",
+	"title",
+	"subtitle",
+	"ui",
+	"caption",
 ] as const;
 
 type FirstScreenRole = (typeof firstScreenRoles)[number];
@@ -69,69 +68,74 @@ type FirstScreenRole = (typeof firstScreenRoles)[number];
 const currentLangRoles = resolvedFontSystem.languageRoles[siteConfig.lang];
 
 const firstScreenFontIds = new Set(
-    firstScreenRoles.flatMap((role: FirstScreenRole) => {
-        const langAssigned = currentLangRoles?.[role];
-        if (langAssigned && langAssigned.length > 0) {
-            return langAssigned;
-        }
-        return resolvedFontSystem.roles[role];
-    }),
+	firstScreenRoles.flatMap((role: FirstScreenRole) => {
+		const langAssigned = currentLangRoles?.[role];
+		if (langAssigned && langAssigned.length > 0) {
+			return langAssigned;
+		}
+		return resolvedFontSystem.roles[role];
+	}),
 );
 
 const fontEntries = Object.entries(resolvedFontSystem.fonts)
-    .filter(([id]) => firstScreenFontIds.has(id))
-    .map(([id, font]) => ({
-        id,
-        ...font,
-    }));
+	.filter(([id]) => firstScreenFontIds.has(id))
+	.map(([id, font]) => ({
+		id,
+		...font,
+	}));
 
-const buildRoleStack = (fontIds: string[], bucket: keyof typeof resolvedFontSystem.fallback) => {
-    const families = fontIds
-        .map((fontId) => {
-            const registeredFamily = resolvedFontSystem.fonts[fontId]?.family;
-            if (registeredFamily) {
-                return quoteFamily(registeredFamily);
-            }
-            return normalizeFallbackToken(fontId);
-        })
-        .filter(Boolean);
+const buildRoleStack = (
+	fontIds: string[],
+	bucket: keyof typeof resolvedFontSystem.fallback,
+) => {
+	const families = fontIds
+		.map((fontId) => {
+			const registeredFamily = resolvedFontSystem.fonts[fontId]?.family;
+			if (registeredFamily) {
+				return quoteFamily(registeredFamily);
+			}
+			return normalizeFallbackToken(fontId);
+		})
+		.filter(Boolean);
 
-    const fallback = resolvedFontSystem.fallback[bucket].map(normalizeFallbackToken);
-    return [...families, ...fallback].join(", ");
+	const fallback = resolvedFontSystem.fallback[bucket].map(
+		normalizeFallbackToken,
+	);
+	return [...families, ...fallback].join(", ");
 };
 
 const buildRoleVariables = (roles: typeof resolvedFontSystem.roles) => {
-    return {
-        body: buildRoleStack(roles.body, roleFallbackBucket.body),
-        context: buildRoleStack(roles.context, roleFallbackBucket.context),
-        heading: buildRoleStack(roles.heading, roleFallbackBucket.heading),
-        title: buildRoleStack(roles.title, roleFallbackBucket.title),
-        subtitle: buildRoleStack(roles.subtitle, roleFallbackBucket.subtitle),
-        ui: buildRoleStack(roles.ui, roleFallbackBucket.ui),
-        code: buildRoleStack(roles.code, roleFallbackBucket.code),
-        caption: buildRoleStack(roles.caption, roleFallbackBucket.caption),
-        blockquote: buildRoleStack(roles.blockquote, roleFallbackBucket.blockquote),
-    };
+	return {
+		body: buildRoleStack(roles.body, roleFallbackBucket.body),
+		context: buildRoleStack(roles.context, roleFallbackBucket.context),
+		heading: buildRoleStack(roles.heading, roleFallbackBucket.heading),
+		title: buildRoleStack(roles.title, roleFallbackBucket.title),
+		subtitle: buildRoleStack(roles.subtitle, roleFallbackBucket.subtitle),
+		ui: buildRoleStack(roles.ui, roleFallbackBucket.ui),
+		code: buildRoleStack(roles.code, roleFallbackBucket.code),
+		caption: buildRoleStack(roles.caption, roleFallbackBucket.caption),
+		blockquote: buildRoleStack(roles.blockquote, roleFallbackBucket.blockquote),
+	};
 };
 
 const rootRoleVariables = buildRoleVariables(resolvedFontSystem.roles);
-const languageRoleVariables = Object.entries(resolvedFontSystem.languageRoles).map(
-    ([lang, roles]) => ({
-        lang,
-        vars: buildRoleVariables(roles),
-    }),
-);
+const languageRoleVariables = Object.entries(
+	resolvedFontSystem.languageRoles,
+).map(([lang, roles]) => ({
+	lang,
+	vars: buildRoleVariables(roles),
+}));
 
 const fontFaceRules = fontEntries
-    .filter((font) => font.src && !isCssFontSource(font.src))
-    .map((font) => {
-        const encodedSrc = encodeFontUrl(font.src);
-        const format = getFontFormat(font.src);
-        const formatSuffix = format ? ` format("${format}")` : "";
-        const weightLine = font.weight ? `font-weight: ${font.weight};` : "";
-        const styleLine = font.style ? `font-style: ${font.style};` : "";
-        const displayValue = font.display ?? "swap";
-        return `
+	.filter((font) => font.src && !isCssFontSource(font.src))
+	.map((font) => {
+		const encodedSrc = encodeFontUrl(font.src);
+		const format = getFontFormat(font.src);
+		const formatSuffix = format ? ` format("${format}")` : "";
+		const weightLine = font.weight ? `font-weight: ${font.weight};` : "";
+		const styleLine = font.style ? `font-style: ${font.style};` : "";
+		const displayValue = font.display ?? "swap";
+		return `
             @font-face {
                 font-family: ${quoteFamily(font.family)};
                 src: url("${encodedSrc}")${formatSuffix};
@@ -140,12 +144,18 @@ const fontFaceRules = fontEntries
                 ${styleLine}
             }
         `;
-    })
-    .join("\n");
+	})
+	.join("\n");
 
-const defaultFallbackSans = resolvedFontSystem.fallback.sans.map(normalizeFallbackToken).join(", ");
-const defaultFallbackSerif = resolvedFontSystem.fallback.serif.map(normalizeFallbackToken).join(", ");
-const defaultFallbackMono = resolvedFontSystem.fallback.mono.map(normalizeFallbackToken).join(", ");
+const defaultFallbackSans = resolvedFontSystem.fallback.sans
+	.map(normalizeFallbackToken)
+	.join(", ");
+const defaultFallbackSerif = resolvedFontSystem.fallback.serif
+	.map(normalizeFallbackToken)
+	.join(", ");
+const defaultFallbackMono = resolvedFontSystem.fallback.mono
+	.map(normalizeFallbackToken)
+	.join(", ");
 ---
 
 <!-- Font Loading -->

@@ -1,61 +1,62 @@
 ---
-import { Icon } from "astro-icon/components";
-import { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-
-import { siteConfig, profileConfig, postConfig } from "@/config";
+import { render } from "astro:content";
+import ImageWrapper from "@components/common/imageWrapper.astro";
+import Markdown from "@components/common/markdown.astro";
+import PasswordProtection from "@components/common/passwordProtection.astro";
+import Comment from "@components/post/comment.astro";
+import License from "@components/post/license.astro";
+import PostMetadata from "@components/post/postMeta.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
 import { getSortedPosts } from "@utils/content";
 import { formatDateToYYYYMMDD } from "@utils/date";
-import { getFileDirFromPath, getPostUrl, getPostUrlBySlug, removeFileExtension} from "@utils/url";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import License from "@components/post/license.astro";
-import Markdown from "@components/common/markdown.astro";
-import ImageWrapper from "@components/common/imageWrapper.astro";
-import Comment from "@components/post/comment.astro";
-import PasswordProtection from "@components/common/passwordProtection.astro";
-import PostMetadata from "@components/post/postMeta.astro";
-import GridLayout from "@layouts/grid.astro";
-
-
+import {
+	getFileDirFromPath,
+	getPostUrl,
+	getPostUrlBySlug,
+	removeFileExtension,
+} from "@utils/url";
+import { Icon } from "astro-icon/components";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { postConfig, profileConfig, siteConfig } from "@/config";
 
 export async function getStaticPaths() {
-    const blogEntries = await getSortedPosts();
-    const paths: {
-        params: { slug: string };
-        props: { entry: CollectionEntry<"posts"> };
-    }[] = [];
+	const blogEntries = await getSortedPosts();
+	const paths: {
+		params: { slug: string };
+		props: { entry: CollectionEntry<"posts"> };
+	}[] = [];
 
-    for (const entry of blogEntries) {
-        // 将 id 转换为 slug（移除扩展名）以匹配路由参数
-        const slug = removeFileExtension(entry.id);
-        // 为每篇文章创建默认的 slug 路径
-        paths.push({
-            params: { slug },
-            props: { entry },
-        });
-        // 如果文章有自定义固定链接，也创建对应的路径
-        if (entry.data.routeName) {
-            // 移除开头的斜杠和结尾的斜杠
-            // 同时移除可能的 "posts/" 前缀，避免重复
-            let routeName = entry.data.routeName
-                .replace(/^\/+/, "")
-                .replace(/\/+$/, "");
-            if (routeName.startsWith("posts/")) {
-                routeName = routeName.replace(/^posts\//, "");
-            }
-            paths.push({
-                params: { slug: routeName },
-                props: { entry },
-            });
-        }
-    }
+	for (const entry of blogEntries) {
+		// 将 id 转换为 slug（移除扩展名）以匹配路由参数
+		const slug = removeFileExtension(entry.id);
+		// 为每篇文章创建默认的 slug 路径
+		paths.push({
+			params: { slug },
+			props: { entry },
+		});
+		// 如果文章有自定义固定链接，也创建对应的路径
+		if (entry.data.routeName) {
+			// 移除开头的斜杠和结尾的斜杠
+			// 同时移除可能的 "posts/" 前缀，避免重复
+			let routeName = entry.data.routeName
+				.replace(/^\/+/, "")
+				.replace(/\/+$/, "");
+			if (routeName.startsWith("posts/")) {
+				routeName = routeName.replace(/^posts\//, "");
+			}
+			paths.push({
+				params: { slug: routeName },
+				props: { entry },
+			});
+		}
+	}
 
-    return paths;
+	return paths;
 }
-
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
@@ -67,25 +68,25 @@ let isEncrypted = !!(entry.data.encrypted && entry.data.password);
 
 dayjs.extend(utc);
 const lastModified = dayjs(entry.data.updated || entry.data.published)
-    .utc()
-    .format("YYYY-MM-DDTHH:mm:ss");
+	.utc()
+	.format("YYYY-MM-DDTHH:mm:ss");
 
 const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: entry.data.title,
-    description: entry.data.description || entry.data.title,
-    keywords: entry.data.tags,
-    author: {
-        "@type": "Person",
-        name: profileConfig.name,
-        url: Astro.site,
-    },
-    datePublished: formatDateToYYYYMMDD(entry.data.published),
-    inLanguage: entry.data.lang
-        ? entry.data.lang.replace("_", "-")
-        : siteConfig.lang.replace("_", "-"),
-    // TODO include cover image here
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: entry.data.title,
+	description: entry.data.description || entry.data.title,
+	keywords: entry.data.tags,
+	author: {
+		"@type": "Person",
+		name: profileConfig.name,
+		url: Astro.site,
+	},
+	datePublished: formatDateToYYYYMMDD(entry.data.published),
+	inLanguage: entry.data.lang
+		? entry.data.lang.replace("_", "-")
+		: siteConfig.lang.replace("_", "-"),
+	// TODO include cover image here
 };
 ---
 

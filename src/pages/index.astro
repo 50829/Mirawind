@@ -1,17 +1,17 @@
 ---
 import { getEntry, render } from "astro:content";
-import type { Page } from "astro";
-import GridLayout from "@layouts/grid.astro";
 import Markdown from "@components/common/markdown.astro";
-import { url } from "@utils/url";
-import { PAGE_SIZE } from "@constants/constants";
-import { getSortedPosts } from "@utils/content";
 import Pagination from "@components/pagination.astro";
 import PostPage from "@components/postPage.astro";
+import { PAGE_SIZE } from "@constants/constants";
+import GridLayout from "@layouts/grid.astro";
+import { getSortedPosts } from "@utils/content";
+import { url } from "@utils/url";
+import type { Page } from "astro";
 
 const homePost = await getEntry("spec", "home");
 if (!homePost) {
-    throw new Error("Home page content not found");
+	throw new Error("Home page content not found");
 }
 
 const { Content } = await render(homePost);
@@ -23,20 +23,20 @@ const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
 
 // 创建类似分页对象的结构
 const page: Page<(typeof firstPagePosts)[number]> = {
-    data: firstPagePosts,
-    start: 0,
-    end: firstPagePosts.length - 1,
-    size: PAGE_SIZE,
-    total: allPosts.length,
-    currentPage: 1,
-    lastPage: totalPages,
-    url: {
-        current: "/",
-        prev: undefined,
-        next: totalPages > 1 ? "/blog/2/" : undefined,
-        first: undefined,
-        last: totalPages > 1 ? `/blog/${totalPages}/` : undefined,
-    },
+	data: firstPagePosts,
+	start: 0,
+	end: firstPagePosts.length - 1,
+	size: PAGE_SIZE,
+	total: allPosts.length,
+	currentPage: 1,
+	lastPage: totalPages,
+	url: {
+		current: "/",
+		prev: undefined,
+		next: totalPages > 1 ? "/blog/2/" : undefined,
+		first: undefined,
+		last: totalPages > 1 ? `/blog/${totalPages}/` : undefined,
+	},
 };
 
 const len = page.data.length;

@@ -1,15 +1,15 @@
 ---
-import { Icon } from "astro-icon/components";
 import { render } from "astro:content";
+import { getCategoryList, getSortedPosts, getTagList } from "@utils/content";
+import { Icon } from "astro-icon/components";
 import { siteConfig } from "../../config";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
-import { getCategoryList, getSortedPosts, getTagList } from "@utils/content";
 import WidgetLayout from "./widgetLayout.astro";
 
 interface Props {
-    class?: string;
-    style?: string;
+	class?: string;
+	style?: string;
 }
 
 const { class: className, style } = Astro.props;
@@ -24,92 +24,108 @@ const tags = await getTagList();
 // 计算总字数
 let totalWords = 0;
 for (const post of posts) {
-    try {
-        const { remarkPluginFrontmatter } = await render(post);
-        if (remarkPluginFrontmatter?.words) {
-            totalWords += remarkPluginFrontmatter.words;
-        }
-    } catch {
-        // 备用方法：手动估算字数
-        if (post.body) {
-            const text = post.body.replace(/```[\s\S]*?```/g, "").replace(/`[^`]+`/g, "");
-            const cjkPattern = /[\u4e00-\u9fa5\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g;
-            const cjkMatches = text.match(cjkPattern);
-            const cjkCount = cjkMatches ? cjkMatches.length : 0;
-            const nonCjkText = text.replace(cjkPattern, " ");
-            const nonCjkWords = nonCjkText.split(/\s+/).filter((w) => w.trim().length > 0);
-            totalWords += cjkCount + nonCjkWords.length;
-        }
-    }
+	try {
+		const { remarkPluginFrontmatter } = await render(post);
+		if (remarkPluginFrontmatter?.words) {
+			totalWords += remarkPluginFrontmatter.words;
+		}
+	} catch {
+		// 备用方法：手动估算字数
+		if (post.body) {
+			const text = post.body
+				.replace(/```[\s\S]*?```/g, "")
+				.replace(/`[^`]+`/g, "");
+			const cjkPattern =
+				/[\u4e00-\u9fa5\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g;
+			const cjkMatches = text.match(cjkPattern);
+			const cjkCount = cjkMatches ? cjkMatches.length : 0;
+			const nonCjkText = text.replace(cjkPattern, " ");
+			const nonCjkWords = nonCjkText
+				.split(/\s+/)
+				.filter((w) => w.trim().length > 0);
+			totalWords += cjkCount + nonCjkWords.length;
+		}
+	}
 }
 
 // 格式化数字（添加千位分隔符）
 function formatNumber(num: number): string {
-    return num.toLocaleString();
+	return num.toLocaleString();
 }
 
 // 计算天数差（毫秒转天数）
 function calculateDaysDiff(from: Date, to: Date): number {
-    const fromDate = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-    const toDate = new Date(to.getFullYear(), to.getMonth(), to.getDate());
-    const diff = Math.floor((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.max(0, diff);
+	const fromDate = new Date(
+		from.getFullYear(),
+		from.getMonth(),
+		from.getDate(),
+	);
+	const toDate = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+	const diff = Math.floor(
+		(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+	);
+	return Math.max(0, diff);
 }
 
 // 获取最新文章日期
-const lastPostDate = posts.reduce((latestDate, post) => {
-    const postLatestDate = post.data.updated || post.data.published;
-    if (!latestDate || postLatestDate > latestDate) {
-        return postLatestDate;
-    }
-    return latestDate;
-}, null as Date | null);
+const lastPostDate = posts.reduce(
+	(latestDate, post) => {
+		const postLatestDate = post.data.updated || post.data.published;
+		if (!latestDate || postLatestDate > latestDate) {
+			return postLatestDate;
+		}
+		return latestDate;
+	},
+	null as Date | null,
+);
 
 // 初始值（SSR渲染用，客户端会重新计算）
 const today = new Date();
 const diffDays = Math.ceil(calculateDaysDiff(new Date(siteStartDate), today));
-const daysSinceLastUpdate = lastPostDate ? calculateDaysDiff(lastPostDate, today) : 0;
+const daysSinceLastUpdate = lastPostDate
+	? calculateDaysDiff(lastPostDate, today)
+	: 0;
 const lastPostDateIso = lastPostDate?.toISOString() ?? "";
 
 // 统计数据
 const stats = [
-    {
-        icon: "material-symbols:article-outline",
-        label: i18n(I18nKey.siteStatsPostCount),
-        value: posts.length,
-    },
-    {
-        icon: "material-symbols:folder-outline",
-        label: i18n(I18nKey.siteStatsCategoryCount),
-        value: categories.length,
-    },
-    {
-        icon: "material-symbols:label-outline",
-        label: i18n(I18nKey.siteStatsTagCount),
-        value: tags.length,
-    },
-    {
-        icon: "material-symbols:text-ad-outline-rounded",
-        label: i18n(I18nKey.siteStatsTotalWords),
-        value: totalWords,
-        formatted: true,
-    },
-    {
-        icon: "material-symbols:calendar-clock-outline",
-        label: i18n(I18nKey.siteStatsRunningDays),
-        value: diffDays,
-        suffix: i18n(I18nKey.siteStatsDays)?.replace("{days}", "") || "",
-        dynamic: true,
-        id: "running-days",
-    },
-    {
-        icon: "material-symbols:ecg-heart-outline",
-        label: i18n(I18nKey.siteStatsLastUpdate),
-        value: daysSinceLastUpdate,
-        suffix: i18n(I18nKey.siteStatsDaysAgo)?.replace("{days}", "") || "",
-        dynamic: true,
-        id: "last-update",
-    },
+	{
+		icon: "material-symbols:article-outline",
+		label: i18n(I18nKey.siteStatsPostCount),
+		value: posts.length,
+	},
+	{
+		icon: "material-symbols:folder-outline",
+		label: i18n(I18nKey.siteStatsCategoryCount),
+		value: categories.length,
+	},
+	{
+		icon: "material-symbols:label-outline",
+		label: i18n(I18nKey.siteStatsTagCount),
+		value: tags.length,
+	},
+	{
+		icon: "material-symbols:text-ad-outline-rounded",
+		label: i18n(I18nKey.siteStatsTotalWords),
+		value: totalWords,
+		formatted: true,
+	},
+	{
+		icon: "material-symbols:calendar-clock-outline",
+		label: i18n(I18nKey.siteStatsRunningDays),
+		value: diffDays,
+		suffix: i18n(I18nKey.siteStatsDays)?.replace("{days}", "") || "",
+		dynamic: true,
+		id: "running-days",
+	},
+	{
+		icon: "material-symbols:ecg-heart-outline",
+		label: i18n(I18nKey.siteStatsLastUpdate),
+		value: daysSinceLastUpdate,
+		suffix: i18n(I18nKey.siteStatsDaysAgo)?.replace("{days}", "") || "",
+		dynamic: true,
+		id: "last-update",
+	},
 ];
 ---
 

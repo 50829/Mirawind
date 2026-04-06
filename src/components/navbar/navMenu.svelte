@@ -1,36 +1,34 @@
 <script lang="ts">
 import Icon from "@iconify/svelte";
-import { onMount } from "svelte";
-
-import type { NavbarLink } from "@/types/config";
 import { url } from "@utils/url";
 import { onClickOutside } from "@utils/widget";
-
+import { onMount } from "svelte";
+import type { NavbarLink } from "@/types/config";
 
 interface Props {
-    links: NavbarLink[];
+	links: NavbarLink[];
 }
 
 let { links }: Props = $props();
 let isOpen = $state(false);
 
 function togglePanel() {
-    isOpen = !isOpen;
+	isOpen = !isOpen;
 }
 
 // 点击外部关闭面板
 function handleClickOutside(event: MouseEvent) {
-    if (!isOpen) return;
-    onClickOutside(event, "nav-menu-panel", "nav-menu-switch", () => {
-        isOpen = false;
-    });
+	if (!isOpen) return;
+	onClickOutside(event, "nav-menu-panel", "nav-menu-switch", () => {
+		isOpen = false;
+	});
 }
 
 onMount(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-        document.removeEventListener("click", handleClickOutside);
-    };
+	document.addEventListener("click", handleClickOutside);
+	return () => {
+		document.removeEventListener("click", handleClickOutside);
+	};
 });
 </script>
 

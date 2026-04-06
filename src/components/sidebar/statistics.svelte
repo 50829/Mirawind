@@ -1,435 +1,493 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import Icon from "@iconify/svelte";
-    import dayjs from 'dayjs';
+import { BREAKPOINT_LG } from "@constants/breakpoints";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import Icon from "@iconify/svelte";
+import dayjs from "dayjs";
+import { onMount } from "svelte";
 
-    import { BREAKPOINT_LG } from "@constants/breakpoints";
-    import { i18n } from "@i18n/translation";
-    import I18nKey from "@i18n/i18nKey";
+let {
+	posts = [],
+	categories = [],
+	tags = [],
+	class: className = "",
+	style = "",
+	side = "default",
+}: {
+	posts?: any[];
+	categories?: any[];
+	tags?: any[];
+	class?: string;
+	style?: string;
+	side?: string;
+} = $props();
 
+const labels = {
+	year: i18n(I18nKey.year),
+	month: i18n(I18nKey.month),
+	day: i18n(I18nKey.day),
+	posts: i18n(I18nKey.posts),
+	activities: "Activities",
+	categories: i18n(I18nKey.categories),
+	tags: i18n(I18nKey.tags),
+	statistics: i18n(I18nKey.statistics),
+};
 
-    let {
-        posts = [],
-        categories = [],
-        tags = [],
-        class: className = "",
-        style = "",
-        side = "default",
-    }: {
-        posts?: any[],
-        categories?: any[],
-        tags?: any[],
-        class?: string,
-        style?: string,
-        side?: string,
-    } = $props();
+let container = $state<HTMLDivElement>();
+let heatmapContainer = $state<HTMLDivElement>();
+let categoriesContainer = $state<HTMLDivElement>();
+let tagsContainer = $state<HTMLDivElement>();
+let echarts: any = $state();
+let heatmapChart: any = $state();
+let categoriesChart: any = $state();
+let tagsChart: any = $state();
 
-    const labels = {
-        year: i18n(I18nKey.year),
-        month: i18n(I18nKey.month),
-        day: i18n(I18nKey.day),
-        posts: i18n(I18nKey.posts),
-        activities: "Activities",
-        categories: i18n(I18nKey.categories),
-        tags: i18n(I18nKey.tags),
-        statistics: i18n(I18nKey.statistics),
-    };
+let timeScale: "year" | "month" | "day" = $state("year");
+let lastScale = $state<"year" | "month" | "day">("year");
+let isDark = $state(false);
+let isDesktop = $state(true);
 
-    let container = $state<HTMLDivElement>();
-    let heatmapContainer = $state<HTMLDivElement>();
-    let categoriesContainer = $state<HTMLDivElement>();
-    let tagsContainer = $state<HTMLDivElement>();
-    let echarts: any = $state();
-    let heatmapChart: any = $state();
-    let categoriesChart: any = $state();
-    let tagsChart: any = $state();
+const updateIsDesktop = () => {
+	if (typeof window !== "undefined") {
+		isDesktop = window.innerWidth >= BREAKPOINT_LG;
+	}
+};
 
-    let timeScale: 'year' | 'month' | 'day' = $state('year');
-    let lastScale = $state<'year' | 'month' | 'day'>('year');
-    let isDark = $state(false);
-    let isDesktop = $state(true);
+const getThemeColors = () => {
+	const isDarkNow = document.documentElement.classList.contains("dark");
+	return {
+		text: isDarkNow ? "#e5e7eb" : "#374151",
+		primary: isDarkNow ? "#60a5fa" : "#3b82f6", // Use standard hex for primary to avoid oklch issues in ECharts
+		grid: isDarkNow ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+		areaStart: isDarkNow
+			? "rgba(96, 165, 250, 0.5)"
+			: "rgba(59, 130, 246, 0.5)",
+		areaEnd: isDarkNow ? "rgba(96, 165, 250, 0)" : "rgba(59, 130, 246, 0)",
+	};
+};
 
-    const updateIsDesktop = () => {
-        if (typeof window !== 'undefined') {
-            isDesktop = window.innerWidth >= BREAKPOINT_LG;
-        }
-    };
+const getChartsFontFamily = () => {
+	const fallback =
+		"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
+	if (typeof window === "undefined") return fallback;
+	const target = container ?? document.body ?? document.documentElement;
+	const fontFamily = window.getComputedStyle(target).fontFamily;
+	return fontFamily && fontFamily !== "inherit" ? fontFamily : fallback;
+};
 
-    const getThemeColors = () => {
-        const isDarkNow = document.documentElement.classList.contains('dark');
-        return {
-            text: isDarkNow ? '#e5e7eb' : '#374151',
-            primary: isDarkNow ? '#60a5fa' : '#3b82f6', // Use standard hex for primary to avoid oklch issues in ECharts
-            grid: isDarkNow ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
-            areaStart: isDarkNow ? 'rgba(96, 165, 250, 0.5)' : 'rgba(59, 130, 246, 0.5)',
-            areaEnd: isDarkNow ? 'rgba(96, 165, 250, 0)' : 'rgba(59, 130, 246, 0)',
-        };
-    };
+const loadECharts = async () => {
+	if (typeof window === "undefined") return;
+	isDark = document.documentElement.classList.contains("dark");
 
-    const getChartsFontFamily = () => {
-        const fallback = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
-        if (typeof window === 'undefined') return fallback;
-        const target = container ?? document.body ?? document.documentElement;
-        const fontFamily = window.getComputedStyle(target).fontFamily;
-        return fontFamily && fontFamily !== 'inherit' ? fontFamily : fallback;
-    };
+	// 动态导入 ECharts 及其组件，启用 Tree Shaking
+	const echartsCore = await import("echarts/core");
+	const { LineChart, RadarChart } = await import("echarts/charts");
+	const { TitleComponent, TooltipComponent, GridComponent, LegendComponent } =
+		await import("echarts/components");
+	const { SVGRenderer } = await import("echarts/renderers");
 
-    const loadECharts = async () => {
-        if (typeof window === 'undefined') return;
-        isDark = document.documentElement.classList.contains('dark');
+	// 注册组件
+	echartsCore.use([
+		LineChart,
+		RadarChart,
+		TitleComponent,
+		TooltipComponent,
+		GridComponent,
+		LegendComponent,
+		SVGRenderer,
+	]);
 
-        // 动态导入 ECharts 及其组件，启用 Tree Shaking
-        const echartsCore = await import('echarts/core');
-        const { LineChart, RadarChart } = await import('echarts/charts');
-        const {
-            TitleComponent,
-            TooltipComponent,
-            GridComponent,
-            LegendComponent
-        } = await import('echarts/components');
-        const { SVGRenderer } = await import('echarts/renderers');
+	echarts = echartsCore;
+};
 
-        // 注册组件
-        echartsCore.use([
-            LineChart,
-            RadarChart,
-            TitleComponent,
-            TooltipComponent,
-            GridComponent,
-            LegendComponent,
-            SVGRenderer
-        ]);
+let isInitialized = $state(false);
 
-        echarts = echartsCore;
-    };
+const initCharts = () => {
+	if (isInitialized) return;
+	initActivityChart();
+	if (isDesktop) initRadarCharts();
+	isInitialized = true;
+};
 
-    let isInitialized = $state(false);
+const initActivityChart = (isUpdate = false) => {
+	if (!heatmapContainer || !echarts) return;
 
-    const initCharts = () => {
-        if (isInitialized) return;
-        initActivityChart();
-        if (isDesktop) initRadarCharts();
-        isInitialized = true;
-    };
+	// 尝试获取现有实例以支持 Swup 持久化
+	const existingChart = echarts.getInstanceByDom(heatmapContainer);
+	const isNew = !existingChart;
+	if (existingChart) {
+		heatmapChart = existingChart;
+	} else {
+		heatmapChart = echarts.init(heatmapContainer, isDark ? "dark" : null, {
+			renderer: "svg",
+		});
+	}
 
-    const initActivityChart = (isUpdate = false) => {
-        if (!heatmapContainer || !echarts) return;
+	const colors = getThemeColors();
+	const fontFamily = getChartsFontFamily();
 
-        // 尝试获取现有实例以支持 Swup 持久化
-        const existingChart = echarts.getInstanceByDom(heatmapContainer);
-        const isNew = !existingChart;
-        if (existingChart) {
-            heatmapChart = existingChart;
-        } else {
-            heatmapChart = echarts.init(heatmapContainer, isDark ? 'dark' : null, { renderer: 'svg' });
-        }
+	const now = dayjs();
+	let data: any[] = [];
+	let xAxisData: string[] = [];
 
-        const colors = getThemeColors();
-        const fontFamily = getChartsFontFamily();
+	if (timeScale === "year") {
+		// Show from the oldest post's year to current year, at least 5 years
+		const oldestYear =
+			posts.length > 0
+				? Math.min(...posts.map((p) => dayjs(p.data.published).year()))
+				: now.year();
+		const currentYear = now.year();
+		const startYear = Math.min(oldestYear, currentYear - 4);
 
-        const now = dayjs();
-        let data: any[] = [];
-        let xAxisData: string[] = [];
+		for (let year = startYear; year <= currentYear; year++) {
+			const yearStr = year.toString();
+			xAxisData.push(yearStr);
+			const count = posts.filter(
+				(p) => dayjs(p.data.published).year() === year,
+			).length;
+			data.push(count);
+		}
+	} else if (timeScale === "month") {
+		// Last 12 months
+		for (let i = 11; i >= 0; i--) {
+			const month = now.subtract(i, "month");
+			const monthStr = month.format("YYYY-MM");
+			xAxisData.push(month.format("MMM"));
+			const count = posts.filter(
+				(p) => dayjs(p.data.published).format("YYYY-MM") === monthStr,
+			).length;
+			data.push(count);
+		}
+	} else {
+		// Last 30 days
+		for (let i = 29; i >= 0; i--) {
+			const day = now.subtract(i, "day");
+			const dayStr = day.format("YYYY-MM-DD");
+			xAxisData.push(day.format("DD"));
+			const count = posts.filter(
+				(p) => dayjs(p.data.published).format("YYYY-MM-DD") === dayStr,
+			).length;
+			data.push(count);
+		}
+	}
 
-        if (timeScale === 'year') {
-            // Show from the oldest post's year to current year, at least 5 years
-            const oldestYear = posts.length > 0
-                ? Math.min(...posts.map(p => dayjs(p.data.published).year()))
-                : now.year();
-            const currentYear = now.year();
-            const startYear = Math.min(oldestYear, currentYear - 4);
+	const option = {
+		backgroundColor: "transparent",
+		textStyle: { fontFamily },
+		animation: isNew || isUpdate,
+		animationDuration: isNew ? 2000 : 500,
+		animationEasing: "cubicOut",
+		title: {
+			text: labels.activities,
+			left: "left",
+			textStyle: {
+				fontFamily,
+				fontSize: 14,
+				color: colors.text,
+				fontWeight: "bold",
+			},
+		},
+		tooltip: {
+			trigger: "axis",
+			confine: true,
+			formatter: (params: any) =>
+				`${params[0].name}: ${params[0].value} ${labels.posts}`,
+		},
+		grid: {
+			left: "10%",
+			right: "5%",
+			bottom: "15%",
+			top: "25%",
+			containLabel: true,
+		},
+		xAxis: {
+			type: "category",
+			data: xAxisData,
+			axisLine: { lineStyle: { color: colors.grid } },
+			axisLabel: { fontFamily, color: colors.text, fontSize: 10 },
+		},
+		yAxis: {
+			type: "value",
+			minInterval: 1,
+			axisLine: { show: false },
+			axisLabel: { fontFamily, color: colors.text, fontSize: 10 },
+			splitLine: { lineStyle: { color: colors.grid, type: "dashed" } },
+		},
+		series: [
+			{
+				data: data,
+				type: "line",
+				smooth: true,
+				symbol: "circle",
+				symbolSize: 6,
+				itemStyle: { color: colors.primary },
+				lineStyle: { width: 3, color: colors.primary },
+				areaStyle: {
+					color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+						{ offset: 0, color: colors.areaStart },
+						{ offset: 1, color: colors.areaEnd },
+					]),
+				},
+			},
+		],
+	};
 
-            for (let year = startYear; year <= currentYear; year++) {
-                const yearStr = year.toString();
-                xAxisData.push(yearStr);
-                const count = posts.filter(p => dayjs(p.data.published).year() === year).length;
-                data.push(count);
-            }
-        } else if (timeScale === 'month') {
-            // Last 12 months
-            for (let i = 11; i >= 0; i--) {
-                const month = now.subtract(i, 'month');
-                const monthStr = month.format('YYYY-MM');
-                xAxisData.push(month.format('MMM'));
-                const count = posts.filter(p => dayjs(p.data.published).format('YYYY-MM') === monthStr).length;
-                data.push(count);
-            }
-        } else {
-            // Last 30 days
-            for (let i = 29; i >= 0; i--) {
-                const day = now.subtract(i, 'day');
-                const dayStr = day.format('YYYY-MM-DD');
-                xAxisData.push(day.format('DD'));
-                const count = posts.filter(p => dayjs(p.data.published).format('YYYY-MM-DD') === dayStr).length;
-                data.push(count);
-            }
-        }
+	heatmapChart.setOption(option);
+};
 
-        const option = {
-            backgroundColor: 'transparent',
-            textStyle: { fontFamily },
-            animation: isNew || isUpdate,
-            animationDuration: isNew ? 2000 : 500,
-            animationEasing: 'cubicOut',
-            title: {
-                text: labels.activities,
-                left: 'left',
-                textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
-            },
-            tooltip: {
-                trigger: 'axis',
-                confine: true,
-                formatter: (params: any) => `${params[0].name}: ${params[0].value} ${labels.posts}`
-            },
-            grid: { left: '10%', right: '5%', bottom: '15%', top: '25%', containLabel: true },
-            xAxis: {
-                type: 'category',
-                data: xAxisData,
-                axisLine: { lineStyle: { color: colors.grid } },
-                axisLabel: { fontFamily, color: colors.text, fontSize: 10 }
-            },
-            yAxis: {
-                type: 'value',
-                minInterval: 1,
-                axisLine: { show: false },
-                axisLabel: { fontFamily, color: colors.text, fontSize: 10 },
-                splitLine: { lineStyle: { color: colors.grid, type: 'dashed' } }
-            },
-            series: [{
-                data: data,
-                type: 'line',
-                smooth: true,
-                symbol: 'circle',
-                symbolSize: 6,
-                itemStyle: { color: colors.primary },
-                lineStyle: { width: 3, color: colors.primary },
-                areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: colors.areaStart },
-                        { offset: 1, color: colors.areaEnd }
-                    ])
-                }
-            }]
-        };
+const initRadarCharts = () => {
+	if (!echarts) return;
+	const colors = getThemeColors();
+	const fontFamily = getChartsFontFamily();
 
-        heatmapChart.setOption(option);
-    };
+	// Categories Radar
+	if (categoriesContainer) {
+		const existingCategoriesChart =
+			echarts.getInstanceByDom(categoriesContainer);
+		if (existingCategoriesChart) {
+			categoriesChart = existingCategoriesChart;
+		} else {
+			categoriesChart = echarts.init(
+				categoriesContainer,
+				isDark ? "dark" : null,
+				{ renderer: "svg" },
+			);
+		}
 
-    const initRadarCharts = () => {
-        if (!echarts) return;
-        const colors = getThemeColors();
-        const fontFamily = getChartsFontFamily();
+		const indicator = categories.map((c) => ({
+			name: c.name,
+			max: Math.max(...categories.map((x) => x.count), 5),
+		}));
+		const data = categories.map((c) => c.count);
 
-        // Categories Radar
-        if (categoriesContainer) {
-            const existingCategoriesChart = echarts.getInstanceByDom(categoriesContainer);
-            if (existingCategoriesChart) {
-                categoriesChart = existingCategoriesChart;
-            } else {
-                categoriesChart = echarts.init(categoriesContainer, isDark ? 'dark' : null, { renderer: 'svg' });
-            }
+		categoriesChart.setOption({
+			backgroundColor: "transparent",
+			textStyle: { fontFamily },
+			animation: true,
+			animationDuration: 2000,
+			animationEasing: "exponentialOut",
+			tooltip: {
+				show: true,
+				trigger: "item",
+				confine: true,
+			},
+			title: {
+				text: labels.categories,
+				left: "left",
+				textStyle: {
+					fontFamily,
+					fontSize: 14,
+					color: colors.text,
+					fontWeight: "bold",
+				},
+			},
+			radar: {
+				indicator: indicator,
+				radius: "60%",
+				center: ["50%", "60%"],
+				axisName: { fontFamily, color: colors.text, fontSize: 10 },
+				splitLine: { lineStyle: { color: colors.grid } },
+				splitArea: { show: false },
+			},
+			series: [
+				{
+					type: "radar",
+					data: [{ value: data, name: labels.categories }],
+					areaStyle: { color: "rgba(255, 123, 0, 0.6)" },
+					lineStyle: { color: "rgba(255, 123, 0, 0.9)" },
+					itemStyle: { color: "rgba(255, 123, 0, 0.9)" },
+					emphasis: {
+						areaStyle: { color: "rgba(255, 123, 0, 0.9)" },
+					},
+				},
+			],
+		});
+	}
 
-            const indicator = categories.map(c => ({ name: c.name, max: Math.max(...categories.map(x => x.count), 5) }));
-            const data = categories.map(c => c.count);
+	// Tags Radar
+	if (tagsContainer) {
+		const existingTagsChart = echarts.getInstanceByDom(tagsContainer);
+		if (existingTagsChart) {
+			tagsChart = existingTagsChart;
+		} else {
+			tagsChart = echarts.init(tagsContainer, isDark ? "dark" : null, {
+				renderer: "svg",
+			});
+		}
 
-            categoriesChart.setOption({
-                backgroundColor: 'transparent',
-                textStyle: { fontFamily },
-                animation: true,
-                animationDuration: 2000,
-                animationEasing: 'exponentialOut',
-                tooltip: {
-                    show: true,
-                    trigger: 'item',
-                    confine: true
-                },
-                title: {
-                    text: labels.categories,
-                    left: 'left',
-                    textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
-                },
-                radar: {
-                    indicator: indicator,
-                    radius: '60%',
-                    center: ['50%', '60%'],
-                    axisName: { fontFamily, color: colors.text, fontSize: 10 },
-                    splitLine: { lineStyle: { color: colors.grid } },
-                    splitArea: { show: false }
-                },
-                series: [{
-                    type: 'radar',
-                    data: [{ value: data, name: labels.categories }],
-                    areaStyle: { color: 'rgba(255, 123, 0, 0.6)' },
-                    lineStyle: { color: 'rgba(255, 123, 0, 0.9)' },
-                    itemStyle: { color: 'rgba(255, 123, 0, 0.9)' },
-                    emphasis: {
-                        areaStyle: { color: 'rgba(255, 123, 0, 0.9)' }
-                    }
-                }]
-            });
-        }
+		const sortedTags = [...tags].sort((a, b) => b.count - a.count).slice(0, 8);
+		const indicator = sortedTags.map((t) => ({
+			name: t.name,
+			max: Math.max(...sortedTags.map((x) => x.count), 5),
+		}));
+		const data = sortedTags.map((t) => t.count);
 
-        // Tags Radar
-        if (tagsContainer) {
-            const existingTagsChart = echarts.getInstanceByDom(tagsContainer);
-            if (existingTagsChart) {
-                tagsChart = existingTagsChart;
-            } else {
-                tagsChart = echarts.init(tagsContainer, isDark ? 'dark' : null, { renderer: 'svg' });
-            }
+		tagsChart.setOption({
+			backgroundColor: "transparent",
+			textStyle: { fontFamily },
+			animation: true,
+			animationDuration: 2000,
+			animationEasing: "exponentialOut",
+			tooltip: {
+				show: true,
+				trigger: "item",
+				confine: true,
+			},
+			title: {
+				text: labels.tags,
+				left: "left",
+				textStyle: {
+					fontFamily,
+					fontSize: 14,
+					color: colors.text,
+					fontWeight: "bold",
+				},
+			},
+			radar: {
+				indicator: indicator,
+				radius: "60%",
+				center: ["50%", "60%"],
+				axisName: { fontFamily, color: colors.text, fontSize: 10 },
+				splitLine: { lineStyle: { color: colors.grid } },
+				splitArea: { show: false },
+			},
+			series: [
+				{
+					type: "radar",
+					data: [{ value: data, name: labels.tags }],
+					areaStyle: { color: "rgba(16, 185, 129, 0.6)" },
+					lineStyle: { color: "rgba(16, 185, 129, 0.9)" },
+					itemStyle: { color: "rgba(16, 185, 129, 0.9)" },
+					emphasis: {
+						areaStyle: { color: "rgba(16, 185, 129, 0.9)" },
+					},
+				},
+			],
+		});
+	}
+};
 
-            const sortedTags = [...tags].sort((a, b) => b.count - a.count).slice(0, 8);
-            const indicator = sortedTags.map(t => ({ name: t.name, max: Math.max(...sortedTags.map(x => x.count), 5) }));
-            const data = sortedTags.map(t => t.count);
+onMount(() => {
+	updateIsDesktop();
 
-            tagsChart.setOption({
-                backgroundColor: 'transparent',
-                textStyle: { fontFamily },
-                animation: true,
-                animationDuration: 2000,
-                animationEasing: 'exponentialOut',
-                tooltip: {
-                    show: true,
-                    trigger: 'item',
-                    confine: true
-                },
-                title: {
-                    text: labels.tags,
-                    left: 'left',
-                    textStyle: { fontFamily, fontSize: 14, color: colors.text, fontWeight: 'bold' }
-                },
-                radar: {
-                    indicator: indicator,
-                    radius: '60%',
-                    center: ['50%', '60%'],
-                    axisName: { fontFamily, color: colors.text, fontSize: 10 },
-                    splitLine: { lineStyle: { color: colors.grid } },
-                    splitArea: { show: false }
-                },
-                series: [{
-                    type: 'radar',
-                    data: [{ value: data, name: labels.tags }],
-                    areaStyle: { color: 'rgba(16, 185, 129, 0.6)' },
-                    lineStyle: { color: 'rgba(16, 185, 129, 0.9)' },
-                    itemStyle: { color: 'rgba(16, 185, 129, 0.9)' },
-                    emphasis: {
-                        areaStyle: { color: 'rgba(16, 185, 129, 0.9)' }
-                    }
-                }]
-            });
-        }
-    };
+	let visibilityObserver: IntersectionObserver;
 
-    onMount(() => {
-        updateIsDesktop();
+	const runInit = async () => {
+		await loadECharts();
 
-        let visibilityObserver: IntersectionObserver;
+		// 检查是否处于初始加载动画阶段
+		const hasInitialAnimation =
+			document.documentElement.classList.contains("show-initial-animation") ||
+			document.documentElement.classList.contains("is-loading");
 
-        const runInit = async () => {
-            await loadECharts();
+		if (hasInitialAnimation) {
+			// 查找带有动画类的侧边栏容器
+			const sidebar = container?.closest(".onload-animation-up");
 
-            // 检查是否处于初始加载动画阶段
-            const hasInitialAnimation = document.documentElement.classList.contains('show-initial-animation') ||
-                                       document.documentElement.classList.contains('is-loading');
+			const startInit = () => {
+				if (!isInitialized) initCharts();
+			};
 
-            if (hasInitialAnimation) {
-                // 查找带有动画类的侧边栏容器
-                const sidebar = container?.closest('.onload-animation-up');
+			if (sidebar) {
+				// 监听侧边栏淡入动画开始
+				sidebar.addEventListener(
+					"animationstart",
+					(e) => {
+						if ((e as AnimationEvent).animationName === "fade-in-up") {
+							startInit();
+						}
+					},
+					{ once: true },
+				);
+			}
 
-                const startInit = () => {
-                    if (!isInitialized) initCharts();
-                };
+			// 使用 MutationObserver 监听 html 的 class 变化，作为更可靠的保底机制
+			const htmlObserver = new MutationObserver(() => {
+				const isStillLoading =
+					document.documentElement.classList.contains("is-loading");
 
-                if (sidebar) {
-                    // 监听侧边栏淡入动画开始
-                    sidebar.addEventListener('animationstart', (e) => {
-                        if ((e as AnimationEvent).animationName === 'fade-in-up') {
-                            startInit();
-                        }
-                    }, { once: true });
-                }
+				// 一旦 loading 结束（进入动画播放阶段），就开始绘制图表
+				if (!isStillLoading) {
+					startInit();
+					htmlObserver.disconnect();
+				}
+			});
+			htmlObserver.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ["class"],
+			});
 
-                // 使用 MutationObserver 监听 html 的 class 变化，作为更可靠的保底机制
-                const htmlObserver = new MutationObserver(() => {
-                    const isStillLoading = document.documentElement.classList.contains('is-loading');
+			// 较长的保底时间（3秒），防止所有监听机制意外失效
+			setTimeout(() => {
+				startInit();
+				htmlObserver.disconnect();
+			}, 3000);
+		} else {
+			// 无动画状态，直接加载
+			initCharts();
+		}
+	};
 
-                    // 一旦 loading 结束（进入动画播放阶段），就开始绘制图表
-                    if (!isStillLoading) {
-                        startInit();
-                        htmlObserver.disconnect();
-                    }
-                });
-                htmlObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+	if (container) {
+		visibilityObserver = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting) {
+				visibilityObserver.disconnect();
+				runInit();
+			}
+		});
+		visibilityObserver.observe(container);
+	}
 
-                // 较长的保底时间（3秒），防止所有监听机制意外失效
-                setTimeout(() => {
-                    startInit();
-                    htmlObserver.disconnect();
-                }, 3000);
+	const handleResize = () => {
+		const wasDesktop = isDesktop;
+		updateIsDesktop();
 
-            } else {
-                // 无动画状态，直接加载
-                initCharts();
-            }
-        };
+		heatmapChart?.resize();
 
-        if (container) {
-            visibilityObserver = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    visibilityObserver.disconnect();
-                    runInit();
-                }
-            });
-            visibilityObserver.observe(container);
-        }
+		if (isDesktop) {
+			if (wasDesktop) {
+				categoriesChart?.resize();
+				tagsChart?.resize();
+			} else {
+				// 从移动端切换到桌面端，需要初始化雷达图，延迟一帧确保 DOM 已更新（{#if isDesktop} 生效）
+				setTimeout(() => {
+					initRadarCharts();
+				}, 0);
+			}
+		}
+	};
 
-        const handleResize = () => {
-            const wasDesktop = isDesktop;
-            updateIsDesktop();
-            
-            heatmapChart?.resize();
-            
-            if (isDesktop) {
-                if (wasDesktop) {
-                    categoriesChart?.resize();
-                    tagsChart?.resize();
-                } else {
-                    // 从移动端切换到桌面端，需要初始化雷达图，延迟一帧确保 DOM 已更新（{#if isDesktop} 生效）
-                    setTimeout(() => {
-                        initRadarCharts();
-                    }, 0);
-                }
-            }
-        };
+	const observer = new MutationObserver(() => {
+		const newIsDark = document.documentElement.classList.contains("dark");
+		if (newIsDark !== isDark) {
+			isDark = newIsDark;
+			if (isInitialized) {
+				initActivityChart(true);
+				if (isDesktop) initRadarCharts();
+			}
+		}
+	});
+	observer.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["class"],
+	});
 
-        const observer = new MutationObserver(() => {
-            const newIsDark = document.documentElement.classList.contains('dark');
-            if (newIsDark !== isDark) {
-                isDark = newIsDark;
-                if (isInitialized) {
-                    initActivityChart(true);
-                    if (isDesktop) initRadarCharts();
-                }
-            }
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+	window.addEventListener("resize", handleResize);
+	return () => {
+		window.removeEventListener("resize", handleResize);
+		observer.disconnect();
+		if (visibilityObserver) visibilityObserver.disconnect();
+	};
+});
 
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            observer.disconnect();
-            if (visibilityObserver) visibilityObserver.disconnect();
-        };
-    });
-
-    $effect(() => {
-        if (timeScale && echarts && isInitialized) {
-            if (timeScale !== lastScale) {
-                lastScale = timeScale;
-                initActivityChart(true);
-            }
-        }
-    });
+$effect(() => {
+	if (timeScale && echarts && isInitialized) {
+		if (timeScale !== lastScale) {
+			lastScale = timeScale;
+			initActivityChart(true);
+		}
+	}
+});
 </script>
 
 <div id={`statistics-${side}`} data-swup-persist={`statistics-${side}`} bind:this={container} class={"pb-4 card-base " + className} {style}>

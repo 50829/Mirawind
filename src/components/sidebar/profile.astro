@@ -1,23 +1,22 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import { profileConfig, umamiConfig } from "@/config";
-import { url } from "@utils/url";
-import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { url } from "@utils/url";
+import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/imageWrapper.astro";
-
+import { profileConfig, umamiConfig } from "@/config";
 
 // 解析 umami
 const umamiEnabled = umamiConfig.enabled || false;
-const umamiWebsiteId = umamiConfig.scripts.match(/data-website-id="([^"]+)"/)?.[1] || "";
+const umamiWebsiteId =
+	umamiConfig.scripts.match(/data-website-id="([^"]+)"/)?.[1] || "";
 const umamiApiKey = umamiConfig.apiKey || "";
 const umamiBaseUrl = umamiConfig.baseUrl || "";
 
 interface Props {
-    class?: string;
-    style?: string;
-    side?: string;
+	class?: string;
+	style?: string;
+	side?: string;
 }
 const { side = "default" } = Astro.props;
 const id = `profile-${side}`;

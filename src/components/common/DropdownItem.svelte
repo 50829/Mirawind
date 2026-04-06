@@ -5,7 +5,6 @@
  */
 import type { Snippet } from "svelte";
 
-
 interface Props {
 	isActive?: boolean;
 	isLast?: boolean;

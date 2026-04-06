@@ -1,12 +1,10 @@
 ---
-import { Icon } from "astro-icon/components";
-
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import GridLayout from "@layouts/grid.astro";
 import { getSortedPosts } from "@utils/content";
 import { formatDateToYYYYMMDD } from "@utils/date";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-import GridLayout from "@layouts/grid.astro";
-
+import { Icon } from "astro-icon/components";
 
 const posts = (await getSortedPosts()).filter((post) => !post.data.encrypted);
 const recentPosts = posts.slice(0, 6);

@@ -1,15 +1,13 @@
 <script lang="ts">
-import { onMount, onDestroy } from "svelte";
-import Icon from "@iconify/svelte";
-
-import type { SearchResult } from "@/global";
-import { url } from "@utils/url";
-import { navigateToPage } from "@utils/navigation";
-import { onClickOutside } from "@utils/widget";
-import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import Icon from "@iconify/svelte";
+import { navigateToPage } from "@utils/navigation";
+import { url } from "@utils/url";
+import { onClickOutside } from "@utils/widget";
+import { onDestroy, onMount } from "svelte";
 import DropdownPanel from "@/components/common/DropdownPanel.svelte";
-
+import type { SearchResult } from "@/global";
 
 let keywordDesktop = $state("");
 let keywordMobile = $state("");
@@ -21,197 +19,199 @@ let isDesktopSearchExpanded = $state(false);
 let debounceTimer: NodeJS.Timeout;
 
 const fakeResult: SearchResult[] = [
-    {
-        url: url("/"),
-        meta: {
-            title: "This Is a Fake Search Result",
-        },
-        excerpt:
-            "Because the search cannot work in the <mark>dev</mark> environment.",
-    },
-    {
-        url: url("/"),
-        meta: {
-            title: "If You Want to Test the Search",
-        },
-        excerpt: "Try running <mark>npm build && npm preview</mark> instead.",
-    },
+	{
+		url: url("/"),
+		meta: {
+			title: "This Is a Fake Search Result",
+		},
+		excerpt:
+			"Because the search cannot work in the <mark>dev</mark> environment.",
+	},
+	{
+		url: url("/"),
+		meta: {
+			title: "If You Want to Test the Search",
+		},
+		excerpt: "Try running <mark>npm build && npm preview</mark> instead.",
+	},
 ];
 
 const togglePanel = () => {
-    const panel = document.getElementById("search-panel");
-    panel?.classList.toggle("float-panel-closed");
+	const panel = document.getElementById("search-panel");
+	panel?.classList.toggle("float-panel-closed");
 };
 
 const toggleDesktopSearch = () => {
-    isDesktopSearchExpanded = !isDesktopSearchExpanded;
-    if (isDesktopSearchExpanded) {
-        setTimeout(() => {
-            const input = document.getElementById("search-input-desktop") as HTMLInputElement;
-            input?.focus();
-        }, 0);
-    }
+	isDesktopSearchExpanded = !isDesktopSearchExpanded;
+	if (isDesktopSearchExpanded) {
+		setTimeout(() => {
+			const input = document.getElementById(
+				"search-input-desktop",
+			) as HTMLInputElement;
+			input?.focus();
+		}, 0);
+	}
 };
 
 const collapseDesktopSearch = () => {
-    if (!keywordDesktop) {
-        isDesktopSearchExpanded = false;
-    }
+	if (!keywordDesktop) {
+		isDesktopSearchExpanded = false;
+	}
 };
 
 const handleBlur = () => {
-    // 延迟处理以允许搜索结果的点击事件先于折叠逻辑执行
-    setTimeout(() => {
-        isDesktopSearchExpanded = false;
-        // 仅隐藏面板并折叠，保留搜索关键词和结果以便下次展开时查看
-        setPanelVisibility(false, true);
-    }, 200);
+	// 延迟处理以允许搜索结果的点击事件先于折叠逻辑执行
+	setTimeout(() => {
+		isDesktopSearchExpanded = false;
+		// 仅隐藏面板并折叠，保留搜索关键词和结果以便下次展开时查看
+		setPanelVisibility(false, true);
+	}, 200);
 };
 
 const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
-    const panel = document.getElementById("search-panel");
-    if (!panel || !isDesktop) return;
-    if (show) {
-        panel.classList.remove("float-panel-closed");
-    } else {
-        panel.classList.add("float-panel-closed");
-    }
+	const panel = document.getElementById("search-panel");
+	if (!panel || !isDesktop) return;
+	if (show) {
+		panel.classList.remove("float-panel-closed");
+	} else {
+		panel.classList.add("float-panel-closed");
+	}
 };
 
 const closeSearchPanel = (): void => {
-    const panel = document.getElementById("search-panel");
-    if (panel) {
-        panel.classList.add("float-panel-closed");
-    }
-    // 清空搜索关键词和结果
-    keywordDesktop = "";
-    keywordMobile = "";
-    result = [];
+	const panel = document.getElementById("search-panel");
+	if (panel) {
+		panel.classList.add("float-panel-closed");
+	}
+	// 清空搜索关键词和结果
+	keywordDesktop = "";
+	keywordMobile = "";
+	result = [];
 };
 
 const handleResultClick = (event: Event, url: string): void => {
-    event.preventDefault();
-    closeSearchPanel();
-    navigateToPage(url);
+	event.preventDefault();
+	closeSearchPanel();
+	navigateToPage(url);
 };
 
 const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
-    if (!keyword) {
-        setPanelVisibility(false, isDesktop);
-        result = [];
-        return;
-    }
-    if (!initialized) {
-        return;
-    }
-    isSearching = true;
-    try {
-        let searchResults: SearchResult[] = [];
-        if (import.meta.env.PROD && pagefindLoaded && window.pagefind) {
-            const response = await window.pagefind.search(keyword);
-            searchResults = await Promise.all(
-                response.results.map((item) => item.data()),
-            );
-        } else if (import.meta.env.DEV) {
-            searchResults = fakeResult;
-        } else {
-            searchResults = [];
-            console.error("Pagefind is not available in production environment.");
-        }
-        result = searchResults;
-        setPanelVisibility(result.length > 0, isDesktop);
-    } catch (error) {
-        console.error("Search error:", error);
-        result = [];
-        setPanelVisibility(false, isDesktop);
-    } finally {
-        isSearching = false;
-    }
+	if (!keyword) {
+		setPanelVisibility(false, isDesktop);
+		result = [];
+		return;
+	}
+	if (!initialized) {
+		return;
+	}
+	isSearching = true;
+	try {
+		let searchResults: SearchResult[] = [];
+		if (import.meta.env.PROD && pagefindLoaded && window.pagefind) {
+			const response = await window.pagefind.search(keyword);
+			searchResults = await Promise.all(
+				response.results.map((item) => item.data()),
+			);
+		} else if (import.meta.env.DEV) {
+			searchResults = fakeResult;
+		} else {
+			searchResults = [];
+			console.error("Pagefind is not available in production environment.");
+		}
+		result = searchResults;
+		setPanelVisibility(result.length > 0, isDesktop);
+	} catch (error) {
+		console.error("Search error:", error);
+		result = [];
+		setPanelVisibility(false, isDesktop);
+	} finally {
+		isSearching = false;
+	}
 };
 
 const handleClickOutside = (event: MouseEvent) => {
-    const panel = document.getElementById("search-panel");
-    if (!panel || panel.classList.contains("float-panel-closed")) {
-        return;
-    }
-    onClickOutside(event, "search-panel", ["search-switch", "search-bar"], () => {
-        const panel = document.getElementById("search-panel");
-        panel?.classList.add("float-panel-closed");
-        isDesktopSearchExpanded = false;
-    });
+	const panel = document.getElementById("search-panel");
+	if (!panel || panel.classList.contains("float-panel-closed")) {
+		return;
+	}
+	onClickOutside(event, "search-panel", ["search-switch", "search-bar"], () => {
+		const panel = document.getElementById("search-panel");
+		panel?.classList.add("float-panel-closed");
+		isDesktopSearchExpanded = false;
+	});
 };
 
 onMount(() => {
-    document.addEventListener("click", handleClickOutside);
-    const initializeSearch = () => {
-        initialized = true;
-        pagefindLoaded =
-            typeof window !== "undefined" &&
-            !!window.pagefind &&
-            typeof window.pagefind.search === "function";
-        console.log("Pagefind status on init:", pagefindLoaded);
-    };
-    if (import.meta.env.DEV) {
-        console.log(
-            "Pagefind is not available in development mode. Using mock data.",
-        );
-        initializeSearch();
-    } else {
-        document.addEventListener("pagefindready", () => {
-            console.log("Pagefind ready event received.");
-            initializeSearch();
-        });
-        document.addEventListener("pagefindloaderror", () => {
-            console.warn(
-                "Pagefind load error event received. Search functionality will be limited.",
-            );
-            initializeSearch(); // Initialize with pagefindLoaded as false
-        });
-        // Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-        setTimeout(() => {
-            if (!initialized) {
-                console.log("Fallback: Initializing search after timeout.");
-                initializeSearch();
-            }
-        }, 2000); // Adjust timeout as needed
-    }
+	document.addEventListener("click", handleClickOutside);
+	const initializeSearch = () => {
+		initialized = true;
+		pagefindLoaded =
+			typeof window !== "undefined" &&
+			!!window.pagefind &&
+			typeof window.pagefind.search === "function";
+		console.log("Pagefind status on init:", pagefindLoaded);
+	};
+	if (import.meta.env.DEV) {
+		console.log(
+			"Pagefind is not available in development mode. Using mock data.",
+		);
+		initializeSearch();
+	} else {
+		document.addEventListener("pagefindready", () => {
+			console.log("Pagefind ready event received.");
+			initializeSearch();
+		});
+		document.addEventListener("pagefindloaderror", () => {
+			console.warn(
+				"Pagefind load error event received. Search functionality will be limited.",
+			);
+			initializeSearch(); // Initialize with pagefindLoaded as false
+		});
+		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
+		setTimeout(() => {
+			if (!initialized) {
+				console.log("Fallback: Initializing search after timeout.");
+				initializeSearch();
+			}
+		}, 2000); // Adjust timeout as needed
+	}
 });
 
 $effect(() => {
-    if (initialized) {
-        const keyword = keywordDesktop || keywordMobile;
-        const isDesktop = !!keywordDesktop || isDesktopSearchExpanded;
-        
-        clearTimeout(debounceTimer);
-        if (keyword) {
-            debounceTimer = setTimeout(() => {
-                search(keyword, isDesktop);
-            }, 300);
-        } else {
-            result = [];
-            setPanelVisibility(false, isDesktop);
-        }
-    }
+	if (initialized) {
+		const keyword = keywordDesktop || keywordMobile;
+		const isDesktop = !!keywordDesktop || isDesktopSearchExpanded;
+
+		clearTimeout(debounceTimer);
+		if (keyword) {
+			debounceTimer = setTimeout(() => {
+				search(keyword, isDesktop);
+			}, 300);
+		} else {
+			result = [];
+			setPanelVisibility(false, isDesktop);
+		}
+	}
 });
 
 $effect(() => {
-    if (typeof document !== 'undefined') {
-        const navbar = document.getElementById('navbar');
-        if (isDesktopSearchExpanded) {
-            navbar?.classList.add('is-searching');
-        } else {
-            navbar?.classList.remove('is-searching');
-        }
-    }
+	if (typeof document !== "undefined") {
+		const navbar = document.getElementById("navbar");
+		if (isDesktopSearchExpanded) {
+			navbar?.classList.add("is-searching");
+		} else {
+			navbar?.classList.remove("is-searching");
+		}
+	}
 });
 
 onDestroy(() => {
-    if (typeof document !== 'undefined') {
-        document.removeEventListener("click", handleClickOutside);
-        const navbar = document.getElementById('navbar');
-        navbar?.classList.remove('is-searching');
-    }
-    clearTimeout(debounceTimer);
+	if (typeof document !== "undefined") {
+		document.removeEventListener("click", handleClickOutside);
+		const navbar = document.getElementById("navbar");
+		navbar?.classList.remove("is-searching");
+	}
+	clearTimeout(debounceTimer);
 });
 </script>
 

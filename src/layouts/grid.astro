@@ -1,22 +1,21 @@
 ---
-import type { MarkdownHeading } from "astro";
-import { Icon } from "astro-icon/components";
-
-import { siteConfig } from "@/config";
+import BackToTopButton from "@components/back2TopButton.astro";
+import Banner from "@components/banner.astro";
+import IconifyLoader from "@components/common/iconifyLoader.astro";
+import Footer from "@components/footer.astro";
+import FullscreenWallpaper from "@components/fullscreenWallpaper.astro";
+import Navbar from "@components/navbar.astro";
+import Sidebar from "@components/sidebar.astro";
+import TocButton from "@components/tocButton.astro";
 import {
-    BANNER_HEIGHT,
-    MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+	BANNER_HEIGHT,
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "@constants/constants";
 import { pathsEqual, url } from "@utils/url";
 import { widgetManager } from "@utils/widget";
-import IconifyLoader from "@components/common/iconifyLoader.astro";
-import Navbar from "@components/navbar.astro";
-import FullscreenWallpaper from "@components/fullscreenWallpaper.astro";
-import Banner from "@components/banner.astro";
-import Sidebar from "@components/sidebar.astro";
-import Footer from "@components/footer.astro";
-import TocButton from "@components/tocButton.astro";
-import BackToTopButton from "@components/back2TopButton.astro";
+import type { MarkdownHeading } from "astro";
+import { Icon } from "astro-icon/components";
+import { siteConfig } from "@/config";
 import BaseLayout from "./base.astro";
 import "@styles/grid.css";
 
@@ -25,43 +24,51 @@ import "@styles/grid.css";
  */
 
 interface Props {
-    title?: string;
-    banner?: string;
-    description?: string;
-    lang?: string;
-    setOGTypeArticle?: boolean;
-    postSlug?: string;
-    headings?: MarkdownHeading[];
+	title?: string;
+	banner?: string;
+	description?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	postSlug?: string;
+	headings?: MarkdownHeading[];
 }
 
 const {
-    title,
-    banner,
-    description,
-    lang,
-    setOGTypeArticle,
-    postSlug,
-    headings = [],
+	title,
+	banner,
+	description,
+	lang,
+	setOGTypeArticle,
+	postSlug,
+	headings = [],
 } = Astro.props;
-const hasBannerCredit = siteConfig.wallpaper.mode === "banner" && siteConfig.wallpaper.banner?.credit?.enable;
+const hasBannerCredit =
+	siteConfig.wallpaper.mode === "banner" &&
+	siteConfig.wallpaper.banner?.credit?.enable;
 const hasBannerLink = !!siteConfig.wallpaper.banner?.credit?.url;
 
 // 检查是否为首页
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 
 // 计算主内容区域位置
-const mainPanelTop = siteConfig.wallpaper.mode === "banner"
-    ? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-    : "5.5rem";
+const mainPanelTop =
+	siteConfig.wallpaper.mode === "banner"
+		? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+		: "5.5rem";
 
 // 当banner被禁用时，主内容区域应该始终从顶栏下面开始
-const finalMainPanelTop = siteConfig.wallpaper.mode === "banner" ? mainPanelTop : "5.5rem";
+const finalMainPanelTop =
+	siteConfig.wallpaper.mode === "banner" ? mainPanelTop : "5.5rem";
 
 // 检查是否应该启用半透明效果
-const shouldEnableTransparency = siteConfig.wallpaper.mode === "banner" || siteConfig.wallpaper.mode === "fullscreen";
+const shouldEnableTransparency =
+	siteConfig.wallpaper.mode === "banner" ||
+	siteConfig.wallpaper.mode === "fullscreen";
 
 // 为组件添加半透明效果的CSS类
-const transparentClass = shouldEnableTransparency ? "wallpaper-transparent" : "";
+const transparentClass = shouldEnableTransparency
+	? "wallpaper-transparent"
+	: "";
 
 /**
  * Sidebar
@@ -69,15 +76,15 @@ const transparentClass = shouldEnableTransparency ? "wallpaper-transparent" : ""
 
 // 检查侧边栏是否启用，动态调整网格布局
 const {
-    hasLeftSidebar,
-    hasRightSidebar,
-    hasAnyComponents,
-    gridCols,
-    leftSidebarClass,
-    rightSidebarClass,
-    mainContentClass,
-    mobileFooterClass,
-    middleSidebarClass,
+	hasLeftSidebar,
+	hasRightSidebar,
+	hasAnyComponents,
+	gridCols,
+	leftSidebarClass,
+	rightSidebarClass,
+	mainContentClass,
+	mobileFooterClass,
+	middleSidebarClass,
 } = widgetManager.getGridLayout(headings);
 ---
 

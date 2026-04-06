@@ -1,29 +1,27 @@
 <script lang="ts">
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { getPostUrl } from "@utils/url";
 import { onMount } from "svelte";
 
-import { getPostUrl } from "@utils/url";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
-
-
 interface Post {
-    id: string;
-    data: {
-        title: string;
-        tags: string[];
-        category?: string | null;
-        published: Date | string;
-        routeName?: string;
-    };
+	id: string;
+	data: {
+		title: string;
+		tags: string[];
+		category?: string | null;
+		published: Date | string;
+		routeName?: string;
+	};
 }
 
 interface Group {
-    year: number;
-    posts: Post[];
+	year: number;
+	posts: Post[];
 }
 
 interface Props {
-    sortedPosts?: Post[];
+	sortedPosts?: Post[];
 }
 
 let { sortedPosts = [] }: Props = $props();
@@ -33,73 +31,75 @@ let categories = $state<string[]>([]);
 let uncategorized = $state<string | null>(null);
 
 onMount(() => {
-    const params = new URLSearchParams(window.location.search);
-    tags = params.has("tag") ? params.getAll("tag") : [];
-    categories = params.has("category") ? params.getAll("category") : [];
-    uncategorized = params.get("uncategorized");
+	const params = new URLSearchParams(window.location.search);
+	tags = params.has("tag") ? params.getAll("tag") : [];
+	categories = params.has("category") ? params.getAll("category") : [];
+	uncategorized = params.get("uncategorized");
 });
 
 function formatDate(date: Date | string) {
-    const d = new Date(date);
-    const month = (d.getMonth() + 1).toString().padStart(2, "0");
-    const day = d.getDate().toString().padStart(2, "0");
-    return `${month}-${day}`;
+	const d = new Date(date);
+	const month = (d.getMonth() + 1).toString().padStart(2, "0");
+	const day = d.getDate().toString().padStart(2, "0");
+	return `${month}-${day}`;
 }
 
 function formatTag(tagList: string[]) {
-    return tagList.map((t) => `#${t}`).join(" ");
+	return tagList.map((t) => `#${t}`).join(" ");
 }
 
 let groups = $derived.by(() => {
-    let filteredPosts = sortedPosts.map((post) => ({
-        ...post,
-        data: {
-            ...post.data,
-            published: new Date(post.data.published),
-        },
-    }));
+	let filteredPosts = sortedPosts.map((post) => ({
+		...post,
+		data: {
+			...post.data,
+			published: new Date(post.data.published),
+		},
+	}));
 
-    if (tags.length > 0) {
-        filteredPosts = filteredPosts.filter(
-            (post) =>
-                Array.isArray(post.data.tags) &&
-                post.data.tags.some((tag) => tags.includes(tag)),
-        );
-    }
+	if (tags.length > 0) {
+		filteredPosts = filteredPosts.filter(
+			(post) =>
+				Array.isArray(post.data.tags) &&
+				post.data.tags.some((tag) => tags.includes(tag)),
+		);
+	}
 
-    if (categories.length > 0) {
-        filteredPosts = filteredPosts.filter(
-            (post) => post.data.category && categories.includes(post.data.category),
-        );
-    }
+	if (categories.length > 0) {
+		filteredPosts = filteredPosts.filter(
+			(post) => post.data.category && categories.includes(post.data.category),
+		);
+	}
 
-    if (uncategorized !== null) {
-        filteredPosts = filteredPosts.filter((post) => !post.data.category);
-    }
+	if (uncategorized !== null) {
+		filteredPosts = filteredPosts.filter((post) => !post.data.category);
+	}
 
-    // 按发布时间倒序排序，确保不受置顶影响
-    filteredPosts = filteredPosts.slice().sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+	// 按发布时间倒序排序，确保不受置顶影响
+	filteredPosts = filteredPosts
+		.slice()
+		.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 
-    const grouped = filteredPosts.reduce(
-        (acc, post) => {
-            const year = post.data.published.getFullYear();
-            if (!acc[year]) {
-                acc[year] = [];
-            }
-            acc[year].push(post);
-            return acc;
-        },
-        {} as Record<number, Post[]>,
-    );
+	const grouped = filteredPosts.reduce(
+		(acc, post) => {
+			const year = post.data.published.getFullYear();
+			if (!acc[year]) {
+				acc[year] = [];
+			}
+			acc[year].push(post);
+			return acc;
+		},
+		{} as Record<number, Post[]>,
+	);
 
-    const groupedPostsArray = Object.keys(grouped).map((yearStr) => ({
-        year: Number.parseInt(yearStr, 10),
-        posts: grouped[Number.parseInt(yearStr, 10)],
-    }));
+	const groupedPostsArray = Object.keys(grouped).map((yearStr) => ({
+		year: Number.parseInt(yearStr, 10),
+		posts: grouped[Number.parseInt(yearStr, 10)],
+	}));
 
-    groupedPostsArray.sort((a, b) => b.year - a.year);
+	groupedPostsArray.sort((a, b) => b.year - a.year);
 
-    return groupedPostsArray;
+	return groupedPostsArray;
 });
 </script>
 

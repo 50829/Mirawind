@@ -1,27 +1,33 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import { getPostUrlBySlug } from "@utils/url";
-import { postConfig, profileConfig } from "@/config";
-import { formatDateToYYYYMMDD } from "@utils/date";
-import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
-
+import { i18n } from "@i18n/translation";
+import { formatDateToYYYYMMDD } from "@utils/date";
+import { getPostUrlBySlug } from "@utils/url";
+import { Icon } from "astro-icon/components";
+import { postConfig, profileConfig } from "@/config";
 
 interface Props {
-    title: string;
-    id: string;
-    pubDate: Date;
-    class: string;
-    author: string;
-    sourceLink: string;
-    licenseName: string;
-    licenseUrl: string;
-    postUrl?: string;
+	title: string;
+	id: string;
+	pubDate: Date;
+	class: string;
+	author: string;
+	sourceLink: string;
+	licenseName: string;
+	licenseUrl: string;
+	postUrl?: string;
 }
 
-const { title, id, pubDate, author, sourceLink, licenseName, licenseUrl, postUrl: propPostUrl } =
-    Astro.props;
+const {
+	title,
+	id,
+	pubDate,
+	author,
+	sourceLink,
+	licenseName,
+	licenseUrl,
+	postUrl: propPostUrl,
+} = Astro.props;
 const className = Astro.props.class;
 const profileConf = profileConfig;
 const licenseConf = postConfig.license;

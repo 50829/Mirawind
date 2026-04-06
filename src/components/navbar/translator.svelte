@@ -1,15 +1,18 @@
 <script lang="ts">
-import { onDestroy, onMount } from "svelte";
-import Icon from "@iconify/svelte";
-
 import { BREAKPOINT_LG } from "@constants/breakpoints";
-import { getTranslateLanguageFromConfig, getSiteLanguage, setStoredLanguage, getDefaultLanguage } from "@/utils/language";
+import Icon from "@iconify/svelte";
 import { onClickOutside } from "@utils/widget";
-import { siteConfig } from "@/config";
-import { getSupportedTranslateLanguages } from "@/i18n/language";
+import { onDestroy, onMount } from "svelte";
 import DropdownItem from "@/components/common/DropdownItem.svelte";
 import DropdownPanel from "@/components/common/DropdownPanel.svelte";
-
+import { siteConfig } from "@/config";
+import { getSupportedTranslateLanguages } from "@/i18n/language";
+import {
+	getDefaultLanguage,
+	getSiteLanguage,
+	getTranslateLanguageFromConfig,
+	setStoredLanguage,
+} from "@/utils/language";
 
 let isOpen = $state(false);
 let translatePanel: HTMLElement | undefined = $state();
@@ -19,71 +22,72 @@ let currentLanguage = $state("");
 const languages = getSupportedTranslateLanguages();
 
 // 根据配置文件的语言设置获取源语言
-const sourceLanguage = getTranslateLanguageFromConfig(
-    getDefaultLanguage(),
-);
+const sourceLanguage = getTranslateLanguageFromConfig(getDefaultLanguage());
 
 function togglePanel() {
-    isOpen = !isOpen;
+	isOpen = !isOpen;
 }
 
 function openPanel() {
-    isOpen = true;
+	isOpen = true;
 }
 
 function closePanel() {
-    isOpen = false;
+	isOpen = false;
 }
 
 async function changeLanguage(languageCode: string) {
-    try {
-        // 如果翻译脚本未加载，先加载
-        if (!(window as any).translateScriptLoaded && typeof (window as any).loadTranslateScript === "function") {
-            await (window as any).loadTranslateScript();
-        }
-        // 确认翻译脚本已加载
-        if (!(window as any).translate) {
-            console.warn("translate.js is not loaded");
-            return;
-        }
-        // 获取翻译实例
-        const translate = (window as any).translate;
-        // 检查是否切换回源语言
-        const localLang = translate.language.getLocal();
-        // 统一使用 changeLanguage 方法
-        translate.changeLanguage(languageCode);
-        // 如果是切换回源语言，额外执行一次 reset 以确保在不刷新的情况下也能还原
-        if (languageCode === localLang) {
-            translate.reset();
-        }
-        // 同步保存到我们的缓存中
-        setStoredLanguage(languageCode);
-        // 更新当前 UI 状态
-        currentLanguage = languageCode;
-    } catch (error) {
-        console.error("Failed to execute translation:", error);
-    }
+	try {
+		// 如果翻译脚本未加载，先加载
+		if (
+			!(window as any).translateScriptLoaded &&
+			typeof (window as any).loadTranslateScript === "function"
+		) {
+			await (window as any).loadTranslateScript();
+		}
+		// 确认翻译脚本已加载
+		if (!(window as any).translate) {
+			console.warn("translate.js is not loaded");
+			return;
+		}
+		// 获取翻译实例
+		const translate = (window as any).translate;
+		// 检查是否切换回源语言
+		const localLang = translate.language.getLocal();
+		// 统一使用 changeLanguage 方法
+		translate.changeLanguage(languageCode);
+		// 如果是切换回源语言，额外执行一次 reset 以确保在不刷新的情况下也能还原
+		if (languageCode === localLang) {
+			translate.reset();
+		}
+		// 同步保存到我们的缓存中
+		setStoredLanguage(languageCode);
+		// 更新当前 UI 状态
+		currentLanguage = languageCode;
+	} catch (error) {
+		console.error("Failed to execute translation:", error);
+	}
 }
 
 // 点击外部关闭面板
 function handleClickOutside(event: MouseEvent) {
-    if (!isOpen) return;
-    onClickOutside(event, "translate-panel", "translate-switch", () => {
-        isOpen = false;
-    });
+	if (!isOpen) return;
+	onClickOutside(event, "translate-panel", "translate-switch", () => {
+		isOpen = false;
+	});
 }
 
 // 组件挂载时添加事件监听和初始化默认语言
 onMount(() => {
-    document.addEventListener("click", handleClickOutside);
-    // 初始化当前语言为站点语言（优先缓存）
-    currentLanguage = getSiteLanguage();
+	document.addEventListener("click", handleClickOutside);
+	// 初始化当前语言为站点语言（优先缓存）
+	currentLanguage = getSiteLanguage();
 });
 
 onDestroy(() => {
-    if (typeof document !== "undefined") {
-        document.removeEventListener("click", handleClickOutside);
-    }
+	if (typeof document !== "undefined") {
+		document.removeEventListener("click", handleClickOutside);
+	}
 });
 </script>
 

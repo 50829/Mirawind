@@ -1,46 +1,48 @@
 ---
-import type { SiteConfig } from "@/types/config";
-import { BANNER_HEIGHT_EXTEND } from "@constants/constants";
-import TypewriterText from "@components/common/typewriterText.astro";
 import ImageWrapper from "@components/common/imageWrapper.astro";
-
+import TypewriterText from "@components/common/typewriterText.astro";
+import { BANNER_HEIGHT_EXTEND } from "@constants/constants";
+import type { SiteConfig } from "@/types/config";
 
 interface Props {
-    config: SiteConfig["wallpaper"];
-    isHomePage: boolean;
-    class?: string;
+	config: SiteConfig["wallpaper"];
+	isHomePage: boolean;
+	class?: string;
 }
 
 const { config, isHomePage, class: className } = Astro.props;
 
 // 获取当前设备类型的图片源
 const getImageSources = () => {
-    const toArray = (input: string | string[] | undefined): string[] =>
-        [input ?? []]
-            .flat()
-            .filter((item): item is string => typeof item === "string" && item.length > 0);
+	const toArray = (input: string | string[] | undefined): string[] =>
+		[input ?? []]
+			.flat()
+			.filter(
+				(item): item is string => typeof item === "string" && item.length > 0,
+			);
 
-    const { src } = config;
-    const isObj = src && typeof src === "object" && !Array.isArray(src);
-    const srcByDevice = isObj
-        ? (src as { desktop?: string | string[]; mobile?: string | string[] })
-        : undefined;
+	const { src } = config;
+	const isObj = src && typeof src === "object" && !Array.isArray(src);
+	const srcByDevice = isObj
+		? (src as { desktop?: string | string[]; mobile?: string | string[] })
+		: undefined;
 
-    const desktop = toArray(isObj ? srcByDevice?.desktop : src);
-    const mobile = toArray(isObj ? srcByDevice?.mobile : src);
+	const desktop = toArray(isObj ? srcByDevice?.desktop : src);
+	const mobile = toArray(isObj ? srcByDevice?.mobile : src);
 
-    return {
-        desktop: desktop.length > 0 ? desktop : mobile,
-        mobile: mobile.length > 0 ? mobile : desktop,
-    };
-}
+	return {
+		desktop: desktop.length > 0 ? desktop : mobile,
+		mobile: mobile.length > 0 ? mobile : desktop,
+	};
+};
 
 const imageSources = getImageSources();
 
 // 轮播配置
 const carouselConfig = config.carousel;
-const isCarouselEnabled = imageSources.desktop.length > 1 || imageSources.mobile.length > 1;
-const carouselInterval = carouselConfig?.interval || 6
+const isCarouselEnabled =
+	imageSources.desktop.length > 1 || imageSources.mobile.length > 1;
+const carouselInterval = carouselConfig?.interval || 6;
 
 // 样式配置
 const showHomeText = config.banner?.homeText?.enable && isHomePage;

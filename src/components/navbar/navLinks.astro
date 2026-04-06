@@ -1,13 +1,11 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import { type NavbarLink } from "@/types/config";
 import { url } from "@utils/url";
-
+import { Icon } from "astro-icon/components";
+import { type NavbarLink } from "@/types/config";
 
 interface Props {
-    link: NavbarLink;
-    class?: string;
+	link: NavbarLink;
+	class?: string;
 }
 
 const { link, class: className } = Astro.props;

@@ -1,24 +1,22 @@
 ---
 export const prerender = true;
 
-
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import { UNCATEGORIZED } from "@constants/constants";
-import {
-    getAdvancedSkills,
-    getSkillStats,
-    getSkillsByCategory,
-    getTotalExperience,
-    skillsData,
-} from "@utils/skills";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
+import BackwardButton from "@components/backwardButton.astro";
 import IconifyLoader from "@components/common/iconifyLoader.astro";
 import SkillCard from "@components/data/skillCard.astro";
+import { UNCATEGORIZED } from "@constants/constants";
+import { LinkPresets } from "@constants/link-presets";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 import GridLayout from "@layouts/grid.astro";
-import BackwardButton from "@components/backwardButton.astro";
-
+import {
+	getAdvancedSkills,
+	getSkillStats,
+	getSkillsByCategory,
+	getTotalExperience,
+	skillsData,
+} from "@utils/skills";
+import { LinkPreset } from "@/types/config";
 
 const title = LinkPresets[LinkPreset.Skills].name;
 const subtitle = LinkPresets[LinkPreset.Skills].description;
@@ -33,37 +31,37 @@ const categories = [...new Set(skillsData.map((skill) => skill.category))];
 
 // 按分类获取技能
 const skillsByCategory = categories.reduce(
-    (acc, category) => {
-        acc[category] = getSkillsByCategory(category);
-        return acc;
-    },
-    {} as Record<string, typeof skillsData>,
+	(acc, category) => {
+		acc[category] = getSkillsByCategory(category);
+		return acc;
+	},
+	{} as Record<string, typeof skillsData>,
 );
 
 // 获取分类的翻译文本
 const getCategoryText = (category: string) => {
-    switch (category) {
-        case "ai":
-            return i18n(I18nKey.skillsAI);
-        case "server":
-            return i18n(I18nKey.skillsBackend);
-        case "client":
-            return i18n(I18nKey.skillsClient);
-        case "web":
-            return i18n(I18nKey.skillsFrontend);
-        case "database":
-            return i18n(I18nKey.skillsDatabase);
-        case "engines":
-            return i18n(I18nKey.skillsEngines);
-        case "tools":
-            return i18n(I18nKey.skillsTools);
-        case "others":
-            return i18n(I18nKey.skillsOthers);
-        case UNCATEGORIZED:
-            return i18n(I18nKey.uncategorized);
-        default:
-            return category;
-    }
+	switch (category) {
+		case "ai":
+			return i18n(I18nKey.skillsAI);
+		case "server":
+			return i18n(I18nKey.skillsBackend);
+		case "client":
+			return i18n(I18nKey.skillsClient);
+		case "web":
+			return i18n(I18nKey.skillsFrontend);
+		case "database":
+			return i18n(I18nKey.skillsDatabase);
+		case "engines":
+			return i18n(I18nKey.skillsEngines);
+		case "tools":
+			return i18n(I18nKey.skillsTools);
+		case "others":
+			return i18n(I18nKey.skillsOthers);
+		case UNCATEGORIZED:
+			return i18n(I18nKey.uncategorized);
+		default:
+			return category;
+	}
 };
 
 // 收集所有技能图标用于预加载

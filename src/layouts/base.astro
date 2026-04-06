@@ -1,37 +1,42 @@
 ---
 import "katex/dist/katex.css";
 
-import { siteConfig, profileConfig, umamiConfig, musicPlayerConfig, pioConfig } from "@/config";
-import type { Favicon } from "@/types/config";
-import { defaultFavicons } from "@constants/icon";
-import {
-    BANNER_HEIGHT,
-    BANNER_HEIGHT_EXTEND,
-    BANNER_HEIGHT_HOME,
-    LIGHT_MODE,
-    DARK_MODE,
-    SYSTEM_MODE,
-    PAGE_WIDTH,
-    NAVBAR_HEIGHT,
-} from "@constants/constants";
-import { pathsEqual, url } from "@utils/url";
+import ConfigCarrier from "@components/configCarrier.astro";
 import FontLoader from "@components/fontLoader.astro";
 import LoadingOverlay from "@components/loadingOverlay.astro";
-import ConfigCarrier from "@components/configCarrier.astro";
 import MusicPlayer from "@components/musicPlayer.svelte";
 import Pio from "@components/pio.svelte";
+import {
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_HOME,
+	DARK_MODE,
+	LIGHT_MODE,
+	NAVBAR_HEIGHT,
+	PAGE_WIDTH,
+	SYSTEM_MODE,
+} from "@constants/constants";
+import { defaultFavicons } from "@constants/icon";
+import { pathsEqual, url } from "@utils/url";
+import {
+	musicPlayerConfig,
+	pioConfig,
+	profileConfig,
+	siteConfig,
+	umamiConfig,
+} from "@/config";
+import type { Favicon } from "@/types/config";
 import "@styles/navbar.css";
 import "@styles/banner.css";
 import "@styles/fancybox.css";
 
-
 interface Props {
-    title?: string;
-    banner?: string;
-    description?: string;
-    lang?: string;
-    setOGTypeArticle?: boolean;
-    postSlug?: string;
+	title?: string;
+	banner?: string;
+	description?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	postSlug?: string;
 }
 
 let { title, description, lang, setOGTypeArticle, postSlug } = Astro.props;
@@ -45,43 +50,43 @@ const configHue = siteConfig.themeColor.hue;
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
-    siteConfig.wallpaper.banner?.navbar?.transparentMode || "semi";
+	siteConfig.wallpaper.banner?.navbar?.transparentMode || "semi";
 // 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
 const shouldShowTopHighlight =
-    navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
+	navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
 
 const enableBanner = siteConfig.wallpaper.mode === "banner";
 
 let pageTitle: string;
 if (title) {
-    pageTitle = `${title} - ${siteConfig.title}`;
+	pageTitle = `${title} - ${siteConfig.title}`;
 } else {
-    pageTitle = siteConfig.subtitle
-        ? `${siteConfig.title} - ${siteConfig.subtitle}`
-        : siteConfig.title;
+	pageTitle = siteConfig.subtitle
+		? `${siteConfig.title} - ${siteConfig.subtitle}`
+		: siteConfig.title;
 }
 
 let ogImageUrl: string | undefined;
 if (siteConfig.generateOgImages && postSlug) {
-    ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
+	ogImageUrl = new URL(`/og/${postSlug}.png`, Astro.site).toString();
 }
 
 const favicons: Favicon[] =
-    siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 
 // const siteLang = siteConfig.lang.replace('_', '-')
 if (!lang) {
-    lang = `${siteConfig.lang}`;
+	lang = `${siteConfig.lang}`;
 }
 const siteLang = lang.replace("_", "-");
 
 const bannerOffsetByPosition = {
-    top: `${BANNER_HEIGHT_EXTEND}vh`,
-    center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
-    bottom: "0",
+	top: `${BANNER_HEIGHT_EXTEND}vh`,
+	center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+	bottom: "0",
 };
 const bannerOffset =
-    bannerOffsetByPosition[siteConfig.wallpaper.position || "center"];
+	bannerOffsetByPosition[siteConfig.wallpaper.position || "center"];
 
 const umamiEnabled = umamiConfig.enabled || false;
 const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置

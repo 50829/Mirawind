@@ -1,9 +1,6 @@
 {
-    "title": "Apothegm",
-    "content": "The darkest hour is just before the dawn.",
-    "date": "2025-12-22T00:00:00Z",
-    "images": [
-        "./Dawn.jpg",
-        "https://picsum.photos/800/600?random=0"
-    ]
+	"title": "Apothegm",
+	"content": "The darkest hour is just before the dawn.",
+	"date": "2025-12-22T00:00:00Z",
+	"images": ["./Dawn.jpg", "https://picsum.photos/800/600?random=0"]
 }

@@ -1,19 +1,17 @@
 ---
-import { Icon } from "astro-icon/components";
-import { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-
-import { getFileDirFromPath, getPostUrl } from "@utils/url";
+import { render } from "astro:content";
+import ImageWrapper from "@components/common/imageWrapper.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import ImageWrapper from "@components/common/imageWrapper.astro";
+import { getFileDirFromPath, getPostUrl } from "@utils/url";
+import { Icon } from "astro-icon/components";
 import PostMetadata from "./postMeta.astro";
 
-
 interface Props {
-    class?: string;
-    entry: CollectionEntry<"posts">;
-    style?: string;
+	class?: string;
+	entry: CollectionEntry<"posts">;
+	style?: string;
 }
 
 const className = Astro.props.class;
@@ -23,14 +21,14 @@ const { entry, style } = Astro.props;
 const url = getPostUrl(entry);
 
 const {
-    title,
-    published,
-    updated,
-    description,
-    cover,
-    tags,
-    category,
-    pinned,
+	title,
+	published,
+	updated,
+	description,
+	cover,
+	tags,
+	category,
+	pinned,
 } = entry.data;
 
 const hasCover = cover !== undefined && cover !== null && cover !== "";

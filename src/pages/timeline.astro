@@ -1,31 +1,29 @@
 ---
 export const prerender = true;
 
-
-import { LinkPresets } from "@constants/link-presets";
-import { LinkPreset } from "@/types/config";
-import {
-    timelineData,
-    getTimelineStats,
-    getTimelineByType,
-    getCurrentItems,
-    getTotalWorkExperience,
-} from "@utils/timeline";
-import { i18n } from "@i18n/translation";
-import I18nKey from "@i18n/i18nKey";
+import BackwardButton from "@components/backwardButton.astro";
 import IconifyLoader from "@components/common/iconifyLoader.astro";
 import TimelineItem from "@components/data/timelineItem.astro";
+import { LinkPresets } from "@constants/link-presets";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 import GridLayout from "@layouts/grid.astro";
-import BackwardButton from "@components/backwardButton.astro";
-
+import {
+	getCurrentItems,
+	getTimelineByType,
+	getTimelineStats,
+	getTotalWorkExperience,
+	timelineData,
+} from "@utils/timeline";
+import { LinkPreset } from "@/types/config";
 
 const title = LinkPresets[LinkPreset.Timeline].name;
 const subtitle = LinkPresets[LinkPreset.Timeline].description;
 
 // 收集所有时间线图标用于预加载
 const allIcons = timelineData
-    .map((item) => item.icon || getTypeIcon(item.type))
-    .filter(Boolean);
+	.map((item) => item.icon || getTypeIcon(item.type))
+	.filter(Boolean);
 
 // 获取时间线统计信息
 const stats = getTimelineStats();
@@ -37,18 +35,18 @@ const allTimelineItems = getTimelineByType();
 
 // 类型图标映射
 const getTypeIcon = (type: string) => {
-    switch (type) {
-        case "education":
-            return "material-symbols:school";
-        case "work":
-            return "material-symbols:work";
-        case "project":
-            return "material-symbols:code";
-        case "achievement":
-            return "material-symbols:emoji-events";
-        default:
-            return "material-symbols:event";
-    }
+	switch (type) {
+		case "education":
+			return "material-symbols:school";
+		case "work":
+			return "material-symbols:work";
+		case "project":
+			return "material-symbols:code";
+		case "achievement":
+			return "material-symbols:emoji-events";
+		default:
+			return "material-symbols:event";
+	}
 };
 ---
 
