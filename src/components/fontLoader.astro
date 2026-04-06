@@ -87,9 +87,14 @@ const fontEntries = Object.entries(resolvedFontSystem.fonts)
 
 const buildRoleStack = (fontIds: string[], bucket: keyof typeof resolvedFontSystem.fallback) => {
     const families = fontIds
-        .map((fontId) => resolvedFontSystem.fonts[fontId]?.family)
-        .filter(Boolean)
-        .map((family) => quoteFamily(family as string));
+        .map((fontId) => {
+            const registeredFamily = resolvedFontSystem.fonts[fontId]?.family;
+            if (registeredFamily) {
+                return quoteFamily(registeredFamily);
+            }
+            return normalizeFallbackToken(fontId);
+        })
+        .filter(Boolean);
 
     const fallback = resolvedFontSystem.fallback[bucket].map(normalizeFallbackToken);
     return [...families, ...fallback].join(", ");

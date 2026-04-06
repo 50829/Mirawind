@@ -10,7 +10,7 @@ export const getStaticPaths = (async () => {
     const totalPages = Math.ceil(allBlogPosts.length / PAGE_SIZE);
     
     // 为每一页（除了第一页）创建重定向路径
-    const paths = [];
+    const paths: Array<{ params: { page: string } }> = [];
     for (let i = 2; i <= totalPages; i++) {
         paths.push({
             params: { page: String(i) },
@@ -19,8 +19,6 @@ export const getStaticPaths = (async () => {
     return paths;
 }) satisfies GetStaticPaths;
 
-const { page } = Astro.params;
-
 // 重定向到 /blog/X/
-return Astro.redirect(`/blog/${page}/`, 301);
+return Astro.redirect(`/blog/${Astro.params.page}/`, 301);
 ---

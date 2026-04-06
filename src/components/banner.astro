@@ -215,7 +215,7 @@ const isPerformanceMode = config.banner?.waves?.performanceMode;
     )}
 </div>
 
-<script define:vars={{ carouselInterval }}>
+<script is:inline define:vars={{ carouselInterval }}>
     // 轮播图初始化函数
     window.initBannerCarousel = function() {
         const carousel = document.getElementById('banner-carousel');

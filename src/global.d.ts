@@ -13,6 +13,9 @@ declare global {
         iconifyLoaded: boolean;
         __iconifyLoader: {
             load: () => Promise<void>;
+            onLoad: (callback: () => void) => void;
+            addToPreloadQueue: (icons: string | string[]) => void;
+            isLoaded: boolean;
         };
         pagefind: {
             search: (query: string) => Promise<{

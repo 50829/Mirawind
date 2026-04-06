@@ -110,12 +110,23 @@ function resolveRoleMap(
     const resolved = {} as ResolvedFontRoleMap;
 
     const resolveTokenToFontId = (token: string): string | null => {
-        if (availableFontIds.has(token)) {
-            return token;
+        const normalizedToken = token.trim();
+
+        if (!normalizedToken) {
+            return null;
         }
 
-        const familyMatch = familyToFontId.get(token.trim().toLowerCase());
-        return familyMatch ?? null;
+        if (availableFontIds.has(normalizedToken)) {
+            return normalizedToken;
+        }
+
+        const familyMatch = familyToFontId.get(normalizedToken.toLowerCase());
+        if (familyMatch) {
+            return familyMatch;
+        }
+
+        // Keep generic/custom CSS font-family tokens (e.g. system-ui) so roles can opt out of registered fonts.
+        return normalizedToken;
     };
 
     for (const role of FONT_ROLES) {

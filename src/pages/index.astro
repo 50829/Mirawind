@@ -1,5 +1,6 @@
 ---
 import { getEntry, render } from "astro:content";
+import type { Page } from "astro";
 import GridLayout from "@layouts/grid.astro";
 import Markdown from "@components/common/markdown.astro";
 import { url } from "@utils/url";
@@ -21,7 +22,7 @@ const firstPagePosts = allPosts.slice(0, PAGE_SIZE);
 const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
 
 // 创建类似分页对象的结构
-const page = {
+const page: Page<(typeof firstPagePosts)[number]> = {
     data: firstPagePosts,
     start: 0,
     end: firstPagePosts.length - 1,
@@ -33,6 +34,8 @@ const page = {
         current: "/",
         prev: undefined,
         next: totalPages > 1 ? "/blog/2/" : undefined,
+        first: undefined,
+        last: totalPages > 1 ? `/blog/${totalPages}/` : undefined,
     },
 };
 

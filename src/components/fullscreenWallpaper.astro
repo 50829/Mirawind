@@ -105,7 +105,7 @@ const blur = config.fullscreen?.blur || 0;
     )}
 </div>
 
-<script define:vars={{ carouselInterval }}>
+<script is:inline define:vars={{ carouselInterval }}>
     // 全屏壁纸轮播图初始化函数
     window.initFullscreenWallpaperCarousel = function() {
         const carousel = document.getElementById('fullscreen-wallpaper-carousel');

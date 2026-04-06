@@ -93,6 +93,7 @@ export class WidgetManager {
      * @param side 当前渲染的侧边栏位置
      */
     getComponentClass(component: WidgetComponentConfig, index: number, side: "left" | "right" | "middle"): string {
+        void index;
         const classes: string[] = [];
 
         // 基础响应式隐藏配置 (用户配置的)
@@ -133,6 +134,7 @@ export class WidgetManager {
      * @param index 组件在列表中的索引
      */
     getComponentStyle(component: WidgetComponentConfig, index: number): string {
+        void index;
         const styles: string[] = [];
 
         // 添加自定义样式
@@ -241,6 +243,7 @@ export class WidgetManager {
      * @param componentType 组件类型
      */
     isSidebarComponent(componentType: WidgetComponentType): boolean {
+        void componentType;
         return true;
     }
 

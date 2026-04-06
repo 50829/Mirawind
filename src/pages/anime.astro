@@ -333,7 +333,7 @@ const stats = {
                                                 <span class="text-black/70 dark:text-white/70 truncate ml-2">{anime.studio}</span>
                                             </div>
                                             <div class="flex flex-wrap gap-1 mt-2">
-                                                {anime.genre.map(g => (
+                                                {anime.genre.map((g: string) => (
                                                     <span class="px-1.5 py-0.5 bg-(--btn-regular-bg) text-black/70 dark:text-white/70 rounded-sm text-xs">{g}</span>
                                                 ))}
                                             </div>

@@ -93,7 +93,7 @@ export class TableOfContents extends HTMLElement {
         const bottommost = activeHeading[activeHeading.length - 1];
         const tocHeight = this.tocEl.clientHeight;
 
-        let top;
+        let top: number;
         if (bottommost.getBoundingClientRect().bottom -
             topmost.getBoundingClientRect().top < 0.9 * tocHeight)
             top = topmost.offsetTop - 32;

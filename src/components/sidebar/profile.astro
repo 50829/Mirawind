@@ -19,7 +19,7 @@ interface Props {
     style?: string;
     side?: string;
 }
-const { class: className, style, side = "default" } = Astro.props;
+const { side = "default" } = Astro.props;
 const id = `profile-${side}`;
 ---
 

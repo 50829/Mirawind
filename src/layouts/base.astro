@@ -34,7 +34,7 @@ interface Props {
     postSlug?: string;
 }
 
-let { title, banner, description, lang, setOGTypeArticle, postSlug } = Astro.props;
+let { title, description, lang, setOGTypeArticle, postSlug } = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
@@ -49,38 +49,6 @@ const navbarTransparentMode =
 // 判断是否应该显示顶部高光效果（只在full和semifull模式下显示）
 const shouldShowTopHighlight =
     navbarTransparentMode === "full" || navbarTransparentMode === "semifull";
-
-// 获取默认banner图片的辅助函数
-const getDefaultBanner = (): string => {
-    const src = siteConfig.wallpaper.src;
-    if (typeof src === "string") {
-        return src;
-    }
-    if (Array.isArray(src)) {
-        return src[0] || "";
-    }
-    if (src && typeof src === "object") {
-        // 优先使用desktop，如果没有则使用mobile
-        const desktopSrc = src.desktop;
-        const mobileSrc = src.mobile;
-        if (typeof desktopSrc === "string") {
-            return desktopSrc;
-        }
-        if (Array.isArray(desktopSrc) && desktopSrc.length > 0) {
-            return desktopSrc[0];
-        }
-        if (typeof mobileSrc === "string") {
-            return mobileSrc;
-        }
-        if (Array.isArray(mobileSrc) && mobileSrc.length > 0) {
-            return mobileSrc[0];
-        }
-    }
-    return "";
-};
-
-// TODO don't use post cover as banner for now
-banner = getDefaultBanner();
 
 const enableBanner = siteConfig.wallpaper.mode === "banner";
 

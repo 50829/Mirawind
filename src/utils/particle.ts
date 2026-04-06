@@ -162,13 +162,13 @@ function getRandom(option: string, config: ParticleConfig): any {
             break;
         case "fnx":
             random = config.speed.horizontal.min + Math.random() * (config.speed.horizontal.max - config.speed.horizontal.min); // x方向保持较小的随机运动
-            ret = function (x: number, y: number) {
+            ret = function (x: number) {
                 return x + random;
             };
             break;
         case "fny":
             random = -(config.speed.vertical.min + Math.random() * (config.speed.vertical.max - config.speed.vertical.min)); // y方向随机向上运动
-            ret = function (x: number, y: number) {
+            ret = function (y: number) {
                 return y + random;
             };
             break;

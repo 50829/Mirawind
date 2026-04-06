@@ -21,7 +21,7 @@ if (!friendsPost) {
 const { Content } = await render(friendsPost);
 const items = friendsData;
 
-function shuffleArray(array) {
+function shuffleArray<T>(array: T[]): T[] {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -64,7 +64,7 @@ const shuffledItems = shuffleArray(items);
                             </p>
                             {item.tags && item.tags.length > 0 && (
                                 <div class="flex flex-wrap gap-1.5 mt-2">
-                                    {item.tags.slice(0, 2).map((tag) => (
+                                    {item.tags.slice(0, 2).map((tag: string) => (
                                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
                                             {tag}
                                         </span>

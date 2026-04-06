@@ -71,7 +71,7 @@ if (!album) {
                 data-layout={album.layout || 'grid'}
                 data-columns={album.columns || 3}
             >
-                {album.photos.map((photo, index) => (
+                {album.photos.map((photo) => (
                     <figure class="photo-item group relative overflow-hidden rounded-lg">
                         <ImageWrapper
                             src={photo.src}

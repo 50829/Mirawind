@@ -110,7 +110,7 @@ const getTypeIcon = (type: string) => {
                     <!-- 时间线主轴 -->
                     <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
                     <div class="space-y-8">
-                        {allTimelineItems.map((item, index) => (
+                        {allTimelineItems.map((item) => (
                             <TimelineItem item={item} layout="timeline" showTimeline={true} size="medium" />
                         ))}
                     </div>

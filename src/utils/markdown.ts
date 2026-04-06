@@ -65,27 +65,11 @@ export function initMarkdownActions() {
 
             // 尝试多种复制方法
             const copyToClipboard = async (text: string) => {
-                try {
-                    await navigator.clipboard.writeText(text);
-                } catch (clipboardErr) {
-                    console.warn('Clipboard API 失败，尝试备用方案:', clipboardErr);
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    textArea.style.position = 'fixed';
-                    textArea.style.left = '-999999px';
-                    textArea.style.top = '-999999px';
-                    document.body.appendChild(textArea);
-                    textArea.focus();
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                    } catch (execErr) {
-                        console.error('execCommand 也失败了:', execErr);
-                        throw new Error('所有复制方法都失败了');
-                    } finally {
-                        document.body.removeChild(textArea);
-                    }
+                if (!navigator.clipboard?.writeText) {
+                    throw new Error('Clipboard API 不可用');
                 }
+
+                await navigator.clipboard.writeText(text);
             };
 
             // 调用复制函数
