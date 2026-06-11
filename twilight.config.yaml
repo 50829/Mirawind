@@ -284,7 +284,7 @@ sidebar:
                 # 响应式配置
                 responsive:
                     # 折叠阈值
-                    collapseThreshold: 20
+                    collapseThreshold: 10
         # 右侧侧边栏
         right:
             - # 组件 - 站点统计 (Mizuki 风格)
@@ -361,7 +361,7 @@ post:
     # 评论配置
     comment:
         # 启用评论功能
-        enable: false
+        enable: true
         # Twikoo 评论系统配置
         twikoo:
             # 环境 ID
