@@ -58,6 +58,7 @@ export const zh: Translation = {
 	[Key.wallpaperNone]: "纯色背景",
 
 	[Key.more]: "更多",
+	[Key.less]: "收起",
 
 	[Key.backTo]: "返回",
 

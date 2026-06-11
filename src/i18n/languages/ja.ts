@@ -58,6 +58,7 @@ export const ja: Translation = {
 	[Key.wallpaperNone]: "なし",
 
 	[Key.more]: "もっと",
+	[Key.less]: "閉じる",
 
 	[Key.backTo]: "戻る",
 

@@ -56,6 +56,7 @@ enum I18nKey {
 	wallpaperNone = "wallpaperNone",
 
 	more = "more",
+	less = "less",
 
 	backTo = "backTo",
 

@@ -26,7 +26,7 @@ const { class: className, style, side = "default" } = Astro.props;
 ---
 
 <WidgetLayout name={i18n(I18nKey.tags)} id={`tags-${side}`} isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
-    <div class="flex gap-2 flex-wrap">
+    <div class="tag-list flex gap-2 flex-wrap">
         {tags.map(t => (
             <ButtonTag href={getTagUrl(t.name)} label={`View all posts with the ${t.name.trim()} tag`}>
                 {t.name.trim()}
@@ -34,3 +34,9 @@ const { class: className, style, side = "default" } = Astro.props;
         ))}
     </div>
 </WidgetLayout>
+
+<style>
+    :global(widget-layout[data-expanded="true"]) .tag-list {
+        padding-bottom: 0.5rem;
+    }
+</style>

@@ -32,17 +32,31 @@ const {
         <slot></slot>
     </div>
     {isCollapsed && <div class="expand-btn px-4 -mb-2">
-        <button class="btn-plain rounded-lg w-full h-9">
+        <button class="btn-plain rounded-lg w-full h-9" aria-expanded="false">
             <div class="text-(--primary) flex items-center justify-center gap-2 -translate-x-2">
-                <Icon name="material-symbols:more-horiz" class="text-[1.75rem]"></Icon> {i18n(I18nKey.more)}
+                <Icon name="material-symbols:more-horiz" class="expand-icon-more text-[1.75rem]"></Icon>
+                <Icon name="material-symbols:expand-less" class="expand-icon-less hidden text-[1.75rem]"></Icon>
+                <span class="expand-label" data-more={i18n(I18nKey.more)} data-less={i18n(I18nKey.less)}>
+                    {i18n(I18nKey.more)}
+                </span>
             </div>
         </button>
     </div>}
 </widget-layout>
 
 <style define:vars={{ collapsedHeight }}>
+	.collapse-wrapper {
+		transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
     .collapsed {
         height: var(--collapsedHeight);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .collapse-wrapper {
+            transition: none;
+        }
     }
 </style>
 
@@ -51,15 +65,61 @@ const {
         constructor() {
             super();
 
-            if (this.dataset.isCollapsed !== "true")
-                return;
+			if (this.dataset.isCollapsed !== "true")
+				return;
 
-            const id = this.dataset.id;
-            const btn = this.querySelector('.expand-btn');
-            const wrapper = this.querySelector(`#${id}`)
+			this.dataset.expanded = "false";
+
+			const id = this.dataset.id;
+			const btn = this.querySelector<HTMLButtonElement>(".expand-btn button");
+			const wrapper = this.querySelector<HTMLElement>(`#${id}`);
+			const label = this.querySelector<HTMLElement>(".expand-label");
+			const moreIcon = this.querySelector<HTMLElement>(".expand-icon-more");
+			const lessIcon = this.querySelector<HTMLElement>(".expand-icon-less");
+
+			const syncButton = (isExpanded: boolean) => {
+				this.dataset.expanded = String(isExpanded);
+				btn!.setAttribute("aria-expanded", String(isExpanded));
+				label!.textContent = isExpanded
+					? label!.dataset.less!
+					: label!.dataset.more!;
+				moreIcon!.classList.toggle("hidden", isExpanded);
+				lessIcon!.classList.toggle("hidden", !isExpanded);
+			};
+
+			const setExpanded = (isExpanded: boolean) => {
+				const currentHeight = wrapper!.getBoundingClientRect().height;
+				wrapper!.style.height = `${currentHeight}px`;
+
+				if (isExpanded) {
+					syncButton(true);
+					wrapper!.classList.remove("collapsed");
+
+					requestAnimationFrame(() => {
+						wrapper!.style.height = `${wrapper!.scrollHeight}px`;
+					});
+
+					wrapper!.addEventListener(
+						"transitionend",
+						() => {
+							wrapper!.style.height = "";
+						},
+						{ once: true },
+					);
+
+					return;
+				}
+
+				syncButton(false);
+
+				requestAnimationFrame(() => {
+					wrapper!.classList.add("collapsed");
+					wrapper!.style.height = "";
+				});
+			};
+
             btn!.addEventListener('click', () => {
-                wrapper!.classList.remove('collapsed');
-                btn!.classList.add('hidden');
+				setExpanded(wrapper!.classList.contains("collapsed"));
             })
         }
     }

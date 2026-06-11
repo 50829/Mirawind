@@ -58,6 +58,7 @@ export const en: Translation = {
 	[Key.wallpaperNone]: "None",
 
 	[Key.more]: "More",
+	[Key.less]: "Less",
 
 	[Key.backTo]: "Back to",
 
