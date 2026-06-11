@@ -71,7 +71,10 @@ export async function getTagList(): Promise<Tag[]> {
 
 	// sort tags
 	const keys: string[] = Object.keys(countMap).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
+		return (
+			countMap[b] - countMap[a] ||
+			a.toLowerCase().localeCompare(b.toLowerCase())
+		);
 	});
 
 	return keys.map((key) => ({ name: key, count: countMap[key] }));
@@ -104,7 +107,9 @@ export async function getCategoryList(): Promise<Category[]> {
 	});
 
 	const lst = Object.keys(count).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
+		return (
+			count[b] - count[a] || a.toLowerCase().localeCompare(b.toLowerCase())
+		);
 	});
 
 	const ret: Category[] = [];
