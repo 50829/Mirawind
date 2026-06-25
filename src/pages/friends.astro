@@ -49,31 +49,17 @@ const shuffledItems = shuffleArray(items);
             <!-- 链接网格 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-4">
                 {shuffledItems.map((item) => (
-                    <a href={item.siteurl} target="_blank" rel="noopener noreferrer" class="menu-card group flex flex-row items-center p-4 rounded-xl border transition-all duration-300 gap-4">
+                    <a href={item.siteurl} target="_blank" rel="noopener noreferrer" title={`${item.title} - ${item.desc}`} class="menu-card group flex flex-row items-center min-h-24 p-4 rounded-xl border transition-all duration-300 gap-4">
                         <div class="icon-wrapper w-20 h-20 shrink-0 flex items-center justify-center rounded-full transition-all duration-300 overflow-hidden bg-zinc-200 dark:bg-zinc-900">
                             <img src={item.imgurl} alt={item.title} class="w-full h-full object-cover transition duration-300 group-hover:scale-110" />
                         </div>
-                        <div class="flex flex-col justify-center overflow-hidden">
+                        <div class="flex flex-col justify-center overflow-hidden min-w-0 flex-1">
                             <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors duration-300 truncate">
                                 {item.title}
                             </h2>
-                            <p class="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-1 mt-1">
+                            <p class="text-sm leading-snug text-neutral-600 dark:text-neutral-400 line-clamp-2 mt-1">
                                 {item.desc}
                             </p>
-                            {item.tags && item.tags.length > 0 && (
-                                <div class="flex flex-wrap gap-1.5 mt-2">
-                                    {item.tags.slice(0, 2).map((tag: string) => (
-                                        <span class="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                    {item.tags.length > 2 && (
-                                        <span class="text-xs px-2 py-0.5 text-neutral-400">
-                                            +{item.tags.length - 2}
-                                        </span>
-                                    )}
-                                </div>
-                            )}
                         </div>
                     </a>
                 ))}

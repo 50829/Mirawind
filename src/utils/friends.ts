@@ -10,7 +10,6 @@ export interface FriendLink {
 	imgurl: string;
 	desc: string;
 	siteurl: string;
-	tags?: string[];
 }
 
 export const friendsData: FriendLink[] = Object.entries(friendModules).map(
